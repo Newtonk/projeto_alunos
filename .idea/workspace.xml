@@ -7,6 +7,14 @@
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+        <option value="HTML File" />
+      </list>
+    </option>
+  </component>
   <component name="ProjectId" id="1rETLFXPJ9Bm30Wn9bTTtdOnifX" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -14,7 +22,60 @@
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
+    <property name="DefaultHtmlFileTemplate" value="HTML File" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/manage.py" />
+    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\Newton Coelho\PycharmProjects\alunos_pf" />
+      <recent name="C:\Users\Newton Coelho\PycharmProjects\alunos_pf\metrics\templates\metrics" />
+    </key>
+  </component>
+  <component name="RunManager">
+    <configuration default="true" type="PythonConfigurationType" factoryName="Python">
+      <module name="alunos_pf" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="C:\Users\Newton Coelho\PycharmProjects\alunos_pf\venv\Scripts\python.exe" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/manage.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="manage" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
+      <module name="alunos_pf" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="C:\Users\Newton Coelho\PycharmProjects\alunos_pf\venv\Scripts\python.exe" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/manage.py" />
+      <option name="PARAMETERS" value="runserver" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
   </component>
   <component name="SvnConfiguration">
     <configuration />
@@ -28,5 +89,85 @@
       <updated>1618540191723</updated>
     </task>
     <servers />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="254" y="86" width="1092" height="706" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1618716585575">
+      <screen x="0" y="0" width="1600" height="860" />
+    </state>
+    <state x="254" y="86" width="1092" height="706" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1600.860@0.0.1600.860" timestamp="1618716585575" />
+    <state width="1115" height="466" key="DebuggerActiveHint" timestamp="1619063963813">
+      <screen x="0" y="0" width="1600" height="860" />
+    </state>
+    <state width="1115" height="466" key="DebuggerActiveHint/0.0.1600.860/-1920.78.1536.824@0.0.1600.860" timestamp="1619063963813" />
+    <state width="1066" height="466" key="DebuggerActiveHint/0.0.1600.860@0.0.1600.860" timestamp="1618971457778" />
+    <state x="580" y="195" key="FileChooserDialogImpl" timestamp="1618716045832">
+      <screen x="0" y="0" width="1600" height="860" />
+    </state>
+    <state x="580" y="195" key="FileChooserDialogImpl/0.0.1600.860@0.0.1600.860" timestamp="1618716045832" />
+    <state width="1579" height="276" key="GridCell.Tab.0.bottom" timestamp="1619146318995">
+      <screen x="0" y="0" width="1600" height="860" />
+    </state>
+    <state width="1579" height="276" key="GridCell.Tab.0.bottom/0.0.1600.860/-1920.78.1536.824@0.0.1600.860" timestamp="1619146318995" />
+    <state width="1579" height="276" key="GridCell.Tab.0.bottom/0.0.1600.860@0.0.1600.860" timestamp="1618969624042" />
+    <state width="1579" height="276" key="GridCell.Tab.0.center" timestamp="1619146318995">
+      <screen x="0" y="0" width="1600" height="860" />
+    </state>
+    <state width="1579" height="276" key="GridCell.Tab.0.center/0.0.1600.860/-1920.78.1536.824@0.0.1600.860" timestamp="1619146318995" />
+    <state width="1579" height="276" key="GridCell.Tab.0.center/0.0.1600.860@0.0.1600.860" timestamp="1618969624041" />
+    <state width="1579" height="276" key="GridCell.Tab.0.left" timestamp="1619146318995">
+      <screen x="0" y="0" width="1600" height="860" />
+    </state>
+    <state width="1579" height="276" key="GridCell.Tab.0.left/0.0.1600.860/-1920.78.1536.824@0.0.1600.860" timestamp="1619146318995" />
+    <state width="1579" height="276" key="GridCell.Tab.0.left/0.0.1600.860@0.0.1600.860" timestamp="1618969624041" />
+    <state width="1579" height="276" key="GridCell.Tab.0.right" timestamp="1619146318995">
+      <screen x="0" y="0" width="1600" height="860" />
+    </state>
+    <state width="1579" height="276" key="GridCell.Tab.0.right/0.0.1600.860/-1920.78.1536.824@0.0.1600.860" timestamp="1619146318995" />
+    <state width="1579" height="276" key="GridCell.Tab.0.right/0.0.1600.860@0.0.1600.860" timestamp="1618969624042" />
+    <state width="1579" height="276" key="GridCell.Tab.1.bottom" timestamp="1619146332900">
+      <screen x="0" y="0" width="1600" height="860" />
+    </state>
+    <state width="1579" height="276" key="GridCell.Tab.1.bottom/0.0.1600.860/-1920.78.1536.824@0.0.1600.860" timestamp="1619146332900" />
+    <state width="1579" height="276" key="GridCell.Tab.1.bottom/0.0.1600.860@0.0.1600.860" timestamp="1618969481698" />
+    <state width="1579" height="276" key="GridCell.Tab.1.center" timestamp="1619146332900">
+      <screen x="0" y="0" width="1600" height="860" />
+    </state>
+    <state width="1579" height="276" key="GridCell.Tab.1.center/0.0.1600.860/-1920.78.1536.824@0.0.1600.860" timestamp="1619146332900" />
+    <state width="1579" height="276" key="GridCell.Tab.1.center/0.0.1600.860@0.0.1600.860" timestamp="1618969481698" />
+    <state width="1579" height="276" key="GridCell.Tab.1.left" timestamp="1619146332900">
+      <screen x="0" y="0" width="1600" height="860" />
+    </state>
+    <state width="1579" height="276" key="GridCell.Tab.1.left/0.0.1600.860/-1920.78.1536.824@0.0.1600.860" timestamp="1619146332900" />
+    <state width="1579" height="276" key="GridCell.Tab.1.left/0.0.1600.860@0.0.1600.860" timestamp="1618969481698" />
+    <state width="1579" height="276" key="GridCell.Tab.1.right" timestamp="1619146332900">
+      <screen x="0" y="0" width="1600" height="860" />
+    </state>
+    <state width="1579" height="276" key="GridCell.Tab.1.right/0.0.1600.860/-1920.78.1536.824@0.0.1600.860" timestamp="1619146332900" />
+    <state width="1579" height="276" key="GridCell.Tab.1.right/0.0.1600.860@0.0.1600.860" timestamp="1618969481698" />
+    <state x="301" y="73" key="SettingsEditor" timestamp="1618796192702">
+      <screen x="0" y="0" width="1600" height="860" />
+    </state>
+    <state x="301" y="73" key="SettingsEditor/0.0.1600.860@0.0.1600.860" timestamp="1618796192702" />
+    <state x="496" y="255" key="com.intellij.ide.util.TipDialog" timestamp="1619144335511">
+      <screen x="0" y="0" width="1600" height="860" />
+    </state>
+    <state x="496" y="255" key="com.intellij.ide.util.TipDialog/0.0.1600.860/-1920.78.1536.824@0.0.1600.860" timestamp="1619144335511" />
+    <state x="496" y="255" key="com.intellij.ide.util.TipDialog/0.0.1600.860@0.0.1600.860" timestamp="1619057968877" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/metrics/views.py</url>
+          <line>25</line>
+          <option name="timeStamp" value="15" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/metrics/views.py</url>
+          <line>41</line>
+          <option name="timeStamp" value="16" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>
