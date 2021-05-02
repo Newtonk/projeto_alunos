@@ -16,7 +16,7 @@ def home(request):
         read_csv(filename)
         #s = data.melt(('Curso', 'Genero')).groupby(['Curso' , 'Genero']).size()
         #cache.set('data_store', data, timeout=600)
-        return dashboard_profissionais(request)
+        return dashboard_perfil_aluno(request)
 
         #ax = s.plot.bar(rot=0)
         #plt.show()
@@ -39,46 +39,93 @@ def read_csv(filename):
 
     data = pd.DataFrame(data=myFile, index=None)
 
-def graph_gender_vs_course():
-    #s = data.melt(('Curso', 'Genero')).groupby(['Curso', 'Genero']).size()
-
+def graph_genero_vs_course():
 
     data.loc[data['Curso'].str.contains("SISTEMA"), "Curso"] = "SISTEMAS"
     data.loc[data['Curso'].str.contains("ENGENHARIA"), "Curso"] = "ENGENHARIA"
     data.loc[data['Curso'].str.contains("COMPUTACAO"), "Curso"] = "COMPUTACAO"
     counter = data.groupby(['Curso', 'Genero']).size().reset_index(name='Count')
-    df_new = counter.groupby(['Genero','Curso']).sum()
-    courses = []
+    df_new = counter.groupby(['Curso','Genero']).sum()
+    generos = []
     listResults = []
-    genderValues = {}
-    colors = [ "green" , "blue" , "black"]
+    cursosValues = {}
+    finalResult = {}
+    colors = ["green", "blue", "black"]
     i = 0
     for firstIndex, firstValue in df_new.items():
-        lastLabel = ""
         for secondIndex, genderValue in firstValue.items():
-            if secondIndex[0] not in genderValues:
-                genderValues[secondIndex[0]] = []
-            genderValues[secondIndex[0]].append(genderValue)
-            if secondIndex[1] not in courses:
-                courses.append(secondIndex[1])
-        for key in genderValues:
+            if secondIndex[0] not in cursosValues:
+                cursosValues[secondIndex[0]] = []
+            cursosValues[secondIndex[0]].append(genderValue)
+            if secondIndex[1] not in generos:
+                generos.append(secondIndex[1])
+        for key in cursosValues:
             result = {}
             result["Label"] = key
-            result["Values"] = genderValues[key]
-            result["Color"] = colors[i]
+            result["Valores"] = cursosValues[key]
+            result["Cores"] = colors
+            result["Id"] = str(i)
             listResults.append(result)
             i += 1
-    return listResults, courses
+    finalResult["Generos"] = generos
+    finalResult["Data"] = listResults
+    return finalResult
 
-def dashboard_profissionais(request):
-    listResults, courses = graph_gender_vs_course()
+def graph_genero_vs_area():
+    counter = data.groupby(['Genero', 'Area']).size().reset_index(name='Count')
+    df_new = counter.groupby(['Genero', 'Area']).sum()
+    df_new = df_new.sort_values(by=['Count'], ascending=False)
 
+    countValues = df_new['Count']
+    finalResult = []
+    for index, value in countValues.groupby(level=0):
+        areas_values = countValues[index].nlargest(10)
+        areas = areas_values.index.tolist()
+        numbers = areas_values.values.tolist()
+        result = {}
+        result["Label"] = index
+        result["Areas"] = areas
+        result["Valores"] = numbers
+        finalResult.append(result)
+    return finalResult
+
+def graph_area_vs_curso():
+    counter = data.groupby(['Curso', 'Area']).size().reset_index(name='Count')
+    df_new = counter.groupby(['Curso', 'Area']).sum()
+    df_new = df_new.sort_values(by=['Count'], ascending=False)
+
+    countValues = df_new['Count']
+    finalResult = []
+    for index, value in countValues.groupby(level=0):
+        areas_values = countValues[index].nlargest(10)
+        areas = areas_values.index.tolist()
+        numbers = areas_values.values.tolist()
+        result = {}
+        result["Label"] = index
+        result["Areas"] = areas
+        result["Valores"] = numbers
+        finalResult.append(result)
+    return finalResult
+
+def dashboard_areas_atuacao(request):
+    areaXcurso = graph_area_vs_curso()
 
     context = {
-        "listResults" : listResults,
-        "courses" : courses
+        "areaXcurso": areaXcurso
+    }
+
+    return render(request, 'metrics/dashboard_areas_atuacao.html', context)
+
+def dashboard_perfil_aluno(request):
+    generoXcurso = graph_genero_vs_course()
+
+    generoXarea = graph_genero_vs_area()
+
+    context = {
+        "generoXcurso": generoXcurso,
+        "generoXarea": generoXarea
     }
 
 
 
-    return render(request, 'metrics/dashboard_profissionais.html',context)
+    return render(request, 'metrics/dashboard_perfil_profissionais.html',context)

@@ -1,0 +1,120 @@
+{% extends 'metrics/dashboard_principal.html' %}
+
+{% block content %}
+
+
+<style>
+#generoXarea {
+  width: 700px;
+  height: 450px;
+  class : row;
+  display: flex;
+  flex-wrap: inherit;
+}
+
+</style>
+
+<div class="col-md-12">
+	<div id="generoXcurso"></div>
+	<div id="generoXarea"></div>
+</div>
+
+<!-- Gráficos de Genero X Curso  -->
+<script>
+
+var colorArray = [
+    '#dd0453', '#fdfd05', '#66E64D', '#0660e7', '#9900B3',
+     '#d07201', '#14b300','#06d2a6','#f8061a','#c45850',
+	'#66664D', '#d6d6d7', '#76008f', '#4DB3FF', '#1AB399',
+	'#ec92d1', '#33991A', '#ba8383', '#B3B31A', '#00E680',
+	'#4D8066', '#809980', '#E6FF80', '#1AFF33', '#999933',
+	'#E64D66', '#4DB380', '#FF4D4D', '#99E6E6', '#6666FF'];
+
+var i = 0;
+{% for item in generoXcurso.Data %}
+	var canvas = document.createElement('canvas');
+
+	canvas.id = "genderCourse" + i.toString();
+
+	var body = document.getElementById("generoXcurso");
+	body.appendChild(canvas);
+    new Chart(document.getElementById(canvas.id), {
+    type: 'pie',
+    data: {
+      labels: {{ generoXcurso.Generos| safe}},
+      datasets: [{
+		label : "{{ item.Label|safe }}",
+        backgroundColor: {{ item.Cores|safe }},
+        data: {{ item.Valores|safe }}
+	}]
+    },
+    options: {
+      title: {
+        display: true,
+        text: 'Genero X Curso de ' + '{{item.Label|safe }}'
+      },
+      plugins: {
+	    datalabels: {
+		formatter: (value, ctx) => {
+		  let sum = 0;
+		  let dataArr = ctx.chart.data.datasets[0].data;
+		  dataArr.map(data => {
+			  sum += data;
+		  });
+		  let percentage = (value*100 / sum).toFixed(2)+"%";
+		  return percentage;
+
+
+		},
+		color: '#fff',
+		}
+    }
+	},
+	});
+	i += 1;
+{%endfor%}
+
+</script>
+
+<!-- Gráficos de Genero X Area  -->
+<script>
+
+var colorArray = [
+    '#dd0453', '#fdfd05', '#66E64D', '#0660e7', '#9900B3',
+     '#d07201', '#14b300','#06d2a6','#f8061a','#c45850',
+	'#66664D', '#d6d6d7', '#76008f', '#4DB3FF', '#1AB399',
+	'#ec92d1', '#33991A', '#ba8383', '#B3B31A', '#00E680',
+	'#4D8066', '#809980', '#E6FF80', '#1AFF33', '#999933',
+	'#E64D66', '#4DB380', '#FF4D4D', '#99E6E6', '#6666FF'];
+
+var i = 0;
+{% for item in generoXarea %}
+	var canvas = document.createElement('canvas');
+
+	canvas.id = "genderArea" + i.toString();
+
+	var body = document.getElementById("generoXarea");
+	body.appendChild(canvas);
+    new Chart(document.getElementById(canvas.id), {
+    type: 'bar',
+    data: {
+      labels: {{ item.Areas | safe}},
+      datasets: [{
+		label : "{{ item.Label|safe }}",
+        backgroundColor: colorArray,
+        data: {{ item.Valores|safe }}
+	}]
+    },
+    options: {
+      title: {
+        display: true,
+        text: 'Genero X Area'
+      },
+    }
+	});
+	i += 1;
+{%endfor%}
+
+</script>
+
+{% endblock %}
