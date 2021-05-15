@@ -5,6 +5,7 @@ from . import views
 urlpatterns = [
     path('', views.home, name="home"),
 
-    path('dashboard_perfil_aluno/', views.dashboard_perfil_aluno, name="dashboard_perfil_aluno"),
-    path('dashboard_areas_atuacao/', views.dashboard_areas_atuacao, name="dashboard_areas_atuacao"),
+    path('graphs_profissionais_vs_universidade/', views.graphs_profissionais_vs_universidade, name="graphs_profissionais_vs_universidade"),
+    path('graphs_profissionais_vs_empresa/', views.graphs_profissionais_vs_empresa, name="graphs_profissionais_vs_empresa"),
+    path('graphs_universidade_vs_empresa/', views.graphs_universidade_vs_empresa, name="graphs_universidade_vs_empresa"),
 ]

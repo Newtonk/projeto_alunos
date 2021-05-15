@@ -1,0 +1,67 @@
+{% extends 'metrics/main_graph_page.html' %}
+
+{% block content %}
+
+<style>
+#generoXarea {
+  width: 700px;
+  height: 450px;
+  class : row;
+  display: flex;
+  flex-wrap: inherit;
+}
+
+</style>
+
+<div class="col-md-12">
+	<div id="areaXcurso"></div>
+	<div>
+		<canvas id="generoXarea">></canvas>
+	</div>
+</div>
+
+<!-- Gráficos de Genero X Area  -->
+<script>
+
+var colorArray = [ 'red' , 'blue' , 'green'];
+
+var i = 0;
+datasets = [];
+{% for item in generoXarea.Data %}
+	var dataset = {
+		label : "{{ item.0 | safe }}",
+		backgroundColor: colorArray[i],
+		data: {{ item.1 | safe }}
+	};
+	datasets.push(dataset);
+	i += 1;
+{%endfor%}
+
+    new Chart(document.getElementById("generoXarea"), {
+    type: 'bar',
+    data: {
+      labels: {{ generoXarea.Areas | safe}},
+      datasets: datasets
+    },
+    options: {
+    plugins: {
+      title: {
+        display: true,
+        text: 'Chart.js Bar Chart - Stacked'
+      },
+     },
+      responsive: true,
+      scales: {
+      x: {
+        stacked: true,
+      },
+      y: {
+        stacked: true
+      }
+    }
+    }
+	});
+
+</script>
+
+{% endblock %}
