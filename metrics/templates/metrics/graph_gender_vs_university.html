@@ -1,49 +1,89 @@
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<div class="col-md-12">
-	<canvas id="generoXuniversidade"></canvas>
+<h1>Gráficos de Genero X Universidade</h1>
+<div id="div_gen_uni" class="col-md-12">
+<form method="POST" action="" enctype = "multipart/form-data" onsubmit="return false">
+{% csrf_token %}
+<label for="qtygenderuniversidade">Escolha o numero de elementos máximo:</label>
+<select name="qtygenderuniversidade" id="qtygenderuniversidade" onchange="this.form.submit();">
+  <option value="5">5</option>
+  <option value="10" selected>10</option>
+  <option value="15">15</option>
+  <option value="20">20</option>
+</select>
+<br>
+<label for="states">Estado:</label>
+<select name="states" id="states" onchange="this.form.submit();"></select>
+</form>
+    <canvas id="generoXuniversidade"></canvas>
 </div>
 
-<!-- Gráficos de Genero X Universidade  -->
 <script>
+object_all = {{ generoXuniversidade | safe }}
 
-var colorArray = [ 'red' , 'blue' , 'green'];
+if (Object.keys(object_all).length == 0)
+{
+    document.getElementById("div_gen_uni").innerHTML = "Sem informações suficientes para gerar os gráficos!";
+}
+else
+{
+    document.getElementById("qtygenderuniversidade").value = object_all["Total"];
 
-var i = 0;
-datasets = [];
-{% for item in generoXuniversidade.Data %}
-	var dataset = {
-		label : "{{ item.0 | safe }}",
-		backgroundColor: colorArray[i],
-		data: {{ item.1 | safe }}
-	};
-	datasets.push(dataset);
-	i += 1;
-{%endfor%}
+    select = document.getElementById("states")
 
-    new Chart(document.getElementById("generoXuniversidade"), {
-    type: 'bar',
-    data: {
-      labels: {{ generoXuniversidade.Instituicoes | safe}},
-      datasets: datasets
-    },
-    options: {
-    plugins: {
-      title: {
-        display: true,
-        text: 'Chart.js Bar Chart - Stacked'
-      },
-     },
-      responsive: true,
-      scales: {
-      x: {
-        stacked: true,
-      },
-      y: {
-        stacked: true
-      }
+    all_states = object_all["States"];
+
+    var option = document.createElement("option");
+    option.value = "Todos";
+    option.text = "Todos";
+    select.appendChild(option);
+
+    for (const state of all_states)
+    {
+        var option = document.createElement("option");
+        option.value = state;
+        option.text = state.charAt(0).toUpperCase() + state.slice(1);
+        select.appendChild(option);
     }
-    }
-	});
+    select.value = "{{ generoXuniversidade.State | safe}}";
 
+    var colorArray = [ 'red' , 'blue' , 'green'];
+
+    var i = 0;
+    datasets = [];
+    {% for item in generoXuniversidade.Data %}
+        var dataset = {
+            label : "{{ item.0 | safe }}",
+            backgroundColor: colorArray[i],
+            data: {{ item.1 | safe }}
+        };
+        datasets.push(dataset);
+        i += 1;
+    {%endfor%}
+
+        var myLineChart = new Chart(document.getElementById("generoXuniversidade"), {
+        type: 'bar',
+        data: {
+          labels: object_all["Instituicoes"],
+          datasets: datasets
+        },
+        options: {
+        plugins: {
+          title: {
+            display: true,
+            text: 'Genero X Universidade'
+          },
+         },
+          responsive: true,
+          scales: {
+          x: {
+            stacked: true,
+          },
+          y: {
+            stacked: true
+          }
+        }
+        }
+        });
+}
 </script>

@@ -1,23 +1,35 @@
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@0.7.0"></script>
-<div class="col-md-12">
+<h1>Gráficos de Genero X Curso</h1>
+<div id="div_gen_course" class="col-md-12">
+	<form method="POST" action="" enctype = "multipart/form-data" onsubmit="return false">
+	{% csrf_token %}
+	<label for="course">Escolha o curso:</label>
+	<select name="course" id="course" onchange="this.form.submit()">
+		<option value="COMPUTACAO" selected>COMPUTACAO</option>
+		<option value="SISTEMAS">SISTEMAS</option>
+		<option value="ENGENHARIA">ENGENHARIA</option>
+    </select>
+	</form>
 	<div id="generoXcurso"></div>
 </div>
 
 <!-- Gráficos de Genero X Curso  -->
 <script>
+object_all = {{ generoXcurso | safe }}
 
-var colorArray = [
-    '#dd0453', '#fdfd05', '#66E64D', '#0660e7', '#9900B3',
-     '#d07201', '#14b300','#06d2a6','#f8061a','#c45850',
-	'#66664D', '#d6d6d7', '#76008f', '#4DB3FF', '#1AB399',
-	'#ec92d1', '#33991A', '#ba8383', '#B3B31A', '#00E680',
-	'#4D8066', '#809980', '#E6FF80', '#1AFF33', '#999933',
-	'#E64D66', '#4DB380', '#FF4D4D', '#99E6E6', '#6666FF'];
+if (Object.keys(object_all).length == 0)
+{
+    document.getElementById("div_gen_course").innerHTML = "Sem informações suficientes para gerar os gráficos!";
+}
+else
+{
+document.getElementById("course").value = object_all["Course"];
+
+var colorArray = ["green", "blue", "black"]
 
 var i = 0;
-{% for item in generoXcurso.Data %}
 	var canvas = document.createElement('canvas');
 
 	canvas.id = "genderCourse" + i.toString();
@@ -27,17 +39,17 @@ var i = 0;
     new Chart(document.getElementById(canvas.id), {
     type: 'pie',
     data: {
-      labels: {{ generoXcurso.Generos| safe}},
+      labels: object_all["Labels"],
       datasets: [{
-		label : "{{ item.Label|safe }}",
-        backgroundColor: {{ item.Cores|safe }},
-        data: {{ item.Valores|safe }}
+		label : object_all["Course"],
+        backgroundColor: colorArray,
+        data: object_all["Data"]
 	}]
     },
     options: {
       title: {
         display: true,
-        text: 'Genero X Curso de ' + '{{item.Label|safe }}'
+        text: 'Genero X Curso de ' + object_all["Course"]
       },
       plugins: {
 	    datalabels: {
@@ -58,6 +70,5 @@ var i = 0;
 	},
 	});
 	i += 1;
-{%endfor%}
-
+}
 </script>

@@ -1,0 +1,70 @@
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+#generoXarea {
+  width: 700px;
+  height: 450px;
+  class : row;
+  display: flex;
+  flex-wrap: inherit;
+}
+
+</style>
+<form method="POST" action="" enctype = "multipart/form-data">
+{% csrf_token %}
+<label for="qtygenderarea">Escolha o numero de elementos máximo:</label>
+<select name="qtygenderarea" id="qtygenderarea" onchange="this.form.submit();">
+  <option value="5">5</option>
+  <option value="10" selected>10</option>
+  <option value="15">15</option>
+  <option value="20">20</option>
+</select>
+</form>
+<div class="col-md-12">
+    <canvas id="generoXarea">></canvas>
+</div>
+
+<!-- Gráficos de Genero X Area  -->
+<script>
+
+document.getElementById("qtygenderarea").value = {{ generoXarea.Total | safe}};
+
+var colorArray = [ 'red' , 'blue' , 'green'];
+
+var i = 0;
+datasets = [];
+{% for item in generoXarea.Data %}
+	var dataset = {
+		label : "{{ item.0 | safe }}",
+		backgroundColor: colorArray[i],
+		data: {{ item.1 | safe }}
+	};
+	datasets.push(dataset);
+	i += 1;
+{%endfor%}
+
+    new Chart(document.getElementById("generoXarea"), {
+    type: 'bar',
+    data: {
+      labels: {{ generoXarea.Areas | safe}},
+      datasets: datasets
+    },
+    options: {
+    plugins: {
+      title: {
+        display: true,
+        text: 'Genero X Area'
+      },
+     },
+      responsive: true,
+      scales: {
+      x: {
+        stacked: true,
+      },
+      y: {
+        stacked: true
+      }
+    }
+    }
+	});
+
+</script>

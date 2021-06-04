@@ -2,66 +2,25 @@
 
 {% block content %}
 
-<style>
-#generoXarea {
-  width: 700px;
-  height: 450px;
-  class : row;
-  display: flex;
-  flex-wrap: inherit;
-}
+<h1>Gráficos de Genero X Area</h1>
 
-</style>
+{% include 'metrics/graph_gender_vs_area.html' %}
 
-<div class="col-md-12">
-	<div id="areaXcurso"></div>
-	<div>
-		<canvas id="generoXarea">></canvas>
-	</div>
-</div>
+<br>
+<br>
+<br>
 
-<!-- Gráficos de Genero X Area  -->
-<script>
+<h1>Gráficos de Idade X Genero por Area</h1>
 
-var colorArray = [ 'red' , 'blue' , 'green'];
+{% include 'metrics/graph_age_vs_area.html' %}
 
-var i = 0;
-datasets = [];
-{% for item in generoXarea.Data %}
-	var dataset = {
-		label : "{{ item.0 | safe }}",
-		backgroundColor: colorArray[i],
-		data: {{ item.1 | safe }}
-	};
-	datasets.push(dataset);
-	i += 1;
-{%endfor%}
+<br>
+<br>
+<br>
 
-    new Chart(document.getElementById("generoXarea"), {
-    type: 'bar',
-    data: {
-      labels: {{ generoXarea.Areas | safe}},
-      datasets: datasets
-    },
-    options: {
-    plugins: {
-      title: {
-        display: true,
-        text: 'Chart.js Bar Chart - Stacked'
-      },
-     },
-      responsive: true,
-      scales: {
-      x: {
-        stacked: true,
-      },
-      y: {
-        stacked: true
-      }
-    }
-    }
-	});
+<h1>Gráficos de Genero X Salario por Area</h1>
 
-</script>
+{% include 'metrics/graph_gender_vs_salario.html' %}
+
 
 {% endblock %}

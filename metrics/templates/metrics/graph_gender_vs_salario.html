@@ -1,0 +1,79 @@
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+#generoXarea {
+  width: 700px;
+  height: 450px;
+  class : row;
+  display: flex;
+  flex-wrap: inherit;
+}
+</style>
+<div id="div_gen_sallary" class="col-md-12">
+    <form id="qtygendersalarioform" method="POST" action="" enctype = "multipart/form-data">
+    {% csrf_token %}
+    <label for="qtygendersalario">Escolha o numero de elementos máximo:</label>
+    <select name="qtygendersalario" id="qtygendersalario" onchange="this.form.submit()">
+      <option value="5">5</option>
+      <option value="10" selected>10</option>
+      <option value="15">15</option>
+      <option value="20">20</option>
+    </select>
+    </form>
+    <div class="col-md-12">
+        <canvas id="generoXsalario"></canvas>
+    </div>
+</div>
+
+<!-- Gráficos de Genero X Salario  -->
+<script>
+object_all = {{ generoXsalario | safe }}
+
+if (Object.keys(object_all).length == 0)
+{
+    document.getElementById("div_gen_sallary").innerHTML = "Sem informações suficientes para gerar os gráficos!";
+}
+else
+{
+
+document.getElementById("qtygendersalario").value = object_all["Total"];
+
+var colorArray = [ 'red' , 'blue' , 'green'];
+
+var i = 0;
+datasets = [];
+{% for item in generoXsalario.Data %}
+	var dataset = {
+		label : "{{ item.0 | safe }}",
+		backgroundColor: colorArray[i],
+		data: {{ item.1 | safe }}
+	};
+	datasets.push(dataset);
+	i += 1;
+{%endfor%}
+
+    new Chart(document.getElementById("generoXsalario"), {
+    type: 'bar',
+    data: {
+      labels: object_all["Areas"],
+      datasets: datasets
+    },
+    options: {
+    scales: {
+        yAxes: [{
+            ticks: {
+                stepSize: 1000
+            }
+        }]
+    },
+    plugins: {
+      title: {
+        display: true,
+        text: 'Genero X Salario por Area'
+      },
+     },
+      responsive: true,
+    }
+	});
+}
+</script>

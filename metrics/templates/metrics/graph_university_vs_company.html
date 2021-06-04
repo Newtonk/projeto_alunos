@@ -1,0 +1,70 @@
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<div id="div_uni_vs_com" class="col-md-12">
+  <h1>Gráficos de Universidade X Empresa</h1>
+  <form method="POST" action="" enctype = "multipart/form-data" onsubmit="return false">
+  {% csrf_token %}
+  <label for="qtyuniversitycompany">Escolha o numero de elementos máximo:</label>
+  <select name="qtyuniversitycompany" id="qtyuniversitycompany" onchange="this.form.submit();">
+    <option value="5">5</option>
+    <option value="10" selected>10</option>
+    <option value="15">15</option>
+    <option value="20">20</option>
+  </select>
+  <br>
+  <label for="universityorcompany">Por:</label>
+  <select name="universityorcompany" id="universityorcompany" onchange="this.form.submit();">
+    <option value="Empresas" selected>Empresas</option>
+    <option value="Universidades">Universidades</option>
+  </select>
+  <label for="valueuniversityorcompany">Visualizar:</label>
+  <select name="valueuniversityorcompany" id="valueuniversityorcompany" onchange="this.form.submit();"></select>
+  </form>
+      <canvas id="universidadeXempresa"></canvas>
+</div>
+
+<script>
+
+document.getElementById("qtyuniversitycompany").value = {{ universidadeXempresa.Total | safe}};
+
+document.getElementById("universityorcompany").value = "{{ universidadeXempresa.ChoosedEntity | safe}}";
+
+select = document.getElementById("valueuniversityorcompany")
+
+all_values = {{ universidadeXempresa.AllValues | safe}};
+
+for (const value of all_values)
+{
+	var option = document.createElement("option");
+	option.value = value;
+	option.text = value.charAt(0).toUpperCase() + value.slice(1);
+	select.appendChild(option);
+}
+select.value = "{{ universidadeXempresa.ChoosedValue | safe}}";
+
+var colorArray = ['blue'];
+
+var i = 0;
+
+    var myLineChart = new Chart(document.getElementById("universidadeXempresa"), {
+    type: 'bar',
+    data: {
+      labels: {{ universidadeXempresa.Labels | safe}},
+      datasets: [{
+        label : "{{ universidadeXempresa.Label | safe }}",
+		backgroundColor: colorArray[0],
+		data: {{ universidadeXempresa.Data | safe }}
+      }]
+    },
+    options: {
+    plugins: {
+      title: {
+        display: true,
+        text: 'Universidade X Empresa'
+      },
+     },
+      responsive: true
+    }
+    });
+
+</script>

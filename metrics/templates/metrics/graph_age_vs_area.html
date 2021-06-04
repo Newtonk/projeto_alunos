@@ -1,0 +1,60 @@
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
+<style>
+#ageXarea {
+  width: 700px;
+  height: 450px;
+  class : row;
+  display: flex;
+  flex-wrap: inherit;
+}
+
+</style>
+
+<div class="col-md-12">
+    <canvas id="ageXarea">></canvas>
+</div>
+
+<!-- Gráficos de Idade X Area  -->
+<script>
+
+var colorArray = [ 'red' , 'blue' , 'green'];
+
+var i = 0;
+datasets = [];
+{% for item in ageXarea.Data %}
+	var dataset = {
+		label : "{{ item.0 | safe }}",
+		backgroundColor: colorArray[i],
+		data: {{ item.1 | safe }}
+	};
+	datasets.push(dataset);
+	i += 1;
+{%endfor%}
+
+    new Chart(document.getElementById("ageXarea"), {
+    type: 'bar',
+    data: {
+      labels: {{ ageXarea.Areas | safe}},
+      datasets: datasets
+    },
+    options: {
+    scales: {
+        yAxes: [{
+            ticks: {
+                min: 0,
+                max: 100,
+                stepSize: 20
+            }
+        }]
+    },
+    plugins: {
+      title: {
+        display: true,
+        text: 'Idade X Area'
+      },
+     },
+      responsive: true,
+    }
+	});
+
+</script>
