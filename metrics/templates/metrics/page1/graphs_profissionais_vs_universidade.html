@@ -1,0 +1,21 @@
+{% extends 'metrics/main_graph_page.html' %}
+
+{% block content %}
+
+<h1>Gráficos de Genero X Curso</h1>
+
+{% include 'metrics/page1/graph_gender_vs_course.html' %}
+
+<br>
+<br>
+<br>
+
+<h1>Gráficos de Genero X Universidade</h1>
+
+{% include 'metrics/page1/graph_gender_vs_university.html' %}
+
+<script>
+    history.pushState({}, null, '/graphs_profissionais_vs_universidade/');
+</script>
+
+{% endblock %}

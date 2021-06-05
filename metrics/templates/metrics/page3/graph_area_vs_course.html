@@ -1,0 +1,80 @@
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+#divareacurso {
+display: block;
+max-width: 944px;
+max-height: 472px;
+margin: auto;
+}
+
+</style>
+<div id="div_area_vs_course" class="col-md-12">
+	<form method="POST" action="" enctype = "multipart/form-data" onsubmit="return false">
+	{% csrf_token %}
+	<label for="course">Escolha o curso:</label>
+	<select name="course" id="course" onchange="this.form.submit()"></select>
+	<br>
+	<label for="qtyareacourse">Escolha o numero de elementos máximo:</label>
+	  <select name="qtyareacourse" id="qtyareacourse" onchange="this.form.submit();">
+		<option value="5">5</option>
+		<option value="10" selected>10</option>
+		<option value="15">15</option>
+		<option value="20">20</option>
+	  </select>
+	</form>
+	<div id="divareacurso">
+		<canvas id="areaXcurso"></canvas>
+	</div>
+</div>
+
+
+<!-- Gráficos de Area X Curso  -->
+<script>
+
+object_all = {{ areaXcurso | safe }}
+
+if (Object.keys(object_all).length == 0)
+{
+    document.getElementById("div_area_vs_course").innerHTML = "Sem informações suficientes para gerar os gráficos!";
+}
+else
+{
+document.getElementById("qtyareacourse").value = object_all["Total"];
+
+select = document.getElementById("course")
+
+all_courses = object_all["Courses"];
+
+for (const course of all_courses)
+{
+	var option = document.createElement("option");
+	option.value = course;
+	option.text = course.charAt(0).toUpperCase() + course.slice(1);
+	select.appendChild(option);
+}
+select.value = object_all["Course"];
+
+var colorArray = ['blue'];
+
+new Chart(document.getElementById("areaXcurso"), {
+type: 'bar',
+data: {
+  labels: object_all["Labels"],
+  datasets: [{
+	label : object_all["Course"],
+	backgroundColor: colorArray[0],
+	data: object_all["Data"]
+}]
+},
+options: {
+  title: {
+	display: true,
+	text: 'Area X Curso de ' + object_all["Course"]
+  }
+}
+});
+
+}
+
+</script>

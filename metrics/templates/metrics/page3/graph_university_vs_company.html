@@ -1,7 +1,17 @@
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+#divuniempresa {
+display: block;
+max-width: 944px;
+max-height: 472px;
+margin: auto;
+}
+
+</style>
 <div id="div_uni_vs_com" class="col-md-12">
-  <h1>Gráficos de Universidade X Empresa</h1>
+
   <form method="POST" action="" enctype = "multipart/form-data" onsubmit="return false">
   {% csrf_token %}
   <label for="qtyuniversitycompany">Escolha o numero de elementos máximo:</label>
@@ -20,18 +30,28 @@
   <label for="valueuniversityorcompany">Visualizar:</label>
   <select name="valueuniversityorcompany" id="valueuniversityorcompany" onchange="this.form.submit();"></select>
   </form>
-      <canvas id="universidadeXempresa"></canvas>
+  <div id="divuniempresa">
+  <canvas id="universidadeXempresa"></canvas>
+  </div>
 </div>
 
 <script>
+object_all = {{ universidadeXempresa | safe }}
 
-document.getElementById("qtyuniversitycompany").value = {{ universidadeXempresa.Total | safe}};
+if (Object.keys(object_all).length == 0)
+{
+    document.getElementById("div_uni_vs_com").innerHTML = "Sem informações suficientes para gerar os gráficos!";
+}
+else
+{
 
-document.getElementById("universityorcompany").value = "{{ universidadeXempresa.ChoosedEntity | safe}}";
+document.getElementById("qtyuniversitycompany").value = object_all["Total"];
+
+document.getElementById("universityorcompany").value = object_all["ChoosedEntity"];
 
 select = document.getElementById("valueuniversityorcompany")
 
-all_values = {{ universidadeXempresa.AllValues | safe}};
+all_values = object_all["AllValues"];
 
 for (const value of all_values)
 {
@@ -40,31 +60,30 @@ for (const value of all_values)
 	option.text = value.charAt(0).toUpperCase() + value.slice(1);
 	select.appendChild(option);
 }
-select.value = "{{ universidadeXempresa.ChoosedValue | safe}}";
+select.value = object_all["ChoosedValue"];
 
 var colorArray = ['blue'];
 
-var i = 0;
-
-    var myLineChart = new Chart(document.getElementById("universidadeXempresa"), {
-    type: 'bar',
-    data: {
-      labels: {{ universidadeXempresa.Labels | safe}},
-      datasets: [{
-        label : "{{ universidadeXempresa.Label | safe }}",
-		backgroundColor: colorArray[0],
-		data: {{ universidadeXempresa.Data | safe }}
-      }]
+new Chart(document.getElementById("universidadeXempresa"), {
+  type: 'bar',
+  data: {
+    labels: object_all["Labels"],
+    datasets: [{
+      label : object_all["Label"],
+      backgroundColor: colorArray[0],
+      data: object_all["Data"]
+    }]
+  },
+  options: {
+  plugins: {
+    title: {
+      display: true,
+      text: 'Universidade X Empresa'
     },
-    options: {
-    plugins: {
-      title: {
-        display: true,
-        text: 'Universidade X Empresa'
-      },
-     },
-      responsive: true
-    }
-    });
+   },
+    responsive: true
+  }
+  });
 
+}
 </script>

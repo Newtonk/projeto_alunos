@@ -2,16 +2,21 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="a0cd22ab-e1d3-4c8e-8bd2-aaba3aeee622" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/metrics/templates/metrics/graph_gender_vs_course.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/metrics/templates/metrics/graph_gender_vs_university.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/metrics/templates/metrics/graphs_universidade_vs_empresa.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/metrics/templates/metrics/dashboard_areas_atuacao.html" beforeDir="false" afterPath="$PROJECT_DIR$/metrics/templates/metrics/graphs_profissionais_vs_empresa.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/metrics/templates/metrics/dashboard_perfil_profissionais.html" beforeDir="false" afterPath="$PROJECT_DIR$/metrics/templates/metrics/graphs_profissionais_vs_universidade.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/metrics/templates/metrics/dashboard_principal.html" beforeDir="false" afterPath="$PROJECT_DIR$/metrics/templates/metrics/main_graph_page.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/metrics/templates/metrics/dashboardnavbar.html" beforeDir="false" afterPath="$PROJECT_DIR$/metrics/templates/metrics/main_graph_page_navbar.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/metrics/templates/metrics/main_dashboard.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/metrics/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/metrics/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/alunos.csv" beforeDir="false" afterPath="$PROJECT_DIR$/alunos.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/metrics/templates/metrics/graph_age_vs_area.html" beforeDir="false" afterPath="$PROJECT_DIR$/metrics/templates/metrics/page2/graph_age_vs_area.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/metrics/templates/metrics/graph_area_vs_course.html" beforeDir="false" afterPath="$PROJECT_DIR$/metrics/templates/metrics/page3/graph_area_vs_course.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/metrics/templates/metrics/graph_gender_vs_area.html" beforeDir="false" afterPath="$PROJECT_DIR$/metrics/templates/metrics/page2/graph_gender_vs_area.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/metrics/templates/metrics/graph_gender_vs_course.html" beforeDir="false" afterPath="$PROJECT_DIR$/metrics/templates/metrics/page1/graph_gender_vs_course.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/metrics/templates/metrics/graph_gender_vs_salario.html" beforeDir="false" afterPath="$PROJECT_DIR$/metrics/templates/metrics/page2/graph_gender_vs_salario.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/metrics/templates/metrics/graph_gender_vs_university.html" beforeDir="false" afterPath="$PROJECT_DIR$/metrics/templates/metrics/page1/graph_gender_vs_university.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/metrics/templates/metrics/graph_university_vs_company.html" beforeDir="false" afterPath="$PROJECT_DIR$/metrics/templates/metrics/page3/graph_university_vs_company.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/metrics/templates/metrics/graphs_profissionais_vs_empresa.html" beforeDir="false" afterPath="$PROJECT_DIR$/metrics/templates/metrics/page2/graphs_profissionais_vs_empresa.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/metrics/templates/metrics/graphs_profissionais_vs_universidade.html" beforeDir="false" afterPath="$PROJECT_DIR$/metrics/templates/metrics/page1/graphs_profissionais_vs_universidade.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/metrics/templates/metrics/graphs_universidade_vs_empresa.html" beforeDir="false" afterPath="$PROJECT_DIR$/metrics/templates/metrics/page3/graphs_universidade_vs_empresa.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/metrics/templates/metrics/home.html" beforeDir="false" afterPath="$PROJECT_DIR$/metrics/templates/metrics/home.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/metrics/templates/metrics/main_graph_page_navbar.html" beforeDir="false" afterPath="$PROJECT_DIR$/metrics/templates/metrics/main_graph_page_navbar.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/metrics/templates/metrics/navbar.html" beforeDir="false" afterPath="$PROJECT_DIR$/metrics/templates/metrics/navbar.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/metrics/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/metrics/views.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -44,6 +49,11 @@
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Newton Coelho\Documents\projeto_alunos\metrics\templates\metrics\page2" />
+      <recent name="C:\Users\Newton Coelho\Documents\projeto_alunos\metrics\templates\metrics\page3" />
+      <recent name="C:\Users\Newton Coelho\Documents\projeto_alunos\metrics\templates\metrics\page1" />
+    </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\Newton Coelho\PycharmProjects\alunos_pf" />
       <recent name="C:\Users\Newton Coelho\PycharmProjects\alunos_pf\metrics\templates\metrics" />
@@ -111,72 +121,102 @@
       <screen x="0" y="0" width="1600" height="860" />
     </state>
     <state x="254" y="86" width="1092" height="706" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1600.860@0.0.1600.860" timestamp="1620507968330" />
-    <state width="1080" height="466" key="DebuggerActiveHint" timestamp="1621028025931">
+    <state width="1115" height="467" key="DebuggerActiveHint" timestamp="1622857803634">
       <screen x="0" y="0" width="1600" height="860" />
     </state>
-    <state width="1115" height="466" key="DebuggerActiveHint/0.0.1600.860/-1920.78.1536.824@0.0.1600.860" timestamp="1619578347075" />
-    <state width="1080" height="466" key="DebuggerActiveHint/0.0.1600.860@0.0.1600.860" timestamp="1621028025931" />
+    <state width="1071" height="447" key="DebuggerActiveHint/0.0.1600.860/-1920.78.1536.824@-1920.78.1536.824" timestamp="1622853027665" />
+    <state width="1115" height="467" key="DebuggerActiveHint/0.0.1600.860/-1920.78.1536.824@0.0.1600.860" timestamp="1622857803634" />
+    <state width="1080" height="466" key="DebuggerActiveHint/0.0.1600.860@0.0.1600.860" timestamp="1621381378012" />
     <state x="580" y="195" key="FileChooserDialogImpl" timestamp="1618716045832">
       <screen x="0" y="0" width="1600" height="860" />
     </state>
     <state x="580" y="195" key="FileChooserDialogImpl/0.0.1600.860@0.0.1600.860" timestamp="1618716045832" />
-    <state width="1579" height="280" key="GridCell.Tab.0.bottom" timestamp="1621036300941">
+    <state width="1579" height="212" key="GridCell.Tab.0.bottom" timestamp="1622858830466">
       <screen x="0" y="0" width="1600" height="860" />
     </state>
-    <state width="1579" height="276" key="GridCell.Tab.0.bottom/0.0.1600.860/-1920.78.1536.824@0.0.1600.860" timestamp="1619749788479" />
-    <state width="1579" height="280" key="GridCell.Tab.0.bottom/0.0.1600.860@0.0.1600.860" timestamp="1621036300941" />
-    <state width="1579" height="280" key="GridCell.Tab.0.center" timestamp="1621036300941">
+    <state width="1515" height="212" key="GridCell.Tab.0.bottom/0.0.1600.860/-1920.78.1536.824@-1920.78.1536.824" timestamp="1622853065909" />
+    <state width="1579" height="212" key="GridCell.Tab.0.bottom/0.0.1600.860/-1920.78.1536.824@0.0.1600.860" timestamp="1622858830466" />
+    <state width="1242" height="244" key="GridCell.Tab.0.bottom/0.0.1600.860@0.0.1600.860" timestamp="1621476243307" />
+    <state width="1579" height="212" key="GridCell.Tab.0.center" timestamp="1622858830465">
       <screen x="0" y="0" width="1600" height="860" />
     </state>
-    <state width="1579" height="276" key="GridCell.Tab.0.center/0.0.1600.860/-1920.78.1536.824@0.0.1600.860" timestamp="1619749788479" />
-    <state width="1579" height="280" key="GridCell.Tab.0.center/0.0.1600.860@0.0.1600.860" timestamp="1621036300941" />
-    <state width="1579" height="280" key="GridCell.Tab.0.left" timestamp="1621036300941">
+    <state width="1515" height="212" key="GridCell.Tab.0.center/0.0.1600.860/-1920.78.1536.824@-1920.78.1536.824" timestamp="1622853065909" />
+    <state width="1579" height="212" key="GridCell.Tab.0.center/0.0.1600.860/-1920.78.1536.824@0.0.1600.860" timestamp="1622858830465" />
+    <state width="1242" height="244" key="GridCell.Tab.0.center/0.0.1600.860@0.0.1600.860" timestamp="1621476243306" />
+    <state width="1579" height="212" key="GridCell.Tab.0.left" timestamp="1622858830465">
       <screen x="0" y="0" width="1600" height="860" />
     </state>
-    <state width="1579" height="276" key="GridCell.Tab.0.left/0.0.1600.860/-1920.78.1536.824@0.0.1600.860" timestamp="1619749788479" />
-    <state width="1579" height="280" key="GridCell.Tab.0.left/0.0.1600.860@0.0.1600.860" timestamp="1621036300941" />
-    <state width="1579" height="280" key="GridCell.Tab.0.right" timestamp="1621036300941">
+    <state width="1515" height="212" key="GridCell.Tab.0.left/0.0.1600.860/-1920.78.1536.824@-1920.78.1536.824" timestamp="1622853065908" />
+    <state width="1579" height="212" key="GridCell.Tab.0.left/0.0.1600.860/-1920.78.1536.824@0.0.1600.860" timestamp="1622858830465" />
+    <state width="1242" height="244" key="GridCell.Tab.0.left/0.0.1600.860@0.0.1600.860" timestamp="1621476243306" />
+    <state width="1579" height="212" key="GridCell.Tab.0.right" timestamp="1622858830466">
       <screen x="0" y="0" width="1600" height="860" />
     </state>
-    <state width="1579" height="276" key="GridCell.Tab.0.right/0.0.1600.860/-1920.78.1536.824@0.0.1600.860" timestamp="1619749788479" />
-    <state width="1579" height="280" key="GridCell.Tab.0.right/0.0.1600.860@0.0.1600.860" timestamp="1621036300941" />
-    <state width="1579" height="280" key="GridCell.Tab.1.bottom" timestamp="1621036300877">
+    <state width="1515" height="212" key="GridCell.Tab.0.right/0.0.1600.860/-1920.78.1536.824@-1920.78.1536.824" timestamp="1622853065909" />
+    <state width="1579" height="212" key="GridCell.Tab.0.right/0.0.1600.860/-1920.78.1536.824@0.0.1600.860" timestamp="1622858830466" />
+    <state width="1242" height="244" key="GridCell.Tab.0.right/0.0.1600.860@0.0.1600.860" timestamp="1621476243306" />
+    <state width="1579" height="212" key="GridCell.Tab.1.bottom" timestamp="1622858842495">
       <screen x="0" y="0" width="1600" height="860" />
     </state>
-    <state width="1579" height="276" key="GridCell.Tab.1.bottom/0.0.1600.860/-1920.78.1536.824@0.0.1600.860" timestamp="1619749788479" />
-    <state width="1579" height="280" key="GridCell.Tab.1.bottom/0.0.1600.860@0.0.1600.860" timestamp="1621036300877" />
-    <state width="1579" height="280" key="GridCell.Tab.1.center" timestamp="1621036300877">
+    <state width="1515" height="212" key="GridCell.Tab.1.bottom/0.0.1600.860/-1920.78.1536.824@-1920.78.1536.824" timestamp="1622853385994" />
+    <state width="1579" height="212" key="GridCell.Tab.1.bottom/0.0.1600.860/-1920.78.1536.824@0.0.1600.860" timestamp="1622858842495" />
+    <state width="1242" height="244" key="GridCell.Tab.1.bottom/0.0.1600.860@0.0.1600.860" timestamp="1621476243307" />
+    <state width="1579" height="212" key="GridCell.Tab.1.center" timestamp="1622858842494">
       <screen x="0" y="0" width="1600" height="860" />
     </state>
-    <state width="1579" height="276" key="GridCell.Tab.1.center/0.0.1600.860/-1920.78.1536.824@0.0.1600.860" timestamp="1619749788479" />
-    <state width="1579" height="280" key="GridCell.Tab.1.center/0.0.1600.860@0.0.1600.860" timestamp="1621036300877" />
-    <state width="1579" height="280" key="GridCell.Tab.1.left" timestamp="1621036300877">
+    <state width="1515" height="212" key="GridCell.Tab.1.center/0.0.1600.860/-1920.78.1536.824@-1920.78.1536.824" timestamp="1622853385994" />
+    <state width="1579" height="212" key="GridCell.Tab.1.center/0.0.1600.860/-1920.78.1536.824@0.0.1600.860" timestamp="1622858842494" />
+    <state width="1242" height="244" key="GridCell.Tab.1.center/0.0.1600.860@0.0.1600.860" timestamp="1621476243307" />
+    <state width="1579" height="212" key="GridCell.Tab.1.left" timestamp="1622858842494">
       <screen x="0" y="0" width="1600" height="860" />
     </state>
-    <state width="1579" height="276" key="GridCell.Tab.1.left/0.0.1600.860/-1920.78.1536.824@0.0.1600.860" timestamp="1619749788479" />
-    <state width="1579" height="280" key="GridCell.Tab.1.left/0.0.1600.860@0.0.1600.860" timestamp="1621036300877" />
-    <state width="1579" height="280" key="GridCell.Tab.1.right" timestamp="1621036300877">
+    <state width="1515" height="212" key="GridCell.Tab.1.left/0.0.1600.860/-1920.78.1536.824@-1920.78.1536.824" timestamp="1622853385994" />
+    <state width="1579" height="212" key="GridCell.Tab.1.left/0.0.1600.860/-1920.78.1536.824@0.0.1600.860" timestamp="1622858842494" />
+    <state width="1242" height="244" key="GridCell.Tab.1.left/0.0.1600.860@0.0.1600.860" timestamp="1621476243307" />
+    <state width="1579" height="212" key="GridCell.Tab.1.right" timestamp="1622858842495">
       <screen x="0" y="0" width="1600" height="860" />
     </state>
-    <state width="1579" height="276" key="GridCell.Tab.1.right/0.0.1600.860/-1920.78.1536.824@0.0.1600.860" timestamp="1619749788479" />
-    <state width="1579" height="280" key="GridCell.Tab.1.right/0.0.1600.860@0.0.1600.860" timestamp="1621036300877" />
+    <state width="1515" height="212" key="GridCell.Tab.1.right/0.0.1600.860/-1920.78.1536.824@-1920.78.1536.824" timestamp="1622853385994" />
+    <state width="1579" height="212" key="GridCell.Tab.1.right/0.0.1600.860/-1920.78.1536.824@0.0.1600.860" timestamp="1622858842495" />
+    <state width="1242" height="244" key="GridCell.Tab.1.right/0.0.1600.860@0.0.1600.860" timestamp="1621476243307" />
     <state x="301" y="73" key="SettingsEditor" timestamp="1618796192702">
       <screen x="0" y="0" width="1600" height="860" />
     </state>
     <state x="301" y="73" key="SettingsEditor/0.0.1600.860@0.0.1600.860" timestamp="1618796192702" />
-    <state width="808" height="438" key="XDebugger.FullValuePopup" timestamp="1620967571257">
+    <state width="808" height="438" key="XDebugger.FullValuePopup" timestamp="1622857296362">
       <screen x="0" y="0" width="1600" height="860" />
     </state>
-    <state width="808" height="438" key="XDebugger.FullValuePopup/0.0.1600.860/-1920.78.1536.824@0.0.1600.860" timestamp="1619660281752" />
-    <state width="808" height="438" key="XDebugger.FullValuePopup/0.0.1600.860@0.0.1600.860" timestamp="1620967571257" />
-    <state x="496" y="255" key="com.intellij.ide.util.TipDialog" timestamp="1621027573032">
+    <state width="808" height="438" key="XDebugger.FullValuePopup/0.0.1600.860/-1920.78.1536.824@0.0.1600.860" timestamp="1622857296362" />
+    <state width="808" height="438" key="XDebugger.FullValuePopup/0.0.1600.860@0.0.1600.860" timestamp="1621228595611" />
+    <state x="496" y="255" key="com.intellij.ide.util.TipDialog" timestamp="1622666112806">
       <screen x="0" y="0" width="1600" height="860" />
     </state>
-    <state x="496" y="255" key="com.intellij.ide.util.TipDialog/0.0.1600.860/-1920.78.1536.824@0.0.1600.860" timestamp="1619748574795" />
-    <state x="496" y="255" key="com.intellij.ide.util.TipDialog/0.0.1600.860@0.0.1600.860" timestamp="1621027573032" />
+    <state x="496" y="255" key="com.intellij.ide.util.TipDialog/0.0.1600.860/-1920.78.1536.824@0.0.1600.860" timestamp="1622666112806" />
+    <state x="496" y="255" key="com.intellij.ide.util.TipDialog/0.0.1600.860@0.0.1600.860" timestamp="1621373990848" />
     <state x="463" y="180" width="672" height="678" key="search.everywhere.popup" timestamp="1619575915163">
       <screen x="0" y="0" width="1600" height="860" />
     </state>
     <state x="463" y="180" width="672" height="678" key="search.everywhere.popup/0.0.1600.860/-1920.78.1536.824@0.0.1600.860" timestamp="1619575915163" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/metrics/views.py</url>
+          <line>143</line>
+          <option name="timeStamp" value="20" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/metrics/views.py</url>
+          <line>267</line>
+          <option name="timeStamp" value="21" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/metrics/views.py</url>
+          <line>228</line>
+          <option name="timeStamp" value="26" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

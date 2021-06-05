@@ -1,0 +1,79 @@
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+#divgeneroarea {
+display: block;
+max-width: 944px;
+max-height: 472px;
+margin: auto;
+}
+
+</style>
+
+<div id="div_gender_vs_area" class="col-md-12">
+    <form method="POST" action="" enctype = "multipart/form-data">
+    {% csrf_token %}
+    <label for="qtygenderarea">Escolha o numero de elementos máximo:</label>
+    <select name="qtygenderarea" id="qtygenderarea" onchange="this.form.submit();">
+      <option value="5">5</option>
+      <option value="10" selected>10</option>
+      <option value="15">15</option>
+      <option value="20">20</option>
+    </select>
+    </form>
+    <div id="divgeneroarea">
+        <canvas id="generoXarea">></canvas>
+    </div>
+</div>
+<!-- Gráficos de Genero X Area  -->
+<script>
+object_all = {{ generoXarea | safe }}
+
+if (Object.keys(object_all).length == 0)
+{
+    document.getElementById("div_gender_vs_area").innerHTML = "Sem informações suficientes para gerar os gráficos!";
+}
+else
+{
+document.getElementById("qtygenderarea").value = object_all["Total"];
+
+var colorArray = [ 'red' , 'blue' , 'green'];
+
+var i = 0;
+datasets = [];
+{% for item in generoXarea.Data %}
+	var dataset = {
+		label : "{{ item.0 | safe }}",
+		backgroundColor: colorArray[i],
+		data: {{ item.1 | safe }}
+	};
+	datasets.push(dataset);
+	i += 1;
+{%endfor%}
+
+    new Chart(document.getElementById("generoXarea"), {
+    type: 'bar',
+    data: {
+      labels: object_all["Areas"],
+      datasets: datasets
+    },
+    options: {
+    plugins: {
+      title: {
+        display: true,
+        text: 'Genero X Area'
+      },
+     },
+      responsive: true,
+      scales: {
+      x: {
+        stacked: true,
+      },
+      y: {
+        stacked: true
+      }
+    }
+    }
+	});
+
+}
+</script>

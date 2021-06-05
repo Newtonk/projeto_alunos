@@ -1,0 +1,87 @@
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@0.7.0"></script>
+
+<style>
+#divgenerocurso {
+display: block;
+max-width: 944px;
+max-height: 472px;
+margin: auto;
+}
+
+</style>
+
+<div id="div_gen_course" class="col-md-12">
+	<form method="POST" action="" enctype = "multipart/form-data" onsubmit="return false">
+	{% csrf_token %}
+	<label for="course">Escolha o curso:</label>
+	<select name="course" id="course" onchange="this.form.submit()"></select>
+	</form>
+	<div id="divgenerocurso">
+		<canvas id="generoXcurso"></canvas>
+	</div>
+</div>
+
+<!-- Gráficos de Genero X Curso  -->
+<script>
+object_all = {{ generoXcurso | safe }}
+
+if (Object.keys(object_all).length == 0)
+{
+    document.getElementById("div_gen_course").innerHTML = "Sem informações suficientes para gerar os gráficos!";
+}
+else
+{
+document.getElementById("course").value = object_all["Course"];
+
+select = document.getElementById("course")
+
+all_courses = object_all["Courses"];
+
+for (const course of all_courses)
+{
+	var option = document.createElement("option");
+	option.value = course;
+	option.text = course.charAt(0).toUpperCase() + course.slice(1);
+	select.appendChild(option);
+}
+select.value = object_all["Course"];
+
+var colorArray = ["green", "blue", "black"]
+
+new Chart(document.getElementById("generoXcurso"), {
+type: 'pie',
+data: {
+  labels: object_all["Labels"],
+  datasets: [{
+	label : object_all["Course"],
+	backgroundColor: colorArray,
+	data: object_all["Data"]
+}]
+},
+options: {
+  title: {
+	display: true,
+	text: 'Genero X Curso de ' + object_all["Course"]
+  },
+  plugins: {
+	datalabels: {
+	formatter: (value, ctx) => {
+	  let sum = 0;
+	  let dataArr = ctx.chart.data.datasets[0].data;
+	  dataArr.map(data => {
+		  sum += data;
+	  });
+	  let percentage = (value*100 / sum).toFixed(2)+"%";
+	  return percentage;
+
+
+	},
+	color: '#fff',
+	}
+}
+},
+});
+}
+</script>

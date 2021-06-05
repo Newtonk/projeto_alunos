@@ -1,13 +1,13 @@
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
-#generoXarea {
-  width: 700px;
-  height: 450px;
-  class : row;
-  display: flex;
-  flex-wrap: inherit;
+#divgenerosalario {
+display: block;
+max-width: 944px;
+max-height: 472px;
+margin: auto;
 }
+
 </style>
 <div id="div_gen_sallary" class="col-md-12">
     <form id="qtygendersalarioform" method="POST" action="" enctype = "multipart/form-data">
@@ -20,7 +20,7 @@
       <option value="20">20</option>
     </select>
     </form>
-    <div class="col-md-12">
+    <div id="divgenerosalario" class="col-md-12">
         <canvas id="generoXsalario"></canvas>
     </div>
 </div>

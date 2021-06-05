@@ -1,0 +1,81 @@
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
+<style>
+#divagearea {
+display: block;
+max-width: 944px;
+max-height: 472px;
+margin: auto;
+}
+
+</style>
+
+<div id="div_age_vs_area" class="col-md-12">
+    <form method="POST" action="" enctype = "multipart/form-data" onsubmit="return false">
+	{% csrf_token %}
+	<label for="qtyagearea">Escolha o numero de elementos máximo:</label>
+	  <select name="qtyagearea" id="qtyagearea" onchange="this.form.submit();">
+		<option value="5">5</option>
+		<option value="10" selected>10</option>
+		<option value="15">15</option>
+		<option value="20">20</option>
+	  </select>
+	</form>
+	<div id="divagearea">
+    	<canvas id="ageXarea"></canvas>
+	</div>
+</div>
+
+<!-- Gráficos de Idade X Area  -->
+<script>
+object_all = {{ ageXarea | safe }}
+
+if (Object.keys(object_all).length == 0)
+{
+    document.getElementById("div_age_vs_area").innerHTML = "Sem informações suficientes para gerar os gráficos!";
+}
+else
+{
+document.getElementById("qtyagearea").value = object_all["Total"];
+
+var colorArray = [ 'red' , 'blue' , 'green'];
+
+var i = 0;
+datasets = [];
+{% for item in ageXarea.Data %}
+	var dataset = {
+		label : "{{ item.0 | safe }}",
+		backgroundColor: colorArray[i],
+		data: {{ item.1 | safe }}
+	};
+	datasets.push(dataset);
+	i += 1;
+{%endfor%}
+
+    new Chart(document.getElementById("ageXarea"), {
+    type: 'bar',
+    data: {
+      labels: object_all["Areas"],
+      datasets: datasets
+    },
+    options: {
+    scales: {
+        yAxes: [{
+            ticks: {
+                min: 0,
+                max: 100,
+                stepSize: 20
+            }
+        }]
+    },
+    plugins: {
+      title: {
+        display: true,
+        text: 'Idade X Area'
+      },
+     },
+      responsive: true,
+    }
+	});
+
+}
+</script>
