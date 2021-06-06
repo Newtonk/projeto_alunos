@@ -13,44 +13,68 @@ margin: auto;
 </style>
 
 <div id="div_gen_course" class="col-md-12">
-	<form method="POST" action="" enctype = "multipart/form-data" onsubmit="return false">
+	<form id="myform" action="" onchange="handlerGenderCourse">
 	{% csrf_token %}
 	<label for="course">Escolha o curso:</label>
-	<select name="course" id="course" onchange="this.form.submit()"></select>
+	<select name="course" id="course" ></select>
 	</form>
 	<div id="divgenerocurso">
 		<canvas id="generoXcurso"></canvas>
 	</div>
 </div>
 
+
+
 <!-- Gráficos de Genero X Curso  -->
 <script>
-object_all = {{ generoXcurso | safe }}
 
-if (Object.keys(object_all).length == 0)
-{
-    document.getElementById("div_gen_course").innerHTML = "Sem informações suficientes para gerar os gráficos!";
+const handlerGenderCourse = function(e) {
+   var formData = $('#myform').serialize()
+   e.preventDefault(); // avoid to execute the actual submit of the form.
+   $.ajax({
+        url: "/update_graph/",
+        data: formData + "&graph_name=generoXcurso",
+        cache: false,
+        dataType: 'json',
+        type: 'POST',
+        success: function (data, status) {
+        		genderCourse = data.generoXcurso
+				updateGraphGenderCourse(genderCourse)
+				select = document.getElementById("course")
+				select.value = data.generoXcurso["Course"];
+        }
+    });
 }
-else
-{
-document.getElementById("course").value = object_all["Course"];
 
-select = document.getElementById("course")
+var select = document.getElementById('myform');
+select.addEventListener('change', handlerGenderCourse);
 
-all_courses = object_all["Courses"];
+var chartGenderCourse;
+var genderCourse = {{ generoXcurso | safe }}
 
-for (const course of all_courses)
-{
-	var option = document.createElement("option");
-	option.value = course;
-	option.text = course.charAt(0).toUpperCase() + course.slice(1);
-	select.appendChild(option);
+function updateGraphGenderCourse(object_all){
+	if (Object.keys(object_all).length == 0)
+	{
+		myChart.destroy();
+		document.getElementById("div_gen_course").innerHTML += "Sem informações suficientes para gerar os gráficos!";
+    }
+    else
+    {
+	var colorArray = ["green", "blue", "black"]
+	chartGenderCourse.data.labels = object_all["Labels"]
+	chartGenderCourse.data.datasets[0].label = object_all["Course"]
+	chartGenderCourse.data.datasets[0].backgroundColor = colorArray
+	chartGenderCourse.data.datasets[0].data = object_all["Data"]
+	chartGenderCourse.options.title.text = 'Genero X Curso de ' + object_all["Course"]
+	chartGenderCourse.update();
+	}
 }
-select.value = object_all["Course"];
 
+function createGraphGenderCourse(object_all)
+{
 var colorArray = ["green", "blue", "black"]
 
-new Chart(document.getElementById("generoXcurso"), {
+chartGenderCourse = new Chart(document.getElementById("generoXcurso"), {
 type: 'pie',
 data: {
   labels: object_all["Labels"],
@@ -84,4 +108,32 @@ options: {
 },
 });
 }
+
+function init(object_all) {
+
+if (Object.keys(object_all).length == 0)
+{
+    document.getElementById("div_gen_course").innerHTML = "Sem informações suficientes para gerar os gráficos!";
+}
+else
+{
+document.getElementById("course").value = object_all["Course"];
+
+select = document.getElementById("course")
+
+all_courses = object_all["Courses"];
+
+for (const course of all_courses)
+{
+	var option = document.createElement("option");
+	option.value = course;
+	option.text = course.charAt(0).toUpperCase() + course.slice(1);
+	select.appendChild(option);
+}
+select.value = object_all["Course"];
+
+createGraphGenderCourse(object_all)
+}
+}
+init(genderCourse);
 </script>

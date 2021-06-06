@@ -5,6 +5,7 @@ from io import BytesIO, StringIO
 from PIL import Image
 from django.shortcuts import render, redirect
 import pandas as pd
+from flask import jsonify, make_response
 from django.core.cache import cache
 from django.http import HttpResponse, JsonResponse
 
@@ -36,8 +37,19 @@ def read_csv(filename):
 
     data = pd.DataFrame(data=myFile, index=None)
 
+def update_graph(request):
+    graph_name = request.POST["graph_name"]
+
+    if graph_name == "generoXcurso":
+        context["generoXcurso"] = graph_genero_vs_course(request)
+    elif graph_name == "generoXuniversidade":
+        context["generoXuniversidade"] = graph_genero_vs_universidade(request)
+
+    return JsonResponse(context, safe=False)
+
 #region Universidade vs Empresa ( Area X Curso , ...)
 def graphs_universidade_vs_empresa(request):
+
     areaXcurso = graph_area_vs_curso(request)
 
     universidadeXempresa = graph_university_vs_company(request)
@@ -220,7 +232,7 @@ def graph_genero_vs_area(request):
                     gender_value = area_frame[gender]
                 if gender not in dict_values:
                     dict_values[gender] = []
-                dict_values[gender].append(gender_value)
+                dict_values[gender].append(int(gender_value))
         finalResult["Areas"] = list_areas
         finalResult["Data"] = list(dict_values.items())
         finalResult["Total"] = total
@@ -266,6 +278,9 @@ def graph_age_vs_area(request):
 
 #region Profissionais vs Universidade ( Genero X Curso , Genero X Universidade)
 def graphs_profissionais_vs_universidade(request):
+    context["generoXcurso"] = None
+    context["generoXuniversidade"] = None
+
     generoXcurso = graph_genero_vs_course(request)
 
     generoXuniversidade = graph_genero_vs_universidade(request)
@@ -337,7 +352,7 @@ def graph_genero_vs_universidade(request):
                     gender_value = area_frame[gender]
                 if gender not in dict_values:
                     dict_values[gender] = []
-                dict_values[gender].append(gender_value)
+                dict_values[gender].append(int(gender_value))
         finalResult["Instituicoes"] = list_areas
         finalResult["Data"] = list(dict_values.items())
         finalResult["States"] = list(states)

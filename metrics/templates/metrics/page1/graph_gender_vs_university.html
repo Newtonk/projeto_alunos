@@ -12,10 +12,10 @@ margin: auto;
 </style>
 
 <div id="div_gen_uni" class="col-md-12">
-<form method="POST" action="" enctype = "multipart/form-data" onsubmit="return false">
+<form id="myform2" method="POST" action="" enctype = "multipart/form-data" onchange="handlerGenderUniversity">
 {% csrf_token %}
 <label for="qtygenderuniversidade">Escolha o numero de elementos máximo:</label>
-<select name="qtygenderuniversidade" id="qtygenderuniversidade" onchange="this.form.submit();">
+<select name="qtygenderuniversidade" id="qtygenderuniversidade">
   <option value="5">5</option>
   <option value="10" selected>10</option>
   <option value="15">15</option>
@@ -23,57 +23,86 @@ margin: auto;
 </select>
 <br>
 <label for="states">Estado:</label>
-<select name="states" id="states" onchange="this.form.submit();"></select>
+<select name="states" id="states"></select>
 </form>
 <div id="divgenerouniversidade">
     <canvas id="generoXuniversidade"></canvas>
 </div>
 </div>
 
+<!-- Funções jQuery de atualização e afins -->
 <script>
-object_all = {{ generoXuniversidade | safe }}
-
-if (Object.keys(object_all).length == 0)
-{
-    document.getElementById("div_gen_uni").innerHTML = "Sem informações suficientes para gerar os gráficos!";
+const handlerGenderUniversity = function(e) {
+   var formData = $('#myform2').serialize()
+   e.preventDefault(); // avoid to execute the actual submit of the form.
+   $.ajax({
+        url: "/update_graph/",
+        data: formData + "&graph_name=generoXuniversidade",
+        cache: false,
+        dataType: 'json',
+        type: 'POST',
+        success: function (data, status) {
+        		genderCourse = data.generoXuniversidade
+				updateGraphGenderUniversity(genderCourse)
+				select = document.getElementById("states")
+				select.value = genderCourse.State;
+				document.getElementById("qtygenderuniversidade").value = genderCourse["Total"];
+        }
+    });
 }
-else
-{
-    document.getElementById("qtygenderuniversidade").value = object_all["Total"];
 
-    select = document.getElementById("states")
+var select = document.getElementById('myform2');
+select.addEventListener('change', handlerGenderUniversity);
 
-    all_states = object_all["States"];
+</script>
 
-    var option = document.createElement("option");
-    option.value = "Todos";
-    option.text = "Todos";
-    select.appendChild(option);
-
-    for (const state of all_states)
-    {
-        var option = document.createElement("option");
-        option.value = state;
-        option.text = state.charAt(0).toUpperCase() + state.slice(1);
-        select.appendChild(option);
+<!-- Método que realiza a atualização do gráfico -->
+<script>
+function updateGraphGenderUniversity(object_all){
+	if (Object.keys(object_all).length == 0)
+	{
+		myChart.destroy();
+		document.getElementById("div_gen_course").innerHTML += "Sem informações suficientes para gerar os gráficos!";
     }
-    select.value = "{{ generoXuniversidade.State | safe}}";
-
-    var colorArray = [ 'red' , 'blue' , 'green'];
-
-    var i = 0;
+    else
+    {
+    all_data = object_all["Data"]
     datasets = [];
-    {% for item in generoXuniversidade.Data %}
+    var colorArray = [ 'red' , 'blue' , 'green'];
+    for (var i = 0 ; i < all_data.length ; i++){
         var dataset = {
-            label : "{{ item.0 | safe }}",
-            backgroundColor: colorArray[i],
-            data: {{ item.1 | safe }}
+                label : all_data[i][0],
+                backgroundColor: colorArray[i],
+                data:  all_data[i][1]
         };
         datasets.push(dataset);
-        i += 1;
-    {%endfor%}
+    }
 
-        var myLineChart = new Chart(document.getElementById("generoXuniversidade"), {
+	chartGenderUniversity.data.labels = object_all["Instituicoes"]
+	chartGenderUniversity.data.datasets = datasets
+	chartGenderUniversity.update();
+	}
+}
+</script>
+<!-- Função que cria o gráfico inicialmente -->
+<script>
+function createGraphGenderUniversity(object_all)
+{
+var colorArray = [ 'red' , 'blue' , 'green'];
+
+var i = 0;
+datasets = [];
+{% for item in generoXuniversidade.Data %}
+    var dataset = {
+        label : "{{ item.0 | safe }}",
+        backgroundColor: colorArray[i],
+        data: {{ item.1 | safe }}
+    };
+    datasets.push(dataset);
+    i += 1;
+{%endfor%}
+
+chartGenderUniversity = new Chart(document.getElementById("generoXuniversidade"), {
         type: 'bar',
         data: {
           labels: object_all["Instituicoes"],
@@ -98,4 +127,46 @@ else
         }
         });
 }
+</script>
+
+<!-- Função do método init -->
+<script>
+function initGenderUniversity(object_all) {
+
+if (Object.keys(object_all).length == 0)
+{
+    document.getElementById("div_gen_uni").innerHTML = "Sem informações suficientes para gerar os gráficos!";
+}
+else
+{
+document.getElementById("qtygenderuniversidade").value = object_all["Total"];
+
+select = document.getElementById("states")
+
+all_states = object_all["States"];
+
+var option = document.createElement("option");
+option.value = "Todos";
+option.text = "Todos";
+select.appendChild(option);
+
+for (const state of all_states)
+{
+    var option = document.createElement("option");
+    option.value = state;
+    option.text = state.charAt(0).toUpperCase() + state.slice(1);
+    select.appendChild(option);
+}
+select.value = "{{ generoXuniversidade.State | safe}}";
+
+createGraphGenderUniversity(object_all)
+}
+}
+</script>
+
+<!-- Execucao inicial do método init -->
+<script>
+    var chartGenderUniversity;
+    var genderUniversity = {{ generoXuniversidade | safe }}
+    initGenderUniversity(genderUniversity);
 </script>
