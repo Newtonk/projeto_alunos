@@ -44,11 +44,23 @@ def update_graph(request):
         context["generoXcurso"] = graph_genero_vs_course(request)
     elif graph_name == "generoXuniversidade":
         context["generoXuniversidade"] = graph_genero_vs_universidade(request)
+    elif graph_name == "ageXarea":
+        context["ageXarea"] = graph_age_vs_area(request)
+    elif graph_name == "generoXarea":
+        context["generoXarea"] = graph_genero_vs_area(request)
+    elif graph_name == "generoXsalario":
+        context["generoXsalario"] = graph_genero_vs_salario(request)
+    elif graph_name == "areaXcurso":
+        context["areaXcurso"] = graph_area_vs_curso(request)
+    elif graph_name == "universidadeXempresa":
+        context["universidadeXempresa"] = graph_university_vs_company(request)
 
     return JsonResponse(context, safe=False)
 
 #region Universidade vs Empresa ( Area X Curso , ...)
 def graphs_universidade_vs_empresa(request):
+    context["areaXcurso"] = None
+    context["universidadeXempresa"] = None
 
     areaXcurso = graph_area_vs_curso(request)
 
@@ -109,6 +121,12 @@ def graph_university_vs_company(request):
             total = 10
         else:
             total = context["universidadeXempresa"]["Total"]
+
+        if context["universidadeXempresa"] is not None and context["universidadeXempresa"]["ChoosedEntity"] is not None:
+            lastChoosedEntity = context["universidadeXempresa"]["ChoosedEntity"]
+        else:
+            lastChoosedEntity = "Empresas"
+
         # Choose which element we want to see ( Companys or Universitys) as main element
         if 'universityorcompany' in request.POST:
             choosedEntity = request.POST['universityorcompany']
@@ -146,6 +164,7 @@ def graph_university_vs_company(request):
         finalResult["Values"] = list(values)
         finalResult["ChoosedValue"] = choosedValue
         finalResult["ChoosedEntity"] = choosedEntity
+        finalResult["LastChoosedEntity"] = lastChoosedEntity
         finalResult["AllValues"] = areas_values.index.tolist()
         finalResult["Total"] = total
     return finalResult
@@ -154,6 +173,9 @@ def graph_university_vs_company(request):
 
 #region Profissionais vs Empresa( Genero X Area , ...)
 def graphs_profissionais_vs_empresa(request):
+    context["generoXarea"] = None
+    context["ageXarea"] = None
+    context["generoXsalario"] = None
 
     generoXarea = graph_genero_vs_area(request)
 
@@ -249,8 +271,8 @@ def graph_age_vs_area(request):
         total = 10
         if 'qtyagearea' in request.POST:
             total = int(request.POST['qtyagearea'])
-        elif context["generoXarea"] is not None:
-            total = context["generoXarea"]["Total"]
+        elif context["ageXarea"] is not None:
+            total = context["ageXarea"]["Total"]
         areas_values = counts['Count'].nlargest(total)
 
         list_areas = []

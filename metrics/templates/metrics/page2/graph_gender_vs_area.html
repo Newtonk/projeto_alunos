@@ -10,10 +10,10 @@ margin: auto;
 </style>
 
 <div id="div_gender_vs_area" class="col-md-12">
-    <form method="POST" action="" enctype = "multipart/form-data">
+    <form method="POST" id="myform2" action="" enctype = "multipart/form-data" onchange="handleGenderArea">
     {% csrf_token %}
     <label for="qtygenderarea">Escolha o numero de elementos máximo:</label>
-    <select name="qtygenderarea" id="qtygenderarea" onchange="this.form.submit();">
+    <select name="qtygenderarea" id="qtygenderarea">
       <option value="5">5</option>
       <option value="10" selected>10</option>
       <option value="15">15</option>
@@ -24,33 +24,79 @@ margin: auto;
         <canvas id="generoXarea">></canvas>
     </div>
 </div>
-<!-- Gráficos de Genero X Area  -->
+
+<!-- Funções jQuery de atualização e afins -->
 <script>
-object_all = {{ generoXarea | safe }}
-
-if (Object.keys(object_all).length == 0)
-{
-    document.getElementById("div_gender_vs_area").innerHTML = "Sem informações suficientes para gerar os gráficos!";
+const handleGenderArea = function(e) {
+   var formData = $('#myform2').serialize()
+   e.preventDefault(); // avoid to execute the actual submit of the form.
+   $.ajax({
+        url: "/update_graph/",
+        data: formData + "&graph_name=generoXarea",
+        cache: false,
+        dataType: 'json',
+        type: 'POST',
+        success: function (data, status) {
+        		genderArea = data.generoXarea
+				updateGraphGenderArea(genderArea)
+				document.getElementById("qtygenderarea").value = genderArea["Total"];
+        }
+    });
 }
-else
-{
-document.getElementById("qtygenderarea").value = object_all["Total"];
 
+var select = document.getElementById('myform2');
+select.addEventListener('change', handleGenderArea);
+
+</script>
+
+<!-- Método que realiza a atualização do gráfico -->
+<script>
+function updateGraphGenderArea(object_all){
+	if (Object.keys(object_all).length == 0)
+	{
+		chartGenderArea.destroy();
+		document.getElementById("div_gender_vs_area").innerHTML += "Sem informações suficientes para gerar os gráficos!";
+    }
+    else
+    {
+    all_data = object_all["Data"]
+    datasets = [];
+    var colorArray = [ 'red' , 'blue' , 'green'];
+    for (var i = 0 ; i < all_data.length ; i++){
+        var dataset = {
+                label : all_data[i][0],
+                backgroundColor: colorArray[i],
+                data:  all_data[i][1]
+        };
+        datasets.push(dataset);
+    }
+
+	chartGenderArea.data.labels = object_all["Areas"]
+	chartGenderArea.data.datasets = datasets
+	chartGenderArea.update();
+	}
+}
+</script>
+
+<!-- Função que cria o gráfico inicialmente -->
+<script>
+function createGraphGenderArea(object_all)
+{
 var colorArray = [ 'red' , 'blue' , 'green'];
 
 var i = 0;
 datasets = [];
 {% for item in generoXarea.Data %}
-	var dataset = {
-		label : "{{ item.0 | safe }}",
-		backgroundColor: colorArray[i],
-		data: {{ item.1 | safe }}
-	};
-	datasets.push(dataset);
-	i += 1;
+    var dataset = {
+        label : "{{ item.0 | safe }}",
+        backgroundColor: colorArray[i],
+        data: {{ item.1 | safe }}
+    };
+    datasets.push(dataset);
+    i += 1;
 {%endfor%}
 
-    new Chart(document.getElementById("generoXarea"), {
+chartGenderArea = new Chart(document.getElementById("generoXarea"), {
     type: 'bar',
     data: {
       labels: object_all["Areas"],
@@ -74,6 +120,29 @@ datasets = [];
     }
     }
 	});
-
 }
+</script>
+
+<!-- Função do método init -->
+<script>
+function initGenderArea(object_all) {
+
+if (Object.keys(object_all).length == 0)
+{
+    document.getElementById("div_gender_vs_area").innerHTML = "Sem informações suficientes para gerar os gráficos!";
+}
+else
+{
+document.getElementById("qtygenderarea").value = object_all["Total"];
+
+createGraphGenderArea(object_all)
+}
+}
+</script>
+
+<!-- Execucao inicial do método init -->
+<script>
+    var chartGenderArea;
+    var genderArea = {{ generoXarea | safe }}
+    initGenderArea(genderArea);
 </script>

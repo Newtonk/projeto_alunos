@@ -10,13 +10,13 @@ margin: auto;
 
 </style>
 <div id="div_area_vs_course" class="col-md-12">
-	<form method="POST" action="" enctype = "multipart/form-data" onsubmit="return false">
+	<form method="POST" id="myform" action="" enctype = "multipart/form-data" onchange="handleAreaCourse">
 	{% csrf_token %}
 	<label for="course">Escolha o curso:</label>
-	<select name="course" id="course" onchange="this.form.submit()"></select>
+	<select name="course" id="course"></select>
 	<br>
 	<label for="qtyareacourse">Escolha o numero de elementos máximo:</label>
-	  <select name="qtyareacourse" id="qtyareacourse" onchange="this.form.submit();">
+	  <select name="qtyareacourse" id="qtyareacourse">
 		<option value="5">5</option>
 		<option value="10" selected>10</option>
 		<option value="15">15</option>
@@ -28,11 +28,83 @@ margin: auto;
 	</div>
 </div>
 
-
-<!-- Gráficos de Area X Curso  -->
+<!-- Funções jQuery de atualização e afins -->
 <script>
+const handleAreaCourse = function(e) {
+   var formData = $('#myform').serialize()
+   e.preventDefault(); // avoid to execute the actual submit of the form.
+   $.ajax({
+        url: "/update_graph/",
+        data: formData + "&graph_name=areaXcurso",
+        cache: false,
+        dataType: 'json',
+        type: 'POST',
+        success: function (data, status) {
+        		areaCourse = data.areaXcurso
+				updateGraphAreaCourse(areaCourse)
+				select = document.getElementById("course")
+				select.value = areaCourse["Course"];
+				document.getElementById("qtyareacourse").value = areaCourse["Total"];
+        }
+    });
+}
 
-object_all = {{ areaXcurso | safe }}
+var select = document.getElementById('myform');
+select.addEventListener('change', handleAreaCourse);
+
+</script>
+
+<!-- Método que realiza a atualização do gráfico -->
+<script>
+function updateGraphAreaCourse(object_all){
+	if (Object.keys(object_all).length == 0)
+	{
+		chartAreaCourse.destroy();
+		document.getElementById("div_area_vs_course").innerHTML += "Sem informações suficientes para gerar os gráficos!";
+    }
+    else
+    {
+	var colorArray = ['blue'];
+
+	chartAreaCourse.data.labels = object_all["Labels"]
+	chartAreaCourse.data.datasets[0].label = object_all["Course"]
+	chartAreaCourse.data.datasets[0].backgroundColor = colorArray[0]
+	chartAreaCourse.data.datasets[0].data = object_all["Data"]
+	chartAreaCourse.options.title.text = 'Area X Curso de ' + object_all["Course"]
+	chartAreaCourse.update();
+	}
+}
+</script>
+
+<!-- Função que cria o gráfico inicialmente -->
+<script>
+function createGraphAreaCourse(object_all)
+{
+var colorArray = ['blue'];
+
+chartAreaCourse = new Chart(document.getElementById("areaXcurso"), {
+type: 'bar',
+data: {
+  labels: object_all["Labels"],
+  datasets: [{
+	label : object_all["Course"],
+	backgroundColor: colorArray[0],
+	data: object_all["Data"]
+}]
+},
+options: {
+  title: {
+	display: true,
+	text: 'Area X Curso de ' + object_all["Course"]
+  }
+}
+});
+}
+</script>
+
+<!-- Função do método init -->
+<script>
+function initAreaCourse(object_all) {
 
 if (Object.keys(object_all).length == 0)
 {
@@ -55,26 +127,14 @@ for (const course of all_courses)
 }
 select.value = object_all["Course"];
 
-var colorArray = ['blue'];
-
-new Chart(document.getElementById("areaXcurso"), {
-type: 'bar',
-data: {
-  labels: object_all["Labels"],
-  datasets: [{
-	label : object_all["Course"],
-	backgroundColor: colorArray[0],
-	data: object_all["Data"]
-}]
-},
-options: {
-  title: {
-	display: true,
-	text: 'Area X Curso de ' + object_all["Course"]
-  }
+createGraphAreaCourse(object_all)
 }
-});
-
 }
+</script>
 
+<!-- Execucao inicial do método init -->
+<script>
+    var chartAreaCourse;
+    var areaCourse = {{ areaXcurso | safe }}
+    initAreaCourse(areaCourse);
 </script>
