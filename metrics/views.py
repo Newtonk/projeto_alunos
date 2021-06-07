@@ -3,10 +3,12 @@ import json
 from io import BytesIO, StringIO
 
 from PIL import Image
+from django.contrib.auth import logout
 from django.shortcuts import render, redirect
 import pandas as pd
 from flask import jsonify, make_response
 from django.core.cache import cache
+from django.contrib import messages
 from django.http import HttpResponse, JsonResponse
 
 def home(request):
@@ -24,18 +26,43 @@ def home(request):
     "universidadeXempresa" : None
     }
     if request.method == 'POST':
-        filename = request.FILES['File']
-        read_csv(filename)
+        if 'File' not in request.FILES:
+            messages.info(request, "Nenhum arquivo enviado! Por favor, envie um arquivo .csv ou .xlsx")
+            return render(request, 'metrics/home.html', contextHome)
+        file = request.FILES['File']
+        fileList = file.name.split('.')
+        if len(fileList) > 0:
+            extension = fileList[-1]
+            if extension != "csv" and extension != "xlsx":
+                messages.info(request, "Arquivo de envio não está no formato correto(.csv ou .xlsx)")
+                return render(request, 'metrics/home.html', contextHome)
+        else:
+            messages.info(request, "Arquivo de envio está corrompido!")
+            return render(request, 'metrics/home.html', contextHome)
+        success = read_file_success(file, extension)
+        if not success:
+            messages.info(request, "Arquivo de envio está corrompido!")
+            return render(request, 'metrics/home.html', contextHome)
         return graphs_profissionais_vs_universidade(request)
 
     return render(request, 'metrics/home.html', contextHome)
 
-def read_csv(filename):
+def read_file_success(filename, fileExtension):
     global data
+    try:
+        if fileExtension == "csv":
+            myFile = pd.read_csv(BytesIO(filename.read()))
+        elif fileExtension == "xlsx":
+            myFile = pd.read_excel(BytesIO(filename.read()))
 
-    myFile = pd.read_csv(BytesIO(filename.read()))
+        data = pd.DataFrame(data=myFile, index=None)
+    except:
+        return False
+    return True
 
-    data = pd.DataFrame(data=myFile, index=None)
+def logoutUser(request):
+	logout(request)
+	return redirect('home')
 
 def update_graph(request):
     graph_name = request.POST["graph_name"]
