@@ -339,6 +339,13 @@ def graphs_profissionais_vs_universidade(request):
 
     return render(request, 'metrics/page1/graphs_profissionais_vs_universidade.html', context)
 
+def get_all_columns(columns):
+    existingColumns = []
+    for column in columns:
+        if column in data:
+            existingColumns.append(column)
+    return existingColumns
+
 def graph_genero_vs_course(request):
     finalResult = {}
     if check_minium_values(["Curso" , "Genero"]):
@@ -347,19 +354,68 @@ def graph_genero_vs_course(request):
         data.loc[data['Curso'].str.contains("COMPUTACAO", na=False), "Curso"] = "COMPUTACAO"
         data.loc[(data['Curso'] != "SISTEMAS") & (data['Curso'] != "ENGENHARIA") & (data['Curso'] != "COMPUTACAO"), "Curso"] = "OUTROS CURSOS DE TI"
 
-        counter = data.groupby(['Curso', 'Genero']).size().reset_index(name='Count')
-        courses = counter.Curso.unique()
-        df_new = counter.groupby(['Curso','Genero']).sum()
+        states = []
+        universities = []
+        if check_minium_values(["Instituicao", "Estado_Universidade"]):
+            counter = data.groupby(['Curso', 'Genero', "Instituicao", "Estado_Universidade"], dropna=False).size().reset_index(name='Count')
+            states = counter.Estado_Universidade.dropna().unique()
+        elif check_minium_values(["Instituicao"]):
+            counter = data.groupby(['Curso', 'Genero', "Instituicao"]).size().reset_index(name='Count')
+        else:
+            counter = data.groupby(['Curso', 'Genero']).size().reset_index(name='Count')
 
+        state = "Todos"
+        university = "Todos"
+
+        if 'statesGenderCourse' in request.POST and 'university' in request.POST:
+            state = request.POST["statesGenderCourse"]
+            if request.POST["statesGenderCourse"] == context["generoXcurso"]["State"]:
+                university = request.POST["university"]
+        elif context["generoXcurso"] is not None:
+            state = context["generoXcurso"]["State"]
+            if request.POST["states"] == context["generoXcurso"]["State"]:
+                university = context["generoXcurso"]["Instituicoes"]
+
+        if state != "Todos":
+            counter = counter[counter.Estado_Universidade == state]
+
+        if "Instituicao" in data:
+            universities = counter.Instituicao.dropna().unique()
+
+        if university != "Todos":
+            counter = counter[counter.Instituicao == university]
+
+        courses = counter.Curso.dropna().unique()
         course = courses[0]
+
         if 'course' in request.POST:
             course = request.POST['course']
         elif context["generoXcurso"] is not None:
             course = context["generoXcurso"]["Course"]
 
-        courseValue = df_new['Count'][course]
-        finalResult["Labels"] = courseValue.index.values.tolist()
-        finalResult["Data"] = courseValue.values.tolist()
+        columns = get_all_columns(['Curso', 'Genero', "Instituicao", "Estado_Universidade"])
+        df_new = counter.groupby(columns, dropna=False).sum()
+        if course in df_new["Count"]:
+            courseValue = df_new['Count'][course]
+        else:
+            course = courses[0]
+            courseValue = df_new['Count'][course]
+
+
+        listTotal = []
+        listLabels = courseValue.index.levels[0].values.tolist()
+        for index in courseValue.index.levels[0]:
+            if index in courseValue:
+                sum = int(courseValue[index].values.sum())
+                listTotal.append(sum)
+            else:
+                listLabels.remove(index)
+        finalResult["Labels"] = listLabels
+        finalResult["Data"] = listTotal
+        finalResult["State"] = state
+        finalResult["States"] = list(states)
+        finalResult["Instituicao"] = university
+        finalResult["Instituicoes"] = list(universities)
         finalResult["Course"] = course
         finalResult["Courses"] = list(courses)
     return finalResult

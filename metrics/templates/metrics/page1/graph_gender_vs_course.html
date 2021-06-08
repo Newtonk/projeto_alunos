@@ -17,6 +17,11 @@ margin: auto;
 	{% csrf_token %}
 	<label for="course">Escolha o curso:</label>
 	<select name="course" id="course" ></select>
+	<br>
+	<label for="statesGenderCourse">Escolha a UF da universidade:</label>
+	<select name="statesGenderCourse" id="statesGenderCourse" ></select>
+	<label for="university">Escolha a universidade:</label>
+	<select name="university" id="university" ></select>
 	</form>
 	<div id="divgenerocurso">
 		<canvas id="generoXcurso"></canvas>
@@ -42,6 +47,41 @@ const handlerGenderCourse = function(e) {
 				updateGraphGenderCourse(genderCourse)
 				select = document.getElementById("course")
 				select.value = data.generoXcurso["Course"];
+				select = document.getElementById("statesGenderCourse")
+				select.value = genderCourse.State;
+
+				select = document.getElementById("university")
+				 $("#university").empty();
+				 var option = document.createElement("option");
+				 option.value = "Todos";
+				 option.text = "Todos";
+				 select.appendChild(option);
+
+				 instValues = genderCourse.Instituicoes;
+
+				 for (const value of instValues)
+				 {
+					  var option = document.createElement("option");
+					  option.value = value;
+					  option.text = value.charAt(0).toUpperCase() + value.slice(1);
+					  select.appendChild(option);
+				 }
+				 select.value = genderCourse.Instituicao;
+
+ 				$("#course").empty();
+				selectCourse = document.getElementById("course")
+
+				all_courses = genderCourse.Courses;
+
+				for (const course of all_courses)
+				{
+					var option = document.createElement("option");
+					option.value = course;
+					option.text = course.charAt(0).toUpperCase() + course.slice(1);
+					selectCourse.appendChild(option);
+				}
+				selectCourse.value = genderCourse.Course;
+
         }
     });
 }
@@ -119,7 +159,7 @@ else
 {
 document.getElementById("course").value = object_all["Course"];
 
-select = document.getElementById("course")
+selectCourse = document.getElementById("course")
 
 all_courses = object_all["Courses"];
 
@@ -128,9 +168,47 @@ for (const course of all_courses)
 	var option = document.createElement("option");
 	option.value = course;
 	option.text = course.charAt(0).toUpperCase() + course.slice(1);
-	select.appendChild(option);
+	selectCourse.appendChild(option);
 }
-select.value = object_all["Course"];
+selectCourse.value = object_all["Course"];
+
+selectState = document.getElementById("statesGenderCourse")
+
+all_states = object_all["States"];
+
+var option = document.createElement("option");
+option.value = "Todos";
+option.text = "Todos";
+selectState.appendChild(option);
+
+for (const state of all_states)
+{
+    var option = document.createElement("option");
+    option.value = state;
+    option.text = state.charAt(0).toUpperCase() + state.slice(1);
+    selectState.appendChild(option);
+}
+selectState.value = object_all["State"];
+
+selectUni = document.getElementById("university")
+
+all_universities = object_all["Instituicoes"];
+
+var option = document.createElement("option");
+option.value = "Todos";
+option.text = "Todos";
+selectUni.appendChild(option);
+
+for (const university of all_universities)
+{
+    var option = document.createElement("option");
+    option.value = university;
+    option.text = university.charAt(0).toUpperCase() + university.slice(1);
+    selectUni.appendChild(option);
+}
+selectUni.value = object_all["Instituicao"];
+
+
 
 createGraphGenderCourse(object_all)
 }
