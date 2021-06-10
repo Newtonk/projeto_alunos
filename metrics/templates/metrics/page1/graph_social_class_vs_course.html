@@ -12,33 +12,33 @@ margin: auto;
 
 </style>
 
-<div id="div_gen_course" class="col-md-12">
-	<form id="myform" action="" onchange="handlerGenderCourse">
+<div id="div_class_vs_course" class="col-md-12">
+	<form id="myform3" action="" onchange="handlerClassCourse">
 	{% csrf_token %}
-	<label for="course">Escolha o curso:</label>
-	<select name="course" id="course" ></select>
+	<label for="courseClassXCourse">Escolha o curso:</label>
+	<select name="courseClassXCourse" id="courseClassXCourse" ></select>
 	<br>
-	<label for="statesGenderCourse">Escolha a UF da universidade:</label>
-	<select name="statesGenderCourse" id="statesGenderCourse" ></select>
-	<label for="university">Escolha a universidade:</label>
-	<select name="university" id="university" ></select>
+	<label for="statesClassXCourse">Escolha a UF da universidade:</label>
+	<select name="statesClassXCourse" id="statesClassXCourse" ></select>
+	<label for="universityClassXCourse">Escolha a universidade:</label>
+	<select name="universityClassXCourse" id="universityClassXCourse" ></select>
 	</form>
-	<div id="divgenerocurso">
-		<canvas id="generoXcurso"></canvas>
+	<div id="divclasscourse">
+		<canvas id="classXcourse"></canvas>
 	</div>
 </div>
 
 
 
-<!-- Gráficos de Genero X Curso  -->
+<!-- Gráficos de Classe Social X Curso  -->
 <script>
 
-const handlerGenderCourse = function(e) {
-   var formData = $('#myform').serialize()
+const handlerClassCourse = function(e) {
+   var formData = $('#myform3').serialize()
    e.preventDefault(); // avoid to execute the actual submit of the form.
    $.ajax({
         url: "/update_graph/",
-        data: formData + "&graph_name=generoXcurso",
+        data: formData + "&graph_name=classXcourse",
         cache: false,
         dataType: 'json',
         type: 'POST',
@@ -90,8 +90,8 @@ const handlerGenderCourse = function(e) {
     });
 }
 
-var select = document.getElementById('myform');
-select.addEventListener('change', handlerGenderCourse);
+var select = document.getElementById('myform3');
+select.addEventListener('change', handlerClassCourse);
 
 var chartGenderCourse;
 var genderCourse = {{ generoXcurso | safe }}

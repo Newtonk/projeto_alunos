@@ -22,11 +22,19 @@ margin: auto;
   <option value="20">20</option>
 </select>
 <br>
-<label for="states">Estado:</label>
-<select name="states" id="states"></select>
+<label for="genderComparation">Genero:</label>
+<select name="genderComparation" id="genderComparation"></select>
+<label for="courseComparation">Curso:</label>
+<select name="courseComparation" id="courseComparation"></select>
+<br>
+<label for="statesComparation">Estado:</label>
+<select name="statesComparation" id="statesComparation"></select>
 </form>
 <div id="divgenerouniversidade">
-    <canvas id="generoXuniversidade"></canvas>
+    <div id="no-data">
+        <h2>Informação insuficiente para gerar o gráfico</h2>
+    </div>
+    <canvas id="generoXuniversidade" ng-if="data != 0"></canvas>
 </div>
 </div>
 
@@ -42,11 +50,44 @@ const handlerGenderUniversity = function(e) {
         dataType: 'json',
         type: 'POST',
         success: function (data, status) {
-        		genderCourse = data.generoXuniversidade
-				updateGraphGenderUniversity(genderCourse)
-				select = document.getElementById("states")
-				select.value = genderCourse.State;
-				document.getElementById("qtygenderuniversidade").value = genderCourse["Total"];
+        		genderUniversity = data.generoXuniversidade
+				updateGraphGenderUniversity(genderUniversity)
+				select = document.getElementById("statesComparation")
+				select.value = genderUniversity.State;
+				document.getElementById("qtygenderuniversidade").value = genderUniversity["Total"];
+
+				select = document.getElementById("genderComparation")
+				 $("#genderComparation").empty();
+
+				 instValues = genderUniversity.Genders;
+
+				 for (const value of instValues)
+				 {
+					  var option = document.createElement("option");
+					  option.value = value;
+					  option.text = value.charAt(0).toUpperCase() + value.slice(1);
+					  select.appendChild(option);
+				 }
+				 select.value = genderUniversity.Gender;
+
+				 select = document.getElementById("courseComparation")
+				 $("#courseComparation").empty();
+
+                 var option = document.createElement("option");
+                 option.value = "Todos";
+                 option.text = "Todos";
+                 select.appendChild(option);
+
+				 instValues = genderUniversity.Courses;
+
+				 for (const value of instValues)
+				 {
+					  var option = document.createElement("option");
+					  option.value = value;
+					  option.text = value.charAt(0).toUpperCase() + value.slice(1);
+					  select.appendChild(option);
+				 }
+				 select.value = genderUniversity.Course;
         }
     });
 }
@@ -58,29 +99,24 @@ select.addEventListener('change', handlerGenderUniversity);
 
 <!-- Método que realiza a atualização do gráfico -->
 <script>
-function updateGraphGenderUniversity(object_all){
-	if (Object.keys(object_all).length == 0)
+function updateGraphGenderUniversity(object_all)
+{
+	if (Object.keys(object_all).length == 0 || Object.keys(object_all["Data"]).length == 0)
 	{
-		myChart.destroy();
-		document.getElementById("div_gen_course").innerHTML += "Sem informações suficientes para gerar os gráficos!";
+	    document.getElementById('no-data').style.display = 'block';
+        document.getElementById('generoXuniversidade').style.display = 'none'
     }
     else
     {
-    all_data = object_all["Data"]
-    datasets = [];
-    var colorArray = [ 'red' , 'blue' , 'green'];
-    for (var i = 0 ; i < all_data.length ; i++){
-        var dataset = {
-                label : all_data[i][0],
-                backgroundColor: colorArray[i],
-                data:  all_data[i][1]
-        };
-        datasets.push(dataset);
-    }
-
-	chartGenderUniversity.data.labels = object_all["Instituicoes"]
-	chartGenderUniversity.data.datasets = datasets
-	chartGenderUniversity.update();
+        document.getElementById('no-data').style.display = 'none';
+        document.getElementById('generoXuniversidade').style.display = 'block'
+        var colorArray = [ 'blue'];
+        chartGenderUniversity.data.labels = object_all["Instituicoes"]
+        chartGenderUniversity.data.datasets[0].label = object_all["Gender"]
+        chartGenderUniversity.data.datasets[0].backgroundColor = colorArray[0]
+        chartGenderUniversity.data.datasets[0].data = object_all["Data"]
+        chartGenderUniversity.update();
+        chartGenderUniversity.render();
 	}
 }
 </script>
@@ -89,42 +125,25 @@ function updateGraphGenderUniversity(object_all){
 <script>
 function createGraphGenderUniversity(object_all)
 {
-var colorArray = [ 'red' , 'blue' , 'green'];
-
-var i = 0;
-datasets = [];
-{% for item in generoXuniversidade.Data %}
-    var dataset = {
-        label : "{{ item.0 | safe }}",
-        backgroundColor: colorArray[i],
-        data: {{ item.1 | safe }}
-    };
-    datasets.push(dataset);
-    i += 1;
-{%endfor%}
+var colorArray = [ 'blue'];
 
 chartGenderUniversity = new Chart(document.getElementById("generoXuniversidade"), {
         type: 'bar',
         data: {
           labels: object_all["Instituicoes"],
-          datasets: datasets
+          datasets: [{
+                label : object_all["Gender"],
+                backgroundColor: colorArray,
+                data: object_all["Data"]
+            }]
         },
         options: {
         plugins: {
           title: {
             display: true,
-            text: 'Genero X Universidade'
+            text: 'Comparativo Genero em (%)'
           },
          },
-          responsive: true,
-          scales: {
-          x: {
-            stacked: true,
-          },
-          y: {
-            stacked: true
-          }
-        }
         }
         });
 }
@@ -142,7 +161,7 @@ else
 {
 document.getElementById("qtygenderuniversidade").value = object_all["Total"];
 
-select = document.getElementById("states")
+select = document.getElementById("statesComparation")
 
 all_states = object_all["States"];
 
@@ -160,6 +179,37 @@ for (const state of all_states)
 }
 select.value = "{{ generoXuniversidade.State | safe}}";
 
+selectCourse = document.getElementById("courseComparation")
+
+all_courses = object_all["Courses"];
+
+var option = document.createElement("option");
+option.value = "Todos";
+option.text = "Todos";
+selectCourse.appendChild(option);
+
+for (const course of all_courses)
+{
+    var option = document.createElement("option");
+    option.value = course;
+    option.text = course.charAt(0).toUpperCase() + course.slice(1);
+    selectCourse.appendChild(option);
+}
+selectCourse.value = object_all["Course"];
+
+selectGender = document.getElementById("genderComparation")
+
+all_genders = object_all["Genders"];
+
+for (const gender of all_genders)
+{
+    var option = document.createElement("option");
+    option.value = gender;
+    option.text = gender.charAt(0).toUpperCase() + gender.slice(1);
+    selectGender.appendChild(option);
+}
+selectGender.value = object_all["Gender"];
+
 createGraphGenderUniversity(object_all)
 }
 }
@@ -167,6 +217,8 @@ createGraphGenderUniversity(object_all)
 
 <!-- Execucao inicial do método init -->
 <script>
+    var lastChartGenderUniversity;
+    document.getElementById('no-data').style.display = 'none';
     var chartGenderUniversity;
     var genderUniversity = {{ generoXuniversidade | safe }}
     initGenderUniversity(genderUniversity);
