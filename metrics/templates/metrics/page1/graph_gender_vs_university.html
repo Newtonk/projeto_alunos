@@ -22,6 +22,11 @@ margin: auto;
   <option value="20">20</option>
 </select>
 <br>
+<label for="entitygenderComparation">Comparacao por:</label>
+<select name="entitygenderComparation" id="entitygenderComparation">
+     <option value="Instituicao" selected>Instituicao</option>
+     <option value="Curso">Curso</option>
+</select>
 <label for="genderComparation">Genero:</label>
 <select name="genderComparation" id="genderComparation"></select>
 <label for="courseComparation">Curso:</label>
@@ -55,6 +60,7 @@ const handlerGenderUniversity = function(e) {
 				select = document.getElementById("statesComparation")
 				select.value = genderUniversity.State;
 				document.getElementById("qtygenderuniversidade").value = genderUniversity["Total"];
+				document.getElementById("entitygenderComparation").value = genderUniversity["Entity"];
 
 				select = document.getElementById("genderComparation")
 				 $("#genderComparation").empty();
@@ -88,6 +94,26 @@ const handlerGenderUniversity = function(e) {
 					  select.appendChild(option);
 				 }
 				 select.value = genderUniversity.Course;
+
+				 select = document.getElementById("statesComparation")
+				 $("#statesComparation").empty();
+
+                instValues = genderUniversity.States;
+
+                var option = document.createElement("option");
+                option.value = "Todos";
+                option.text = "Todos";
+                select.appendChild(option);
+
+                for (const state of instValues)
+                {
+                    var option = document.createElement("option");
+                    option.value = state;
+                    option.text = state.charAt(0).toUpperCase() + state.slice(1);
+                    select.appendChild(option);
+                }
+                select.value = genderUniversity.State;
+
         }
     });
 }

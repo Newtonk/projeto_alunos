@@ -11,6 +11,8 @@ from flask import jsonify, make_response
 from django.core.cache import cache
 from django.contrib import messages
 from django.http import HttpResponse, JsonResponse
+from .entities.graph_genero_vs_dados_academicos import *
+from .entities.graph_comparativo_genero_vs_dados_academicos import *
 
 def home(request):
     global context
@@ -53,7 +55,7 @@ def home(request):
     return render(request, 'metrics/home.html', contextHome)
 
 def pre_validations():
-    if 'Curso' in data:
+    if check_minium_values(["Curso"], data):
         data.loc[data['Curso'].str.contains("SISTEMA", na=False), "Curso"] = "SISTEMAS"
         data.loc[data['Curso'].str.contains("ENGENHARIA", na=False), "Curso"] = "ENGENHARIA"
         data.loc[data['Curso'].str.contains("COMPUTACAO", na=False), "Curso"] = "COMPUTACAO"
@@ -113,7 +115,7 @@ def graphs_universidade_vs_empresa(request):
 
     return render(request, 'metrics/page3/graphs_universidade_vs_empresa.html', context)
 
-def check_minium_values(listValues):
+def check_minium_values(listValues, data):
 
     for value in listValues:
         if value not in data or data[value].count() == 0:
@@ -122,7 +124,7 @@ def check_minium_values(listValues):
 
 def graph_area_vs_curso(request):
     finalResult = {}
-    if check_minium_values(["Curso" , "Area"]):
+    if check_minium_values(["Curso" , "Area"], data):
         counter = data.groupby(['Curso', 'Area']).size().reset_index(name='Count')
         courses = counter.Curso.unique()
         df_new = counter.groupby(['Curso', 'Area']).sum()
@@ -150,7 +152,7 @@ def graph_area_vs_curso(request):
 
 def graph_university_vs_company(request):
     finalResult = {}
-    if check_minium_values(["Empresa", "Instituicao"]):
+    if check_minium_values(["Empresa", "Instituicao"], data):
         firstColumn = ""
         secondColumn = ""
         choosedEntity = ""
@@ -232,7 +234,7 @@ def graphs_profissionais_vs_empresa(request):
 
 def graph_genero_vs_salario(request):
     finalResult = {}
-    if check_minium_values(["Area" , "Genero", "Salario"]):
+    if check_minium_values(["Area" , "Genero", "Salario"], data):
         counter = data.groupby(['Area', 'Genero', 'Salario']).size().reset_index(name='Count')
         gender_counts = counter.groupby(['Area', 'Genero']).sum()
         aggregate_gender_age = data.groupby(['Area', 'Genero']).agg({'Area': 'first', 'Salario': 'sum'})
@@ -270,7 +272,7 @@ def graph_genero_vs_salario(request):
 
 def graph_genero_vs_area(request):
     finalResult = {}
-    if check_minium_values(["Area", "Genero"]):
+    if check_minium_values(["Area", "Genero"], data):
         counter = data.groupby(['Area', 'Genero']).size().reset_index(name='Count')
         df_new = counter.groupby(['Area', 'Genero']).sum()
 
@@ -303,7 +305,7 @@ def graph_genero_vs_area(request):
 
 def graph_age_vs_area(request):
     finalResult = {}
-    if check_minium_values(["Area", "Genero" , "Idade"]):
+    if check_minium_values(["Area", "Genero" , "Idade"], data):
         counter = data.groupby(['Area', 'Genero', 'Idade']).size().reset_index(name='Count')
         gender_counts = counter.groupby(['Area', 'Genero']).sum()
         aggregate_gender_age = data.groupby(['Area', 'Genero']).agg({'Area': 'first', 'Idade': 'sum'})
@@ -357,57 +359,31 @@ def graphs_profissionais_vs_universidade(request):
 
     return render(request, 'metrics/page1/graphs_profissionais_vs_universidade.html', context)
 
+
 def graph_genero_vs_course(request):
     finalResult = {}
-    if check_minium_values(["Curso" , "Genero"]):
-
-        states = []
-        universities = []
-
-        if check_minium_values(["Instituicao", "Estado_Universidade"]):
-            counter = data.groupby(['Curso', 'Genero', "Instituicao", "Estado_Universidade"], dropna=False).size().reset_index(name='Count')
-            states = counter.Estado_Universidade.dropna().unique()
-        elif check_minium_values(["Instituicao"]):
-            counter = data.groupby(['Curso', 'Genero', "Instituicao"], dropna=False).size().reset_index(name='Count')
-        else:
-            counter = data.groupby(['Curso', 'Genero'], dropna=False).size().reset_index(name='Count')
-
-        university = get_value_string("Instituicao", "university", "Todos", request, "generoXcurso")
-        state = get_value_string("State", "statesGenderCourse", "Todos", request, "generoXcurso")
-        if "statesGenderCourse" in request.POST and request.POST["statesGenderCourse"] != context["generoXcurso"]["State"]:
-            university = "Todos"
-
-        if state != "Todos":
-            counter = counter[counter.Estado_Universidade == state]
-
-        if "Instituicao" in data:
-            universities = counter.Instituicao.dropna().unique()
-
-        if university != "Todos":
-            counter = counter[counter.Instituicao == university]
-
-        courses = counter.Curso.dropna().unique()
-        course = get_value_string("Course", "course", "Todos", request, "generoXcurso")
-
-        columns = get_all_columns(['Curso', 'Genero', "Instituicao", "Estado_Universidade"])
-        if course in counter.Curso.values:
-            df_new = counter.groupby(columns, dropna=False).sum()
-            courseValue = df_new['Count'][course]
-        elif course == "Todos":
-            columns.remove("Curso")
-            df_new = counter.groupby(columns, dropna=False).sum()
-            courseValue = df_new['Count']
-        else:
-            df_new = counter.groupby(columns, dropna=False).sum()
-            course = courses[0]
-            courseValue = df_new['Count'][course]
-
+    if GeneroDadosAcademicos.validacao_colunas(data):
+        workingData = data
+        newData = GeneroDadosAcademicos.unifica_colunas(workingData)
+        states, state, universities, university, courses, course, courseValue = GeneroDadosAcademicos.valida_dados_enviados(newData, request, context)
 
         listTotal = []
-        listLabels = courseValue.index.levels[0].values.tolist()
-        for index in courseValue.index.levels[0]:
+        indexes = []
+        if len(courseValue.index.names) > 1:
+            position = courseValue.index.names.index("Genero")
+            listLabels = courseValue.index.levels[position].values.tolist()
+            indexes = courseValue.index.levels[position]
+        elif len(courseValue.index.names) == 1:
+            listLabels = courseValue.index.values.tolist()
+            indexes = courseValue.index
+
+        for index in indexes:
             if index in courseValue:
-                sum = int(courseValue[index].values.sum())
+                sum = 0
+                if len(courseValue.index.names) > 1:
+                    sum = int(courseValue[index].values.sum())
+                elif len(courseValue.index.names) == 1:
+                    sum = int(courseValue[index].sum())
                 listTotal.append(sum)
             else:
                 listLabels.remove(index)
@@ -423,54 +399,27 @@ def graph_genero_vs_course(request):
 
 def graph_genero_vs_universidade(request):
     finalResult = {}
-    if check_minium_values(["Curso", "Instituicao" , "Genero"]):
-        states = []
-        if check_minium_values(["Estado_Universidade"]):
-            counter = data.groupby(['Curso', 'Instituicao', 'Genero', "Estado_Universidade"], dropna=False).size().reset_index(name='Count')
-            states = counter.Estado_Universidade.dropna().unique()
-        else:
-            counter = data.groupby(['Curso', 'Instituicao', 'Genero'], dropna=False).size().reset_index(name='Count')
-
-        genders = counter.Genero.dropna().unique()
-        state = get_value_string("State", 'statesComparation', "Todos", request, "generoXuniversidade")
-
-        if state != "Todos":
-            counter = counter[counter.Estado_Universidade == state]
-
-        courses = counter.Curso.dropna().unique()
-        course = get_value_string("Course", 'courseComparation', "Todos", request, "generoXuniversidade")
-
-        if course in counter.Curso.values:
-            counter = counter[counter.Curso == course]
-        elif course != "Todos":
-            course = courses[0]
-            counter = counter[counter.Curso == course]
-
-        gender = get_value_string("Gender", 'genderComparation', genders[0], request, "generoXuniversidade")
-
-        total = get_value_int("Total", 'qtygenderuniversidade', 10, request, "generoXuniversidade")
-
-        df_new = counter.groupby(['Instituicao', 'Genero'], dropna=False).sum()
-        counts = counter.groupby(['Instituicao']).sum()
-
-        areas_values = counts['Count']
-
+    if GeneroDadosComparativos.validacao_colunas(data):
+        workingData = data
+        newData = GeneroDadosComparativos.unifica_colunas(workingData)
+        states, state, courses, course, genders, gender, total, entity, complementData, finalData, noInfo = GeneroDadosComparativos.valida_dados_enviados(newData, request, context)
         all_values = []
         list_areas = []
         list_values = []
-        for index, value in areas_values.items():
-            result = {}
-            result["Area"] = index
-            area_frame = df_new['Count'][index]
-            total_people = area_frame.sum()
-            if gender in area_frame:
-                result["GenderValue"] = (int(area_frame[gender]) * 100) / total_people
-                all_values.append(result)
-        if len(all_values) > 0:
-            all_values.sort(key=lambda x: x["GenderValue"], reverse=True)
+        if not noInfo:
+            for index, value in finalData.items():
+                result = {}
+                result["Area"] = index
+                area_frame = complementData['Count'][index]
+                total_people = area_frame.sum()
+                if gender in area_frame:
+                    result["GenderValue"] = (int(area_frame[gender]) * 100) / total_people
+                    all_values.append(result)
+            if len(all_values) > 0:
+                all_values.sort(key=lambda x: x["GenderValue"], reverse=True)
 
-            list_areas = list(o["Area"] for o in all_values)
-            list_values = list(o["GenderValue"] for o in all_values)
+                list_areas = list(o["Area"] for o in all_values)
+                list_values = list(o["GenderValue"] for o in all_values)
 
         finalResult["Instituicoes"] = list_areas
         finalResult["Data"] = list_values
@@ -481,20 +430,21 @@ def graph_genero_vs_universidade(request):
         finalResult["Genders"] = list(genders)
         finalResult["Course"] = course
         finalResult["Courses"] = list(courses)
+        finalResult["Entity"] = entity
     return finalResult
 
 def graph_social_class_vs_course(request):
     finalResult = {}
-    if check_minium_values(["Curso", "Classe"]):
+    if check_minium_values(["Curso", "Classe"], data):
 
         states = []
         universities = []
 
-        if check_minium_values(["Instituicao", "Estado_Universidade"]):
+        if check_minium_values(["Instituicao", "Estado_Universidade"], data):
             counter = data.groupby(['Curso', 'Classe', "Instituicao", "Estado_Universidade"],
                                    dropna=False).size().reset_index(name='Count')
             states = counter.Estado_Universidade.dropna().unique()
-        elif check_minium_values(["Instituicao"]):
+        elif check_minium_values(["Instituicao"], data):
             counter = data.groupby(['Curso', 'Classe', "Instituicao"], dropna=False).size().reset_index(name='Count')
         else:
             counter = data.groupby(['Curso', 'Classe'], dropna=False).size().reset_index(name='Count')
@@ -516,7 +466,7 @@ def graph_social_class_vs_course(request):
         courses = counter.Curso.dropna().unique()
         course = get_value_string("Course", "courseClassXCourse", "Todos", request, "classXcourse")
 
-        columns = get_all_columns(['Curso', 'Classe', "Instituicao", "Estado_Universidade"])
+        columns = get_all_columns(['Curso', 'Classe', "Instituicao", "Estado_Universidade"], counter)
         if course in counter.Curso.values:
             df_new = counter.groupby(columns, dropna=False).sum()
             courseValue = df_new['Count'][course]
@@ -550,10 +500,10 @@ def graph_social_class_vs_course(request):
 
 #endregion
 
-def get_all_columns(columns):
+def get_all_columns(columns, data):
     existingColumns = []
     for column in columns:
-        if column in data:
+        if check_minium_values([column],data):
             existingColumns.append(column)
     return existingColumns
 
