@@ -3,7 +3,7 @@
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@0.7.0"></script>
 
 <style>
-#divgenerocurso {
+#divclasscourse {
 display: block;
 max-width: 944px;
 max-height: 472px;
@@ -24,40 +24,39 @@ margin: auto;
 	<select name="universityClassXCourse" id="universityClassXCourse" ></select>
 	</form>
 	<div id="divclasscourse">
-		<canvas id="classXcourse"></canvas>
+		<canvas id="classeXcurso"></canvas>
 	</div>
 </div>
 
 
 
-<!-- Gráficos de Classe Social X Curso  -->
+<!-- Funções jQuery de atualização e afins -->
 <script>
-
 const handlerClassCourse = function(e) {
    var formData = $('#myform3').serialize()
    e.preventDefault(); // avoid to execute the actual submit of the form.
    $.ajax({
         url: "/update_graph/",
-        data: formData + "&graph_name=classXcourse",
+        data: formData + "&graph_name=classeXcurso",
         cache: false,
         dataType: 'json',
         type: 'POST',
         success: function (data, status) {
-        		genderCourse = data.generoXcurso
-				updateGraphGenderCourse(genderCourse)
-				select = document.getElementById("course")
-				select.value = data.generoXcurso["Course"];
-				select = document.getElementById("statesGenderCourse")
-				select.value = genderCourse.State;
+        		classCourse = data.classeXcurso
+				updateGraphClassCourse(classCourse)
+				select = document.getElementById("courseClassXCourse")
+				select.value = classCourse.Course;
+				select = document.getElementById("statesClassXCourse")
+				select.value = classCourse.State;
 
-				select = document.getElementById("university")
-				 $("#university").empty();
+				select = document.getElementById("universityClassXCourse")
+				 $("#universityClassXCourse").empty();
 				 var option = document.createElement("option");
 				 option.value = "Todos";
 				 option.text = "Todos";
 				 select.appendChild(option);
 
-				 instValues = genderCourse.Instituicoes;
+				 instValues = classCourse.Instituicoes;
 
 				 for (const value of instValues)
 				 {
@@ -66,16 +65,16 @@ const handlerClassCourse = function(e) {
 					  option.text = value.charAt(0).toUpperCase() + value.slice(1);
 					  select.appendChild(option);
 				 }
-				 select.value = genderCourse.Instituicao;
+				 select.value = classCourse.Instituicao;
 
- 				$("#course").empty();
-				selectCourse = document.getElementById("course")
+ 				$("#courseClassXCourse").empty();
+				selectCourse = document.getElementById("courseClassXCourse")
 				var option = document.createElement("option");
 				option.value = "Todos";
 				option.text = "Todos";
 				selectCourse.appendChild(option);
 
-				all_courses = genderCourse.Courses;
+				all_courses = classCourse.Courses;
 
 				for (const course of all_courses)
 				{
@@ -84,7 +83,7 @@ const handlerClassCourse = function(e) {
 					option.text = course.charAt(0).toUpperCase() + course.slice(1);
 					selectCourse.appendChild(option);
 				}
-				selectCourse.value = genderCourse.Course;
+				selectCourse.value = classCourse.Course;
 
         }
     });
@@ -93,134 +92,149 @@ const handlerClassCourse = function(e) {
 var select = document.getElementById('myform3');
 select.addEventListener('change', handlerClassCourse);
 
-var chartGenderCourse;
-var genderCourse = {{ generoXcurso | safe }}
+</script>
 
-function updateGraphGenderCourse(object_all){
+<!-- Método que realiza a atualização do gráfico -->
+<script>
+function updateGraphClassCourse(object_all){
 	if (Object.keys(object_all).length == 0)
 	{
-		chartGenderCourse.destroy();
-		document.getElementById("div_gen_course").innerHTML += "Sem informações suficientes para gerar os gráficos!";
-    }
-    else
-    {
-	var colorArray = ["green", "blue", "black"]
-	chartGenderCourse.data.labels = object_all["Labels"]
-	chartGenderCourse.data.datasets[0].label = object_all["Course"]
-	chartGenderCourse.data.datasets[0].backgroundColor = colorArray
-	chartGenderCourse.data.datasets[0].data = object_all["Data"]
-	chartGenderCourse.options.title.text = 'Genero X Curso de ' + object_all["Course"]
-	chartGenderCourse.update();
+		chartClassCourse.destroy();
+		document.getElementById("div_class_vs_course").innerHTML += "Sem informações suficientes para gerar os gráficos!";
+	}
+	else
+	{
+	var colorArray = ["green", "blue", "black", "red" , "purple"]
+	chartClassCourse.data.labels = object_all["Labels"]
+	chartClassCourse.data.datasets[0].label = object_all["Course"]
+	chartClassCourse.data.datasets[0].backgroundColor = colorArray
+	chartClassCourse.data.datasets[0].data = object_all["Data"]
+	chartClassCourse.options.title.text = 'Genero X Curso de ' + object_all["Course"]
+	chartClassCourse.update();
 	}
 }
 
-function createGraphGenderCourse(object_all)
+
+</script>
+
+<!-- Função que cria o gráfico inicialmente -->
+<script>
+function createGraphClassCourse(object_all)
 {
-var colorArray = ["green", "blue", "black"]
+	var colorArray = ["green", "blue", "black", "red" , "purple"]
 
-chartGenderCourse = new Chart(document.getElementById("generoXcurso"), {
-type: 'pie',
-data: {
-  labels: object_all["Labels"],
-  datasets: [{
-	label : object_all["Course"],
-	backgroundColor: colorArray,
-	data: object_all["Data"]
-}]
-},
-options: {
-  title: {
-	display: true,
-	text: 'Genero X Curso de ' + object_all["Course"]
-  },
-  plugins: {
-	datalabels: {
-	formatter: (value, ctx) => {
-	  let sum = 0;
-	  let dataArr = ctx.chart.data.datasets[0].data;
-	  dataArr.map(data => {
-		  sum += data;
-	  });
-	  let percentage = (value*100 / sum).toFixed(2)+"%";
-	  return percentage;
-
-
+	chartClassCourse = new Chart(document.getElementById("classeXcurso"), {
+	type: 'pie',
+	data: {
+	  labels: object_all["Labels"],
+	  datasets: [{
+		label : object_all["Course"],
+		backgroundColor: colorArray,
+		data: object_all["Data"]
+	}]
 	},
-	color: '#fff',
+	options: {
+	  title: {
+		display: true,
+		text: 'Genero X Curso de ' + object_all["Course"]
+	  },
+	  plugins: {
+		datalabels: {
+		formatter: (value, ctx) => {
+		  let sum = 0;
+		  let dataArr = ctx.chart.data.datasets[0].data;
+		  dataArr.map(data => {
+			  sum += data;
+		  });
+		  let percentage = (value*100 / sum).toFixed(2)+"%";
+		  return percentage;
+
+
+		},
+		color: '#fff',
+		}
+	}
+	},
+	});
+}
+
+</script>
+
+<!-- Função do método init -->
+<script>
+function initClassCourse(object_all) {
+
+	if (Object.keys(object_all).length == 0)
+	{
+		document.getElementById("div_class_vs_course").innerHTML = "Sem informações suficientes para gerar os gráficos!";
+	}
+	else
+	{
+	document.getElementById("courseClassXCourse").value = object_all["Course"];
+
+	selectCourse = document.getElementById("courseClassXCourse")
+
+	all_courses = object_all["Courses"];
+
+	var option = document.createElement("option");
+	option.value = "Todos";
+	option.text = "Todos";
+	selectCourse.appendChild(option);
+
+	for (const course of all_courses)
+	{
+		var option = document.createElement("option");
+		option.value = course;
+		option.text = course.charAt(0).toUpperCase() + course.slice(1);
+		selectCourse.appendChild(option);
+	}
+	selectCourse.value = object_all["Course"];
+
+	selectState = document.getElementById("statesClassXCourse")
+
+	all_states = object_all["States"];
+
+	var option = document.createElement("option");
+	option.value = "Todos";
+	option.text = "Todos";
+	selectState.appendChild(option);
+
+	for (const state of all_states)
+	{
+		var option = document.createElement("option");
+		option.value = state;
+		option.text = state.charAt(0).toUpperCase() + state.slice(1);
+		selectState.appendChild(option);
+	}
+	selectState.value = object_all["State"];
+
+	selectUni = document.getElementById("universityClassXCourse")
+
+	all_universities = object_all["Instituicoes"];
+
+	var option = document.createElement("option");
+	option.value = "Todos";
+	option.text = "Todos";
+	selectUni.appendChild(option);
+
+	for (const university of all_universities)
+	{
+		var option = document.createElement("option");
+		option.value = university;
+		option.text = university.charAt(0).toUpperCase() + university.slice(1);
+		selectUni.appendChild(option);
+	}
+	selectUni.value = object_all["Instituicao"];
+
+	createGraphClassCourse(object_all)
 	}
 }
-},
-});
-}
 
-function init(object_all) {
+</script>
 
-if (Object.keys(object_all).length == 0)
-{
-    document.getElementById("div_gen_course").innerHTML = "Sem informações suficientes para gerar os gráficos!";
-}
-else
-{
-document.getElementById("course").value = object_all["Course"];
-
-selectCourse = document.getElementById("course")
-
-all_courses = object_all["Courses"];
-
-var option = document.createElement("option");
-option.value = "Todos";
-option.text = "Todos";
-selectCourse.appendChild(option);
-
-for (const course of all_courses)
-{
-	var option = document.createElement("option");
-	option.value = course;
-	option.text = course.charAt(0).toUpperCase() + course.slice(1);
-	selectCourse.appendChild(option);
-}
-selectCourse.value = object_all["Course"];
-
-selectState = document.getElementById("statesGenderCourse")
-
-all_states = object_all["States"];
-
-var option = document.createElement("option");
-option.value = "Todos";
-option.text = "Todos";
-selectState.appendChild(option);
-
-for (const state of all_states)
-{
-    var option = document.createElement("option");
-    option.value = state;
-    option.text = state.charAt(0).toUpperCase() + state.slice(1);
-    selectState.appendChild(option);
-}
-selectState.value = object_all["State"];
-
-selectUni = document.getElementById("university")
-
-all_universities = object_all["Instituicoes"];
-
-var option = document.createElement("option");
-option.value = "Todos";
-option.text = "Todos";
-selectUni.appendChild(option);
-
-for (const university of all_universities)
-{
-    var option = document.createElement("option");
-    option.value = university;
-    option.text = university.charAt(0).toUpperCase() + university.slice(1);
-    selectUni.appendChild(option);
-}
-selectUni.value = object_all["Instituicao"];
-
-
-
-createGraphGenderCourse(object_all)
-}
-}
-init(genderCourse);
+<!-- Execucao inicial do método init -->
+<script>
+	var chartClassCourse;
+	var classCourse = {{ classeXcurso | safe }}
+	initClassCourse(classCourse);
 </script>

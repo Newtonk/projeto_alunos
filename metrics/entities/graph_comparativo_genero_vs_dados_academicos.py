@@ -20,7 +20,7 @@ class GeneroDadosComparativos():
         selectedState = "Todos"
         if checa_valor("Estado_Universidade", data):
             states = data.Estado_Universidade.dropna().unique()
-            selectedState = get_value_string("State", "statesComparation", "Todos", request, "generoXuniversidade", context)
+            selectedState = get_value_string("State", "statesComparation", "Todos", request, "generoXcursoCompare", context)
         if selectedState != "Todos":
             data = data[data.Estado_Universidade == selectedState]
         return states, selectedState, data
@@ -28,12 +28,12 @@ class GeneroDadosComparativos():
     @staticmethod
     def campo_genero(data, request, context):
         genders = data.Genero.dropna().unique()
-        gender = get_value_string("Gender", 'genderComparation', genders[0], request, "generoXuniversidade", context)
+        gender = get_value_string("Gender", 'genderComparation', genders[0], request, "generoXcursoCompare", context)
         return genders, gender
 
     @staticmethod
     def campo_total(request, context):
-        total = get_value_int("Total", 'qtygenderuniversidade', 10, request, "generoXuniversidade", context)
+        total = get_value_int("Total", 'qtygenderCourseComparation', 10, request, "generoXcursoCompare", context)
         return total
 
     @staticmethod
@@ -42,7 +42,7 @@ class GeneroDadosComparativos():
         selectedCurso = "Todos"
         if checa_valor("Curso", data):
             cursos = data.Curso.dropna().unique()
-            selectedCurso = get_value_string("Course", "courseComparation", "Todos", request, "generoXuniversidade", context)
+            selectedCurso = get_value_string("Course", "courseComparation", "Todos", request, "generoXcursoCompare", context)
             if selectedCurso not in data.Curso.values and selectedCurso != "Todos":
                 selectedCurso = cursos[0]
         if selectedCurso != "Todos":
@@ -52,7 +52,7 @@ class GeneroDadosComparativos():
 
     @staticmethod
     def campo_entidade_comparacao(request, context):
-        selectedCurso = get_value_string("Entity", "entitygenderComparation", "Instituicao", request, "generoXuniversidade", context)
+        selectedCurso = get_value_string("Entity", "entitygenderComparation", "Instituicao", request, "generoXcursoCompare", context)
 
         return selectedCurso
 

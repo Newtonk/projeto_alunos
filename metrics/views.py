@@ -13,6 +13,8 @@ from django.contrib import messages
 from django.http import HttpResponse, JsonResponse
 from .entities.graph_genero_vs_dados_academicos import *
 from .entities.graph_comparativo_genero_vs_dados_academicos import *
+from .entities.graph_class_vs_dados_academicos import *
+from .entities.graph_comparativo_class_vs_dados_academicos import *
 
 def home(request):
     global context
@@ -21,8 +23,9 @@ def home(request):
 
     context = {
     "generoXcurso": None,
-    "generoXuniversidade" : None,
-    "classXcurso" : None,
+    "generoXcursoCompare" : None,
+    "classeXcurso" : None,
+    "classeXcursoCompare": None,
     "generoXarea": None,
     "ageXarea" : None,
     "generoXsalario" : None,
@@ -83,10 +86,12 @@ def update_graph(request):
 
     if graph_name == "generoXcurso":
         context["generoXcurso"] = graph_genero_vs_course(request)
-    elif graph_name == "generoXuniversidade":
-        context["generoXuniversidade"] = graph_genero_vs_universidade(request)
-    elif graph_name == "classXcourse":
-        context["classXcourse"] = graph_social_class_vs_course(request)
+    elif graph_name == "generoXcursoCompare":
+        context["generoXcursoCompare"] = graph_genero_vs_course_comparation(request)
+    elif graph_name == "classeXcurso":
+        context["classeXcurso"] = graph_social_class_vs_course(request)
+    elif graph_name == "classeXcursoCompare":
+        context["classeXcursoCompare"] = graph_social_class_vs_course_comparation(request)
     elif graph_name == "ageXarea":
         context["ageXarea"] = graph_age_vs_area(request)
     elif graph_name == "generoXarea":
@@ -344,18 +349,22 @@ def graph_age_vs_area(request):
 #region Profissionais vs Universidade ( Genero X Curso , Genero X Universidade)
 def graphs_profissionais_vs_universidade(request):
     context["generoXcurso"] = None
-    context["generoXuniversidade"] = None
-    context["classXcourse"] = None
+    context["generoXcursoCompare"] = None
+    context["classeXcurso"] = None
+    context["classeXcursoCompare"] = None
 
     generoXcurso = graph_genero_vs_course(request)
 
-    generoXuniversidade = graph_genero_vs_universidade(request)
+    generoXcursoCompare = graph_genero_vs_course_comparation(request)
 
-    classXcourse = graph_social_class_vs_course(request)
+    classeXcurso = graph_social_class_vs_course(request)
+
+    classeXcursoCompare = graph_social_class_vs_course_comparation(request)
 
     context["generoXcurso"] = generoXcurso
-    context["generoXuniversidade"] = generoXuniversidade
-    context["classXcourse"] = classXcourse
+    context["generoXcursoCompare"] = generoXcursoCompare
+    context["classeXcurso"] = classeXcurso
+    context["classeXcursoCompare"] = classeXcursoCompare
 
     return render(request, 'metrics/page1/graphs_profissionais_vs_universidade.html', context)
 
@@ -397,7 +406,7 @@ def graph_genero_vs_course(request):
         finalResult["Courses"] = list(courses)
     return finalResult
 
-def graph_genero_vs_universidade(request):
+def graph_genero_vs_course_comparation(request):
     finalResult = {}
     if GeneroDadosComparativos.validacao_colunas(data):
         workingData = data
@@ -435,49 +444,10 @@ def graph_genero_vs_universidade(request):
 
 def graph_social_class_vs_course(request):
     finalResult = {}
-    if check_minium_values(["Curso", "Classe"], data):
-
-        states = []
-        universities = []
-
-        if check_minium_values(["Instituicao", "Estado_Universidade"], data):
-            counter = data.groupby(['Curso', 'Classe', "Instituicao", "Estado_Universidade"],
-                                   dropna=False).size().reset_index(name='Count')
-            states = counter.Estado_Universidade.dropna().unique()
-        elif check_minium_values(["Instituicao"], data):
-            counter = data.groupby(['Curso', 'Classe', "Instituicao"], dropna=False).size().reset_index(name='Count')
-        else:
-            counter = data.groupby(['Curso', 'Classe'], dropna=False).size().reset_index(name='Count')
-
-        university = get_value_string("Instituicao", "universityClassXCourse", "Todos", request, "classXcourse")
-        state = get_value_string("State", "statesClassXCourse", "Todos", request, "classXcourse")
-        if "statesClassXCourse" in request.POST and request.POST["statesClassXCourse"] != context["classXcourse"]["State"]:
-            university = "Todos"
-
-        if state != "Todos":
-            counter = counter[counter.Estado_Universidade == state]
-
-        if "Instituicao" in data:
-            universities = counter.Instituicao.dropna().unique()
-
-        if university != "Todos":
-            counter = counter[counter.Instituicao == university]
-
-        courses = counter.Curso.dropna().unique()
-        course = get_value_string("Course", "courseClassXCourse", "Todos", request, "classXcourse")
-
-        columns = get_all_columns(['Curso', 'Classe', "Instituicao", "Estado_Universidade"], counter)
-        if course in counter.Curso.values:
-            df_new = counter.groupby(columns, dropna=False).sum()
-            courseValue = df_new['Count'][course]
-        elif course == "Todos":
-            columns.remove("Curso")
-            df_new = counter.groupby(columns, dropna=False).sum()
-            courseValue = df_new['Count']
-        else:
-            df_new = counter.groupby(columns, dropna=False).sum()
-            course = courses[0]
-            courseValue = df_new['Count'][course]
+    if ClasseDadosAcademicos.validacao_colunas(data):
+        workingData = data
+        newData = ClasseDadosAcademicos.unifica_colunas(workingData)
+        states, state, universities, university, courses, course, courseValue = ClasseDadosAcademicos.valida_dados_enviados(newData, request, context)
 
         listTotal = []
         listLabels = courseValue.index.levels[0].values.tolist()
@@ -497,6 +467,42 @@ def graph_social_class_vs_course(request):
         finalResult["Courses"] = list(courses)
     return finalResult
 
+def graph_social_class_vs_course_comparation(request):
+    finalResult = {}
+    if ClasseDadosComparativos.validacao_colunas(data):
+        workingData = data
+        newData = ClasseDadosComparativos.unifica_colunas(workingData)
+        states, state, courses, course, classes, selectedClass, total, entity, complementData, finalData, noInfo = ClasseDadosComparativos.valida_dados_enviados(
+            newData, request, context)
+        all_values = []
+        list_areas = []
+        list_values = []
+        if not noInfo:
+            for index, value in finalData.items():
+                result = {}
+                result["Area"] = index
+                area_frame = complementData['Count'][index]
+                total_people = area_frame.sum()
+                if selectedClass in area_frame:
+                    result["ClassValue"] = (int(area_frame[selectedClass]) * 100) / total_people
+                    all_values.append(result)
+            if len(all_values) > 0:
+                all_values.sort(key=lambda x: x["ClassValue"], reverse=True)
+
+                list_areas = list(o["Area"] for o in all_values)
+                list_values = list(o["ClassValue"] for o in all_values)
+
+        finalResult["Instituicoes"] = list_areas
+        finalResult["Data"] = list_values
+        finalResult["States"] = list(states)
+        finalResult["State"] = state
+        finalResult["Total"] = total
+        finalResult["Class"] = selectedClass
+        finalResult["Classes"] = list(classes)
+        finalResult["Course"] = course
+        finalResult["Courses"] = list(courses)
+        finalResult["Entity"] = entity
+    return finalResult
 
 #endregion
 

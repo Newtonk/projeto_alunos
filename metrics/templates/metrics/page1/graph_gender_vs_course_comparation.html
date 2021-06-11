@@ -2,7 +2,7 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
-#divgenerouniversidade {
+#divgeneroCourseComparation {
 display: block;
 max-width: 944px;
 max-height: 472px;
@@ -12,10 +12,10 @@ margin: auto;
 </style>
 
 <div id="div_gen_uni" class="col-md-12">
-<form id="myform2" method="POST" action="" enctype = "multipart/form-data" onchange="handlerGenderUniversity">
+<form id="myform2" method="POST" action="" enctype = "multipart/form-data" onchange="handlerGenderCourseComparation">
 {% csrf_token %}
-<label for="qtygenderuniversidade">Escolha o numero de elementos máximo:</label>
-<select name="qtygenderuniversidade" id="qtygenderuniversidade">
+<label for="qtygenderCourseComparation">Escolha o numero de elementos máximo:</label>
+<select name="qtygenderCourseComparation" id="qtygenderCourseComparation">
   <option value="5">5</option>
   <option value="10" selected>10</option>
   <option value="15">15</option>
@@ -35,37 +35,37 @@ margin: auto;
 <label for="statesComparation">Estado:</label>
 <select name="statesComparation" id="statesComparation"></select>
 </form>
-<div id="divgenerouniversidade">
-    <div id="no-data">
+<div id="divgeneroCourseComparation">
+    <div id="no-data-gender-course-comparation">
         <h2>Informação insuficiente para gerar o gráfico</h2>
     </div>
-    <canvas id="generoXuniversidade" ng-if="data != 0"></canvas>
+    <canvas id="generoXcursoCompare" ng-if="data != 0"></canvas>
 </div>
 </div>
 
 <!-- Funções jQuery de atualização e afins -->
 <script>
-const handlerGenderUniversity = function(e) {
+const handlerGenderCourseComparation = function(e) {
    var formData = $('#myform2').serialize()
    e.preventDefault(); // avoid to execute the actual submit of the form.
    $.ajax({
         url: "/update_graph/",
-        data: formData + "&graph_name=generoXuniversidade",
+        data: formData + "&graph_name=generoXcursoCompare",
         cache: false,
         dataType: 'json',
         type: 'POST',
         success: function (data, status) {
-        		genderUniversity = data.generoXuniversidade
-				updateGraphGenderUniversity(genderUniversity)
+        		genderCourseComparation = data.generoXcursoCompare
+				updateGraphGenderCourseComparation(genderCourseComparation)
 				select = document.getElementById("statesComparation")
-				select.value = genderUniversity.State;
-				document.getElementById("qtygenderuniversidade").value = genderUniversity["Total"];
-				document.getElementById("entitygenderComparation").value = genderUniversity["Entity"];
+				select.value = genderCourseComparation.State;
+				document.getElementById("qtygenderCourseComparation").value = genderCourseComparation["Total"];
+				document.getElementById("entitygenderComparation").value = genderCourseComparation["Entity"];
 
 				select = document.getElementById("genderComparation")
 				 $("#genderComparation").empty();
 
-				 instValues = genderUniversity.Genders;
+				 instValues = genderCourseComparation.Genders;
 
 				 for (const value of instValues)
 				 {
@@ -74,7 +74,7 @@ const handlerGenderUniversity = function(e) {
 					  option.text = value.charAt(0).toUpperCase() + value.slice(1);
 					  select.appendChild(option);
 				 }
-				 select.value = genderUniversity.Gender;
+				 select.value = genderCourseComparation.Gender;
 
 				 select = document.getElementById("courseComparation")
 				 $("#courseComparation").empty();
@@ -84,7 +84,7 @@ const handlerGenderUniversity = function(e) {
                  option.text = "Todos";
                  select.appendChild(option);
 
-				 instValues = genderUniversity.Courses;
+				 instValues = genderCourseComparation.Courses;
 
 				 for (const value of instValues)
 				 {
@@ -93,7 +93,7 @@ const handlerGenderUniversity = function(e) {
 					  option.text = value.charAt(0).toUpperCase() + value.slice(1);
 					  select.appendChild(option);
 				 }
-				 select.value = genderUniversity.Course;
+				 select.value = genderCourseComparation.Course;
 
 				 select = document.getElementById("statesComparation")
 				 $("#statesComparation").empty();
@@ -112,48 +112,47 @@ const handlerGenderUniversity = function(e) {
                     option.text = state.charAt(0).toUpperCase() + state.slice(1);
                     select.appendChild(option);
                 }
-                select.value = genderUniversity.State;
+                select.value = genderCourseComparation.State;
 
         }
     });
 }
 
 var select = document.getElementById('myform2');
-select.addEventListener('change', handlerGenderUniversity);
+select.addEventListener('change', handlerGenderCourseComparation);
 
 </script>
 
 <!-- Método que realiza a atualização do gráfico -->
 <script>
-function updateGraphGenderUniversity(object_all)
+function updateGraphGenderCourseComparation(object_all)
 {
 	if (Object.keys(object_all).length == 0 || Object.keys(object_all["Data"]).length == 0)
 	{
-	    document.getElementById('no-data').style.display = 'block';
-        document.getElementById('generoXuniversidade').style.display = 'none'
+	    document.getElementById('no-data-gender-course-comparation').style.display = 'block';
+        document.getElementById('generoXcursoCompare').style.display = 'none'
     }
     else
     {
-        document.getElementById('no-data').style.display = 'none';
-        document.getElementById('generoXuniversidade').style.display = 'block'
+        document.getElementById('no-data-gender-course-comparation').style.display = 'none';
+        document.getElementById('generoXcursoCompare').style.display = 'block'
         var colorArray = [ 'blue'];
-        chartGenderUniversity.data.labels = object_all["Instituicoes"]
-        chartGenderUniversity.data.datasets[0].label = object_all["Gender"]
-        chartGenderUniversity.data.datasets[0].backgroundColor = colorArray[0]
-        chartGenderUniversity.data.datasets[0].data = object_all["Data"]
-        chartGenderUniversity.update();
-        chartGenderUniversity.render();
+        chartGenderCourseComparation.data.labels = object_all["Instituicoes"]
+        chartGenderCourseComparation.data.datasets[0].label = object_all["Gender"]
+        chartGenderCourseComparation.data.datasets[0].backgroundColor = colorArray[0]
+        chartGenderCourseComparation.data.datasets[0].data = object_all["Data"]
+        chartGenderCourseComparation.update();
 	}
 }
 </script>
 
 <!-- Função que cria o gráfico inicialmente -->
 <script>
-function createGraphGenderUniversity(object_all)
+function createGraphGenderCourseComparation(object_all)
 {
 var colorArray = [ 'blue'];
 
-chartGenderUniversity = new Chart(document.getElementById("generoXuniversidade"), {
+chartGenderCourseComparation = new Chart(document.getElementById("generoXcursoCompare"), {
         type: 'bar',
         data: {
           labels: object_all["Instituicoes"],
@@ -177,15 +176,15 @@ chartGenderUniversity = new Chart(document.getElementById("generoXuniversidade")
 
 <!-- Função do método init -->
 <script>
-function initGenderUniversity(object_all) {
+function initGenderCourseComparation(object_all) {
 
 if (Object.keys(object_all).length == 0)
 {
-    document.getElementById("div_gen_uni").innerHTML = "Sem informações suficientes para gerar os gráficos!";
+    document.getElementById("divgeneroCourseComparation").innerHTML = "Sem informações suficientes para gerar os gráficos!";
 }
 else
 {
-document.getElementById("qtygenderuniversidade").value = object_all["Total"];
+document.getElementById("qtygenderCourseComparation").value = object_all["Total"];
 
 select = document.getElementById("statesComparation")
 
@@ -203,7 +202,7 @@ for (const state of all_states)
     option.text = state.charAt(0).toUpperCase() + state.slice(1);
     select.appendChild(option);
 }
-select.value = "{{ generoXuniversidade.State | safe}}";
+select.value = object_all["State"];
 
 selectCourse = document.getElementById("courseComparation")
 
@@ -236,16 +235,15 @@ for (const gender of all_genders)
 }
 selectGender.value = object_all["Gender"];
 
-createGraphGenderUniversity(object_all)
+createGraphGenderCourseComparation(object_all)
 }
 }
 </script>
 
 <!-- Execucao inicial do método init -->
 <script>
-    var lastChartGenderUniversity;
-    document.getElementById('no-data').style.display = 'none';
-    var chartGenderUniversity;
-    var genderUniversity = {{ generoXuniversidade | safe }}
-    initGenderUniversity(genderUniversity);
+    document.getElementById('no-data-gender-course-comparation').style.display = 'none';
+    var chartGenderCourseComparation;
+    var genderCourseComparation = {{ generoXcursoCompare | safe }}
+    initGenderCourseComparation(genderCourseComparation);
 </script>

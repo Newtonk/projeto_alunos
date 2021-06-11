@@ -1,0 +1,249 @@
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+#divclasscourseComparation {
+display: block;
+max-width: 944px;
+max-height: 472px;
+margin: auto;
+}
+
+</style>
+
+<div id="div_class_course_comparative" class="col-md-12">
+<form id="myform4" method="POST" action="" enctype = "multipart/form-data" onchange="handlerComparativeClassCourse">
+{% csrf_token %}
+<label for="qtyclasscoursecompare">Escolha o numero de elementos máximo:</label>
+<select name="qtyclasscoursecompare" id="qtyclasscoursecompare">
+  <option value="5">5</option>
+  <option value="10" selected>10</option>
+  <option value="15">15</option>
+  <option value="20">20</option>
+</select>
+<br>
+<label for="entityComparationInClass">Comparacao por:</label>
+<select name="entityComparationInClass" id="entityComparationInClass">
+     <option value="Instituicao" selected>Instituicao</option>
+     <option value="Curso">Curso</option>
+</select>
+<label for="classComparationInClass">Classe Social:</label>
+<select name="classComparationInClass" id="classComparationInClass"></select>
+<label for="courseComparationInClass">Curso:</label>
+<select name="courseComparationInClass" id="courseComparationInClass"></select>
+<br>
+<label for="statesComparationInClass">Estado:</label>
+<select name="statesComparationInClass" id="statesComparationInClass"></select>
+</form>
+<div id="divclasscourseComparation">
+    <div id="no-data-class-course-comparation">
+        <h2>Informação insuficiente para gerar o gráfico</h2>
+    </div>
+    <canvas id="classeXcursoCompare" ng-if="data != 0"></canvas>
+</div>
+</div>
+
+<!-- Funções jQuery de atualização e afins -->
+<script>
+const handlerComparativeClassCourse = function(e) {
+   var formData = $('#myform4').serialize()
+   e.preventDefault(); // avoid to execute the actual submit of the form.
+   $.ajax({
+        url: "/update_graph/",
+        data: formData + "&graph_name=classeXcursoCompare",
+        cache: false,
+        dataType: 'json',
+        type: 'POST',
+        success: function (data, status) {
+        		classComparation = data.classeXcursoCompare
+				updateGraphClassCourseComparation(classComparation)
+				select = document.getElementById("statesComparationInClass")
+				select.value = classComparation.State;
+				document.getElementById("qtyclasscoursecompare").value = classComparation.Total
+				document.getElementById("entityComparationInClass").value = classComparation.Entity
+
+				select = document.getElementById("classComparationInClass")
+				 $("#classComparationInClass").empty();
+
+				 instValues = classComparation.Classes;
+
+				 for (const value of instValues)
+				 {
+					  var option = document.createElement("option");
+					  option.value = value;
+					  option.text = value.charAt(0).toUpperCase() + value.slice(1);
+					  select.appendChild(option);
+				 }
+				 select.value = classComparation.Class;
+
+				 select = document.getElementById("courseComparationInClass")
+				 $("#courseComparationInClass").empty();
+
+                 var option = document.createElement("option");
+                 option.value = "Todos";
+                 option.text = "Todos";
+                 select.appendChild(option);
+
+				 instValues = classComparation.Courses;
+
+				 for (const value of instValues)
+				 {
+					  var option = document.createElement("option");
+					  option.value = value;
+					  option.text = value.charAt(0).toUpperCase() + value.slice(1);
+					  select.appendChild(option);
+				 }
+				 select.value = classComparation.Course;
+
+				 select = document.getElementById("statesComparationInClass")
+				 $("#statesComparationInClass").empty();
+
+                instValues = classComparation.States;
+
+                var option = document.createElement("option");
+                option.value = "Todos";
+                option.text = "Todos";
+                select.appendChild(option);
+
+                for (const state of instValues)
+                {
+                    var option = document.createElement("option");
+                    option.value = state;
+                    option.text = state.charAt(0).toUpperCase() + state.slice(1);
+                    select.appendChild(option);
+                }
+                select.value = classComparation.State;
+
+        }
+    });
+}
+
+var select = document.getElementById('myform4');
+select.addEventListener('change', handlerComparativeClassCourse);
+
+</script>
+
+<!-- Método que realiza a atualização do gráfico -->
+<script>
+function updateGraphClassCourseComparation(object_all)
+{
+	if (Object.keys(object_all).length == 0 || Object.keys(object_all["Data"]).length == 0)
+	{
+	    document.getElementById('no-data-class-course-comparation').style.display = 'block';
+        document.getElementById('classeXcursoCompare').style.display = 'none'
+    }
+    else
+    {
+        document.getElementById('no-data-class-course-comparation').style.display = 'none';
+        document.getElementById('classeXcursoCompare').style.display = 'block'
+        var colorArray = [ 'blue'];
+        chartClassCourseComparation.data.labels = object_all["Instituicoes"]
+        chartClassCourseComparation.data.datasets[0].label = object_all["Class"]
+        chartClassCourseComparation.data.datasets[0].backgroundColor = colorArray[0]
+        chartClassCourseComparation.data.datasets[0].data = object_all["Data"]
+        chartClassCourseComparation.update();
+	}
+}
+</script>
+
+<!-- Função que cria o gráfico inicialmente -->
+<script>
+function createGraphClassCourseComparation(object_all)
+{
+var colorArray = [ 'blue'];
+
+chartClassCourseComparation = new Chart(document.getElementById("classeXcursoCompare"), {
+        type: 'bar',
+        data: {
+          labels: object_all["Instituicoes"],
+          datasets: [{
+                label : object_all["Class"],
+                backgroundColor: colorArray,
+                data: object_all["Data"]
+            }]
+        },
+        options: {
+        plugins: {
+          title: {
+            display: true,
+            text: 'Comparativo Classe Social em (%)'
+          },
+         },
+        }
+        });
+}
+</script>
+
+<!-- Função do método init -->
+<script>
+function initClassCourseComparation(object_all) {
+
+    if (Object.keys(object_all).length == 0)
+    {
+        document.getElementById("divclasscourseComparation").innerHTML = "Sem informações suficientes para gerar os gráficos!";
+    }
+    else
+    {
+    document.getElementById("qtyclasscoursecompare").value = object_all["Total"];
+
+    select = document.getElementById("statesComparationInClass")
+
+    all_states = object_all["States"];
+
+    var option = document.createElement("option");
+    option.value = "Todos";
+    option.text = "Todos";
+    select.appendChild(option);
+
+    for (const state of all_states)
+    {
+        var option = document.createElement("option");
+        option.value = state;
+        option.text = state.charAt(0).toUpperCase() + state.slice(1);
+        select.appendChild(option);
+    }
+    select.value = object_all["State"];
+
+    selectCourse = document.getElementById("courseComparationInClass")
+
+    all_courses = object_all["Courses"];
+
+    var option = document.createElement("option");
+    option.value = "Todos";
+    option.text = "Todos";
+    selectCourse.appendChild(option);
+
+    for (const course of all_courses)
+    {
+        var option = document.createElement("option");
+        option.value = course;
+        option.text = course.charAt(0).toUpperCase() + course.slice(1);
+        selectCourse.appendChild(option);
+    }
+    selectCourse.value = object_all["Course"];
+
+    selectClass = document.getElementById("classComparationInClass")
+
+    all_classes = object_all["Classes"];
+
+    for (const obj_class of all_classes)
+    {
+        var option = document.createElement("option");
+        option.value = obj_class;
+        option.text = obj_class.charAt(0).toUpperCase() + obj_class.slice(1);
+        selectClass.appendChild(option);
+    }
+    selectClass.value = object_all["Class"];
+
+    createGraphClassCourseComparation(object_all)
+    }
+}
+</script>
+
+<!-- Execucao inicial do método init -->
+<script>
+    document.getElementById('no-data-class-course-comparation').style.display = 'none';
+    var chartClassCourseComparation;
+    var classCourseComparation = {{ classeXcursoCompare | safe }}
+    initClassCourseComparation(classCourseComparation);
+</script>
