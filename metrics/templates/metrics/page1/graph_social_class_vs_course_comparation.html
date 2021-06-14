@@ -42,6 +42,24 @@ margin: auto;
 </div>
 </div>
 
+<!-- Create Request based on the parameters -->
+<script>
+	function createRequest()
+	{
+		request = {}
+		var companyValue = $("#companyGenderXLaborMarket").select2('data').text;
+		request["companyGenderXLaborMarket"] = companyValue
+	    var stateValue = $("#statesGenderXLaborMarket").select2('data').text;
+		request["statesGenderXLaborMarket"] = stateValue
+		var areaValue = $("#areaGenderXLaborMarket").select2('data').text;
+		request["areaGenderXLaborMarket"] = areaValue
+		request["graph_name"] = "generoXmercadodetrabalho"
+		request["csrfmiddlewaretoken"] = "{{ csrf_token }}"
+		return request
+	}
+
+</script>
+
 <!-- Funções jQuery de atualização e afins -->
 <script>
 const handlerComparativeClassCourse = function(e) {

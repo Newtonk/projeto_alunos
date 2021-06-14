@@ -10,7 +10,7 @@
 <script src="//cdnjs.cloudflare.com/ajax/libs/select2/3.5.4/select2.min.js"></script>
 
 <style>
-#divgenerolabormarket {
+#divclasslabormarket {
 display: block;
 max-width: 944px;
 max-height: 472px;
@@ -20,22 +20,22 @@ margin: auto;
 </style>
 
 <div id="div_gender_vs_labor_market" class="col-md-12">
-	<form id="myform" action="" onchange="handlerGenderLaborMarket">
+	<form id="myform3" action="" onchange="handlerClassLaborMarket">
 	{% csrf_token %}
-	<label for="statesGenderXLaborMarket">Escolha a UF da empresa:</label>
-	<input id="statesGenderXLaborMarket">
+	<label for="statesClassXLaborMarket">Escolha a UF da empresa:</label>
+	<input id="statesClassXLaborMarket">
 	<br>
-	<label for="companyGenderXLaborMarket">Escolha a empresa:</label>
-	<input id="companyGenderXLaborMarket" style="width:100%;">
+	<label for="companyClassXLaborMarket">Escolha a empresa:</label>
+	<input id="companyClassXLaborMarket" style="width:100%;">
 	<br>
-	<label for="areaGenderXLaborMarket">Escolha a area:</label>
-	<input id="areaGenderXLaborMarket" style="width:50%;">
+	<label for="areaClassXLaborMarket">Escolha a area:</label>
+	<input id="areaClassXLaborMarket" style="width:50%;">
 	</form>
-	<div id="divgenerolabormarket">
-		<div id="no-data-gender-vs-labor-market">
+	<div id="divclasslabormarket">
+		<div id="no-data-class-vs-labor-market">
         	<h2>Informação insuficiente para gerar o gráfico</h2>
     	</div>
-		<canvas id="generoXmercadodetrabalho"></canvas>
+		<canvas id="classeXmercadodetrabalho"></canvas>
 	</div>
 </div>
 
@@ -47,13 +47,13 @@ margin: auto;
 		$.each($('#myform').serializeArray(), function(_, kv) {
 		  final_request[kv.name] = kv.value;
 		});
-		var companyValue = $("#companyGenderXLaborMarket").select2('data').text;
-		final_request["companyGenderXLaborMarket"] = companyValue
-	    var stateValue = $("#statesGenderXLaborMarket").select2('data').text;
-		final_request["statesGenderXLaborMarket"] = stateValue
-		var areaValue = $("#areaGenderXLaborMarket").select2('data').text;
-		final_request["areaGenderXLaborMarket"] = areaValue
-		final_request["graph_name"] = "generoXmercadodetrabalho"
+		var companyValue = $("#companyClassXLaborMarket").select2('data').text;
+		final_request["companyClassXLaborMarket"] = companyValue
+	    var stateValue = $("#statesClassXLaborMarket").select2('data').text;
+		final_request["statesClassXLaborMarket"] = stateValue
+		var areaValue = $("#areaClassXLaborMarket").select2('data').text;
+		final_request["areaClassXLaborMarket"] = areaValue
+		final_request["graph_name"] = "classeXmercadodetrabalho"
 		return final_request
 	}
 
@@ -62,7 +62,7 @@ margin: auto;
 <!-- Funções jQuery de atualização e afins -->
 <script>
 
-const handlerGenderLaborMarket = function(e) {
+const handlerClassLaborMarket = function(e) {
    var formData = $('#myform').serializeArray()
    formData = changeValuesinRequest(formData)
    e.preventDefault(); // avoid to execute the actual submit of the form.
@@ -72,50 +72,51 @@ const handlerGenderLaborMarket = function(e) {
         dataType: 'json',
         type: 'POST',
         success: function (data, status) {
-				oldStateValue = genderLaborMarket["State"]
-        		genderLaborMarket = data.generoXmercadodetrabalho
-				updateGraphGenderLaborMarket(genderLaborMarket)
+				oldStateValue = classLaborMarket["State"]
+        		classLaborMarket = data.classeXmercadodetrabalho
+				updateGraphClassLaborMarket(classLaborMarket)
 
-				$("#areaGenderXLaborMarket").empty();
-				initValuesGenderLaborMarket("Areas", "Area", "#areaGenderXLaborMarket")
+				$("#areaClassXLaborMarket").empty();
+				initValuesClassLaborMarket("Areas", "Area", "#areaClassXLaborMarket")
 
-				$("#statesGenderXLaborMarket").empty();
-				initValuesGenderLaborMarket("States", "State", "#statesGenderXLaborMarket")
+				$("#statesClassXLaborMarket").empty();
+				initValuesClassLaborMarket("States", "State", "#statesClassXLaborMarket")
 
-				if (oldStateValue != genderLaborMarket.State)
+				if (oldStateValue != classLaborMarket.State)
 				{
-					$("#companyGenderXLaborMarket").empty();
-					initValuesGenderLaborMarket("Empresas", "Empresa", "#companyGenderXLaborMarket")
+					$("#companyClassXLaborMarket").empty();
+					initValuesClassLaborMarket("Empresas", "Empresa", "#companyClassXLaborMarket")
 				}
         }
     });
 }
 
-$('#companyGenderXLaborMarket').on('change', handlerGenderLaborMarket)
-$('#statesGenderXLaborMarket').on('change', handlerGenderLaborMarket)
-$('#areaGenderXLaborMarket').on('change', handlerGenderLaborMarket)
+$('#companyClassXLaborMarket').on('change', handlerClassLaborMarket)
+$('#statesClassXLaborMarket').on('change', handlerClassLaborMarket)
+$('#areaClassXLaborMarket').on('change', handlerClassLaborMarket)
 
 </script>
 
 <!-- Método que realiza a atualização do gráfico -->
 <script>
-function updateGraphGenderLaborMarket(object_all){
+function updateGraphClassLaborMarket(object_all){
 	if (Object.keys(object_all).length == 0 || Object.keys(object_all["Data"]).length == 0)
 	{
-		document.getElementById('no-data-gender-vs-labor-market').style.display = 'block';
-        document.getElementById('generoXmercadodetrabalho').style.display = 'none'
+		document.getElementById('no-data-class-vs-labor-market').style.display = 'block';
+        document.getElementById('classeXmercadodetrabalho').style.display = 'none'
 	}
 	else
 	{
-	document.getElementById('no-data-gender-vs-labor-market').style.display = 'none';
-	document.getElementById('generoXmercadodetrabalho').style.display = 'block'
-	var colorArray = ["green", "blue", "black"]
-	chartGenderLaborMarket.data.labels = object_all["Labels"]
-	chartGenderLaborMarket.data.datasets[0].label = object_all["Area"]
-	chartGenderLaborMarket.data.datasets[0].backgroundColor = colorArray
-	chartGenderLaborMarket.data.datasets[0].data = object_all["Data"]
-	chartGenderLaborMarket.options.title.text = 'Genero X Area de ' + object_all["Area"]
-	chartGenderLaborMarket.update();
+	document.getElementById('no-data-class-vs-labor-market').style.display = 'none';
+	document.getElementById('classeXmercadodetrabalho').style.display = 'block'
+
+	var colorArray = ["green", "blue", "black", "red" , "purple"]
+	chartClassLaborMarket.data.labels = object_all["Labels"]
+	chartClassLaborMarket.data.datasets[0].label = object_all["Area"]
+	chartClassLaborMarket.data.datasets[0].backgroundColor = colorArray
+	chartClassLaborMarket.data.datasets[0].data = object_all["Data"]
+	chartClassLaborMarket.options.title.text = 'Genero X Area de ' + object_all["Area"]
+	chartClassLaborMarket.update();
 	}
 }
 
@@ -124,11 +125,11 @@ function updateGraphGenderLaborMarket(object_all){
 
 <!-- Função que cria o gráfico inicialmente -->
 <script>
-function createGraphGenderLaborMarket(object_all)
+function createGraphClassLaborMarket(object_all)
 {
 	var colorArray = ["green", "blue", "black", "red" , "purple"]
 
-	chartGenderLaborMarket = new Chart(document.getElementById("generoXmercadodetrabalho"), {
+	chartClassLaborMarket = new Chart(document.getElementById("classeXmercadodetrabalho"), {
 	type: 'pie',
 	data: {
 	  labels: object_all["Labels"],
@@ -167,19 +168,19 @@ function createGraphGenderLaborMarket(object_all)
 
 <!-- Função do método init -->
 <script>
-function initGenderLaborMarket(object_all) {
+function initClassLaborMarket(object_all) {
 
 	if (Object.keys(object_all).length == 0)
 	{
-		document.getElementById("div_gender_vs_labor_market").innerHTML = "Sem informações suficientes para gerar os gráficos!";
+		document.getElementById("no-data-class-vs-labor-market").innerHTML = "Sem informações suficientes para gerar os gráficos!";
 	}
 	else
 	{
-	initValuesGenderLaborMarket("Empresas", "Empresa", "#companyGenderXLaborMarket")
-	initValuesGenderLaborMarket("Areas", "Area", "#areaGenderXLaborMarket")
-	initValuesGenderLaborMarket("States", "State", "#statesGenderXLaborMarket")
+	initValuesClassLaborMarket("Empresas", "Empresa", "#companyClassXLaborMarket")
+	initValuesClassLaborMarket("Areas", "Area", "#areaClassXLaborMarket")
+	initValuesClassLaborMarket("States", "State", "#statesClassXLaborMarket")
 
-	createGraphGenderLaborMarket(object_all)
+	createGraphClassLaborMarket(object_all)
 	}
 }
 
@@ -187,7 +188,7 @@ function initGenderLaborMarket(object_all) {
 
 <script>
 
-function initValuesGenderLaborMarket(all_fields, field, divNameWithTag) {
+function initValuesClassLaborMarket(all_fields, field, divNameWithTag) {
 	var testData = [];
 
 	testData.push(
@@ -196,11 +197,11 @@ function initValuesGenderLaborMarket(all_fields, field, divNameWithTag) {
 		text: "Todos"
 		});
 	// Instead of doing this use the AJAX call to poulate the data.
-	for (var i=0; i < genderLaborMarket[all_fields].length; i++) {
+	for (var i=0; i < classLaborMarket[all_fields].length; i++) {
 		testData.push(
 		{
 		id : i+1,
-		text: genderLaborMarket[all_fields][i]
+		text: classLaborMarket[all_fields][i]
 		});
 	}
 
@@ -230,7 +231,7 @@ function initValuesGenderLaborMarket(all_fields, field, divNameWithTag) {
     }
 	})
 
-	var data = testData.find(o => o.text === genderLaborMarket[field])
+	var data = testData.find(o => o.text === classLaborMarket[field])
 
 	$(divNameWithTag).select2("data", data);
 }
@@ -238,8 +239,8 @@ function initValuesGenderLaborMarket(all_fields, field, divNameWithTag) {
 
 <!-- Execucao inicial do método init -->
 <script>
-	document.getElementById('no-data-gender-vs-labor-market').style.display = 'none';
-	var chartGenderLaborMarket;
-	var genderLaborMarket = {{ generoXmercadodetrabalho | safe }}
-	initGenderLaborMarket(genderLaborMarket);
+	document.getElementById('no-data-class-vs-labor-market').style.display = 'none';
+	var chartClassLaborMarket;
+	var classLaborMarket = {{ classeXmercadodetrabalho | safe }}
+	initClassLaborMarket(classLaborMarket);
 </script>

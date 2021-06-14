@@ -1,16 +1,16 @@
 from metrics.utils import *
 
-class GeneroDadosEmpresariais:
+class ClasseDadosEmpresariais:
     @staticmethod
     def validacao_colunas(data):
-        colunas = pegue_todas_colunas(['Area', 'Empresa', "Genero", "Estado_Empresa"], data)
-        if "Genero" in colunas and ("Area" in colunas or "Empresa" in colunas):
+        colunas = pegue_todas_colunas(['Area', 'Empresa', "Classe", "Estado_Empresa"], data)
+        if "Classe" in colunas and ("Area" in colunas or "Empresa" in colunas):
             return True
         return False
 
     @staticmethod
     def unifica_colunas(data):
-        colunas = pegue_todas_colunas(['Genero', 'Area', "Empresa", "Estado_Empresa"], data)
+        colunas = pegue_todas_colunas(['Classe', 'Area', "Empresa", "Estado_Empresa"], data)
         dados_unificados = data.groupby(colunas, dropna=False).size().reset_index(name='Count')
         return dados_unificados
 
@@ -20,7 +20,7 @@ class GeneroDadosEmpresariais:
         selectedState = "Todos"
         if checa_valor("Estado_Empresa", data):
             ufs = data.Estado_Empresa.dropna().unique()
-            selectedState = get_value_string("State", "statesGenderXLaborMarket", "Todos", request, "generoXmercadodetrabalho", context)
+            selectedState = get_value_string("State", "statesClassXLaborMarket", "Todos", request, "classeXmercadodetrabalho", context)
         if selectedState != "Todos":
             data = data[data.Estado_Empresa == selectedState]
         return ufs, selectedState, data
@@ -31,8 +31,8 @@ class GeneroDadosEmpresariais:
         selectedCompany = "Todos"
         if checa_valor("Empresa", data):
             companies = data.Empresa.dropna().unique()
-            selectedCompany = get_value_string("Empresa", "companyGenderXLaborMarket", "Todos", request, "generoXmercadodetrabalho", context)
-            if "statesGenderXLaborMarket" in request.POST and request.POST["statesGenderXLaborMarket"] != context["generoXmercadodetrabalho"]["State"]:
+            selectedCompany = get_value_string("Empresa", "companyClassXLaborMarket", "Todos", request, "classeXmercadodetrabalho", context)
+            if "statesClassXLaborMarket" in request.POST and request.POST["statesClassXLaborMarket"] != context["classeXmercadodetrabalho"]["State"]:
                 selectedCompany = "Todos"
         if selectedCompany != "Todos":
             data = data[data.Empresa == selectedCompany]
@@ -44,7 +44,7 @@ class GeneroDadosEmpresariais:
         selectedArea = "Todos"
         if checa_valor("Area", data):
             areas = data.Area.dropna().unique()
-            selectedArea = get_value_string("Area", "areaGenderXLaborMarket", "Todos", request, "generoXmercadodetrabalho", context)
+            selectedArea = get_value_string("Area", "areaClassXLaborMarket", "Todos", request, "classeXmercadodetrabalho", context)
             if selectedArea not in data.Area.values and selectedArea != "Todos":
                 selectedArea = "Todos"
         if selectedArea != "Todos":
@@ -56,14 +56,14 @@ class GeneroDadosEmpresariais:
     def valida_dados_enviados(data, request, context):
         newData = None
         noInfo = False
-        ufs, uf, newData = GeneroDadosEmpresariais.campo_uf_empresa(data, request, context)
-        companies, company, newData = GeneroDadosEmpresariais.campo_empresa(newData, request, context)
-        areas, area, newData = GeneroDadosEmpresariais.campo_area(newData, request, context)
+        ufs, uf, newData = ClasseDadosEmpresariais.campo_uf_empresa(data, request, context)
+        companies, company, newData = ClasseDadosEmpresariais.campo_empresa(newData, request, context)
+        areas, area, newData = ClasseDadosEmpresariais.campo_area(newData, request, context)
 
         if newData.items() == 0:
             noInfo = True
 
-        colunas = pegue_todas_colunas(['Area', 'Genero', "Empresa", "Estado_Empresa"], data)
+        colunas = pegue_todas_colunas(['Area', 'Classe', "Empresa", "Estado_Empresa"], data)
         if checa_valor("Area", data):
             if area == "Todos":
                 colunas.remove("Area")

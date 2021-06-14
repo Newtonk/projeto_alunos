@@ -24,11 +24,30 @@ margin: auto;
 	<select name="universityClassXCourse" id="universityClassXCourse" ></select>
 	</form>
 	<div id="divclasscourse">
+		<div id="no-data-class-vs-curso">
+        	<h2>Informação insuficiente para gerar o gráfico</h2>
+    	</div>
 		<canvas id="classeXcurso"></canvas>
 	</div>
 </div>
 
+<!-- Create Request based on the parameters -->
+<script>
+	function createRequest()
+	{
+		request = {}
+		var companyValue = $("#companyGenderXLaborMarket").select2('data').text;
+		request["companyGenderXLaborMarket"] = companyValue
+	    var stateValue = $("#statesGenderXLaborMarket").select2('data').text;
+		request["statesGenderXLaborMarket"] = stateValue
+		var areaValue = $("#areaGenderXLaborMarket").select2('data').text;
+		request["areaGenderXLaborMarket"] = areaValue
+		request["graph_name"] = "generoXmercadodetrabalho"
+		request["csrfmiddlewaretoken"] = "{{ csrf_token }}"
+		return request
+	}
 
+</script>
 
 <!-- Funções jQuery de atualização e afins -->
 <script>
@@ -97,13 +116,16 @@ select.addEventListener('change', handlerClassCourse);
 <!-- Método que realiza a atualização do gráfico -->
 <script>
 function updateGraphClassCourse(object_all){
-	if (Object.keys(object_all).length == 0)
+	if (Object.keys(object_all).length == 0 || Object.keys(object_all["Data"]).length == 0)
 	{
-		chartClassCourse.destroy();
-		document.getElementById("div_class_vs_course").innerHTML += "Sem informações suficientes para gerar os gráficos!";
+		document.getElementById('no-data-class-vs-curso').style.display = 'block';
+        document.getElementById('classeXcurso').style.display = 'none'
 	}
 	else
 	{
+	document.getElementById('no-data-class-vs-curso').style.display = 'none';
+	document.getElementById('classeXcurso').style.display = 'block'
+
 	var colorArray = ["green", "blue", "black", "red" , "purple"]
 	chartClassCourse.data.labels = object_all["Labels"]
 	chartClassCourse.data.datasets[0].label = object_all["Course"]
@@ -234,6 +256,7 @@ function initClassCourse(object_all) {
 
 <!-- Execucao inicial do método init -->
 <script>
+	document.getElementById('no-data-class-vs-curso').style.display = 'none';
 	var chartClassCourse;
 	var classCourse = {{ classeXcurso | safe }}
 	initClassCourse(classCourse);

@@ -1,0 +1,250 @@
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" />
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/select2/3.5.4/select2.min.css" />
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/select2-bootstrap-css/1.4.6/select2-bootstrap.min.css" />
+<script src="//cdnjs.cloudflare.com/ajax/libs/lodash.js/4.15.0/lodash.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/select2/3.5.4/select2.min.js"></script>
+
+<style>
+#divgeneroLaborMarketComparation {
+display: block;
+max-width: 944px;
+max-height: 472px;
+margin: auto;
+}
+
+</style>
+
+<div id="div_gen_uni" class="col-md-12">
+<form id="myform2" method="POST" action="" enctype = "multipart/form-data" onchange="handlerGenderLaborMarketComparation">
+{% csrf_token %}
+<label for="qtygenderLaborMarketComparation">Escolha o numero de elementos máximo:</label>
+<select name="qtygenderLaborMarketComparation" id="qtygenderLaborMarketComparation">
+  <option value="5">5</option>
+  <option value="10" selected>10</option>
+  <option value="15">15</option>
+  <option value="20">20</option>
+</select>
+<br>
+<label for="entitygenderLaborMarketComparation">Comparacao por:</label>
+<select name="entitygenderLaborMarketComparation" id="entitygenderLaborMarketComparation">
+     <option value="Empresa" selected>Empresa</option>
+     <option value="Area">Area</option>
+</select>
+<label for="genderLaborMarketComparation">Genero:</label>
+<input id="genderLaborMarketComparation">
+<label for="areaLaborMarketComparation">Area:</label>
+<input id="areaLaborMarketComparation">
+<br>
+<label for="statesLaborMarketComparation">Estado da empresa:</label>
+<input id="statesLaborMarketComparation">
+</form>
+<div id="divgeneroLaborMarketComparation">
+    <div id="no-data-gender-labor-market-comparation">
+        <h2>Informação insuficiente para gerar o gráfico</h2>
+    </div>
+    <canvas id="generoXmercadodetrabalhoCompare" ng-if="data != 0"></canvas>
+</div>
+</div>
+
+<!-- Create Request based on the parameters -->
+<script>
+	function changeValuesinRequest(request)
+	{
+		var final_request = {};
+		$.each($('#myform2').serializeArray(), function(_, kv) {
+		  final_request[kv.name] = kv.value;
+		});
+		var gendervalue = $("#genderLaborMarketComparation").select2('data').text;
+		final_request["genderLaborMarketComparation"] = gendervalue
+	    var areaValue = $("#areaLaborMarketComparation").select2('data').text;
+		final_request["areaLaborMarketComparation"] = areaValue
+		var stateValue = $("#statesLaborMarketComparation").select2('data').text;
+		final_request["statesLaborMarketComparation"] = stateValue
+		final_request["graph_name"] = "generoXmercadodetrabalhoCompare"
+		return final_request
+	}
+
+</script>
+
+<!-- Funções jQuery de atualização e afins -->
+<script>
+const handlerGenderLaborMarketComparation = function(e) {
+   var formData = $('#myform2').serializeArray()
+   e.preventDefault(); // avoid to execute the actual submit of the form.
+   formData = changeValuesinRequest(formData)
+   $.ajax({
+        url: "/update_graph/",
+        data: formData,
+        cache: false,
+        dataType: 'json',
+        type: 'POST',
+        success: function (data, status) {
+        		genderLaborMarketComparation = data.generoXmercadodetrabalhoCompare
+				updateGraphGenderLaborMarketComparation(genderLaborMarketComparation)
+				$("#genderLaborMarketComparation").empty();
+				initValuesGenderLaborMarketCompare("Genders", "Gender", "#genderLaborMarketComparation", false)
+
+				$("#statesLaborMarketComparation").empty();
+				initValuesGenderLaborMarketCompare("States", "State", "#statesLaborMarketComparation", true)
+
+                $("#areaLaborMarketComparation").empty();
+                initValuesGenderLaborMarketCompare("Areas", "Area", "#areaLaborMarketComparation", true)
+
+                document.getElementById("qtygenderLaborMarketComparation").value = genderLaborMarketComparation["Total"];
+				document.getElementById("entitygenderLaborMarketComparation").value = genderLaborMarketComparation["Entity"];
+        }
+    });
+}
+
+var select = document.getElementById('myform2');
+select.addEventListener('change', handlerGenderLaborMarketComparation);
+$('#genderLaborMarketComparation').on('change', handlerGenderLaborMarketComparation)
+$('#statesLaborMarketComparation').on('change', handlerGenderLaborMarketComparation)
+$('#areaLaborMarketComparation').on('change', handlerGenderLaborMarketComparation)
+
+</script>
+
+<!-- Método que realiza a atualização do gráfico -->
+<script>
+function updateGraphGenderLaborMarketComparation(object_all)
+{
+	if (Object.keys(object_all).length == 0 || Object.keys(object_all["Data"]).length == 0)
+	{
+	    document.getElementById('no-data-gender-labor-market-comparation').style.display = 'block';
+        document.getElementById('generoXmercadodetrabalhoCompare').style.display = 'none'
+    }
+    else
+    {
+        document.getElementById('no-data-gender-labor-market-comparation').style.display = 'none';
+        document.getElementById('generoXmercadodetrabalhoCompare').style.display = 'block'
+        var colorArray = [ 'blue'];
+        chartGenderLaborMarketComparation.data.labels = object_all["Entities"]
+        chartGenderLaborMarketComparation.data.datasets[0].label = object_all["Gender"]
+        chartGenderLaborMarketComparation.data.datasets[0].backgroundColor = colorArray[0]
+        chartGenderLaborMarketComparation.data.datasets[0].data = object_all["Data"]
+        chartGenderLaborMarketComparation.update();
+	}
+}
+</script>
+
+<!-- Função que cria o gráfico inicialmente -->
+<script>
+function createGraphGenderLaborMarketComparation(object_all)
+{
+var colorArray = [ 'blue'];
+
+chartGenderLaborMarketComparation = new Chart(document.getElementById("generoXmercadodetrabalhoCompare"), {
+        type: 'bar',
+        data: {
+          labels: object_all["Instituicoes"],
+          datasets: [{
+                label : object_all["Gender"],
+                backgroundColor: colorArray[0],
+                data: object_all["Data"]
+            }]
+        },
+        options: {
+        scales: {
+        yAxes: [{
+            ticks: {
+                min: 0,
+                max: 100,
+                stepSize: 20
+            }
+        }]
+        },
+      title: {
+            display: true,
+            text: 'Comparativo Genero em (%)'
+         },
+        }
+        });
+}
+</script>
+
+<!-- Função do método init -->
+<script>
+function initGenderLaborMarketComparation(object_all) {
+
+if (Object.keys(object_all).length == 0)
+{
+    document.getElementById("divgeneroCourseComparation").innerHTML = "Sem informações suficientes para gerar os gráficos!";
+}
+else
+{
+
+initValuesGenderLaborMarketCompare("Genders", "Gender", "#genderLaborMarketComparation", false)
+initValuesGenderLaborMarketCompare("States", "State", "#statesLaborMarketComparation", true)
+initValuesGenderLaborMarketCompare("Areas", "Area", "#areaLaborMarketComparation", true)
+
+createGraphGenderLaborMarketComparation(object_all)
+}
+}
+</script>
+
+<script>
+
+function initValuesGenderLaborMarketCompare(all_fields, field, divNameWithTag, hasAllFlag) {
+	var testData = [];
+
+    if (hasAllFlag)
+    {
+	testData.push(
+		{
+		id : 0,
+		text: "Todos"
+		});
+    }
+	// Instead of doing this use the AJAX call to poulate the data.
+	for (var i=0; i < genderLaborMarketComparation[all_fields].length; i++) {
+		testData.push(
+		{
+		id : i+1,
+		text: genderLaborMarketComparation[all_fields][i]
+		});
+	}
+
+
+
+	$(divNameWithTag).select2({
+	  data: testData,
+	  multiple: false,
+	  query: function(q) {
+      var pageSize,
+        results,
+        that = this;
+      pageSize = 20; // or whatever pagesize
+      results = [];
+      if (q.term && q.term !== '') {
+        // HEADS UP; for the _.filter function i use underscore (actually lo-dash) here
+        results = _.filter(that.data, function(e) {
+          return e.text.toUpperCase().indexOf(q.term.toUpperCase()) >= 0;
+        });
+      } else if (q.term === '') {
+        results = that.data;
+      }
+      q.callback({
+        results: results.slice((q.page - 1) * pageSize, q.page * pageSize),
+        more: results.length >= q.page * pageSize,
+      });
+    }
+	})
+
+	var data = testData.find(o => o.text === genderLaborMarketComparation[field])
+
+	$(divNameWithTag).select2("data", data);
+}
+</script>
+
+<!-- Execucao inicial do método init -->
+<script>
+    document.getElementById('no-data-gender-labor-market-comparation').style.display = 'none';
+    var chartGenderLaborMarketComparation;
+    var genderLaborMarketComparation = {{ generoXmercadodetrabalhoCompare | safe }}
+    initGenderLaborMarketComparation(genderLaborMarketComparation);
+</script>
+

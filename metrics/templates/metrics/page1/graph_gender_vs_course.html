@@ -24,11 +24,30 @@ margin: auto;
 	<select name="university" id="university" ></select>
 	</form>
 	<div id="divgenerocurso">
+		<div id="no-data-gender-vs-curso">
+        	<h2>Informação insuficiente para gerar o gráfico</h2>
+    	</div>
 		<canvas id="generoXcurso"></canvas>
 	</div>
 </div>
 
+<!-- Create Request based on the parameters -->
+<script>
+	function createRequest()
+	{
+		request = {}
+		var companyValue = $("#companyGenderXLaborMarket").select2('data').text;
+		request["companyGenderXLaborMarket"] = companyValue
+	    var stateValue = $("#statesGenderXLaborMarket").select2('data').text;
+		request["statesGenderXLaborMarket"] = stateValue
+		var areaValue = $("#areaGenderXLaborMarket").select2('data').text;
+		request["areaGenderXLaborMarket"] = areaValue
+		request["graph_name"] = "generoXmercadodetrabalho"
+		request["csrfmiddlewaretoken"] = "{{ csrf_token }}"
+		return request
+	}
 
+</script>
 
 <!-- Gráficos de Genero X Curso  -->
 <script>
@@ -115,13 +134,16 @@ var chartGenderCourse;
 var genderCourse = {{ generoXcurso | safe }}
 
 function updateGraphGenderCourse(object_all){
-	if (Object.keys(object_all).length == 0)
+	if (Object.keys(object_all).length == 0 || Object.keys(object_all["Data"]).length == 0)
 	{
-		chartGenderCourse.destroy();
-		document.getElementById("div_gen_course").innerHTML += "Sem informações suficientes para gerar os gráficos!";
+		document.getElementById('no-data-gender-vs-curso').style.display = 'block';
+        document.getElementById('generoXcurso').style.display = 'none'
     }
     else
     {
+    document.getElementById('no-data-gender-vs-curso').style.display = 'none';
+	document.getElementById('generoXcurso').style.display = 'block'
+
 	var colorArray = ["green", "blue", "black"]
 	chartGenderCourse.data.labels = object_all["Labels"]
 	chartGenderCourse.data.datasets[0].label = object_all["Course"]
@@ -240,5 +262,6 @@ selectUni.value = object_all["Instituicao"];
 createGraphGenderCourse(object_all)
 }
 }
+document.getElementById('no-data-gender-vs-curso').style.display = 'none';
 init(genderCourse);
 </script>
