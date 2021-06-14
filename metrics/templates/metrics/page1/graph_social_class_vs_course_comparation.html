@@ -1,6 +1,5 @@
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
 <style>
 #divclasscourseComparation {
 display: block;
@@ -158,16 +157,23 @@ chartClassCourseComparation = new Chart(document.getElementById("classeXcursoCom
           labels: object_all["Instituicoes"],
           datasets: [{
                 label : object_all["Class"],
-                backgroundColor: colorArray,
+                backgroundColor: colorArray[0],
                 data: object_all["Data"]
             }]
         },
         options: {
-        plugins: {
+        scales: {
+        yAxes: [{
+            ticks: {
+                min: 0,
+                max: 100,
+                stepSize: 20
+            }
+        }]
+        },
           title: {
             display: true,
             text: 'Comparativo Classe Social em (%)'
-          },
          },
         }
         });

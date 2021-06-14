@@ -86,6 +86,24 @@ const handlerGenderCourse = function(e) {
 				}
 				selectCourse.value = genderCourse.Course;
 
+				$("#statesGenderCourse").empty();
+				selectUfs = document.getElementById("statesGenderCourse")
+				var option = document.createElement("option");
+				option.value = "Todos";
+				option.text = "Todos";
+				selectUfs.appendChild(option);
+
+				all_ufs = genderCourse.States;
+
+				for (const uf of all_ufs)
+				{
+					var option = document.createElement("option");
+					option.value = uf;
+					option.text = uf.charAt(0).toUpperCase() + uf.slice(1);
+					selectUfs.appendChild(option);
+				}
+				selectUfs.value = genderCourse.State;
+
         }
     });
 }

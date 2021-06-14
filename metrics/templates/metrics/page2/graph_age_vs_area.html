@@ -10,7 +10,7 @@ margin: auto;
 </style>
 
 <div id="div_age_vs_area" class="col-md-12">
-    <form method="POST" id="myform" action="" enctype = "multipart/form-data" onchange="handleAgeArea">
+    <form method="POST" id="myform22" action="" enctype = "multipart/form-data" onchange="handleAgeArea">
 	{% csrf_token %}
 	<label for="qtyagearea">Escolha o numero de elementos máximo:</label>
 	  <select name="qtyagearea" id="qtyagearea">
@@ -28,7 +28,7 @@ margin: auto;
 <!-- Funções jQuery de atualização e afins -->
 <script>
 const handleAgeArea = function(e) {
-   var formData = $('#myform').serialize()
+   var formData = $('#myform22').serialize()
    e.preventDefault(); // avoid to execute the actual submit of the form.
    $.ajax({
         url: "/update_graph/",
@@ -44,7 +44,7 @@ const handleAgeArea = function(e) {
     });
 }
 
-var select = document.getElementById('myform');
+var select = document.getElementById('myform22');
 select.addEventListener('change', handleAgeArea);
 
 </script>
