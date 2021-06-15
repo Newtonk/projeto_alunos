@@ -1,0 +1,21 @@
+{% extends 'metrics/main_graph_page.html' %}
+
+{% block content %}
+
+<h1>Gráficos de Genero X Dados</h1>
+
+{% include 'metrics/pageGender/graph_gender_vs_labor_market.html' %}
+
+<br>
+<br>
+<br>
+
+<h1>Gráficos Comparativos para Generos</h1>
+
+{% include 'metrics/pageGender/graph_gender_vs_labor_market_comparation.html' %}
+
+<script>
+    history.pushState({}, null, '/graphs_genero/');
+</script>
+
+{% endblock %}

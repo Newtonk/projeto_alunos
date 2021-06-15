@@ -28,3 +28,10 @@ def get_value_int(objName , key, defaultValue, request, contextName, context):
     elif context[contextName] is not None:
         finalValue = context[contextName][objName]
     return finalValue
+
+def get_unique_values(dictValues, data, tag, labelFile):
+    if checa_valor(labelFile, data):
+        dictValues[tag] = data[labelFile].dropna().unique()
+    else:
+        dictValues[tag] = []
+    return dictValues

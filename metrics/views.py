@@ -9,10 +9,11 @@ from .entities.page1.graph_comparativo_class_vs_dados_academicos import *
 from .entities.page1.graph_class_vs_dados_academicos import *
 from .entities.page1.graph_comparativo_genero_vs_dados_academicos import *
 from .entities.page1.graph_genero_vs_dados_academicos import *
-from .entities.page2.graph_genero_vs_dados_empresariais import *
-from .entities.page2.graph_comparativo_genero_vs_dados_empresariais import *
-from .entities.page2.graph_class_vs_dados_empresariais import *
-from .entities.page2.graph_comparativo_class_vs_dados_empresariais import *
+from metrics.entities.pageGender.graph_genero_vs_dados_empresariais import *
+from metrics.entities.pageGender.graph_comparativo_genero_vs_dados_empresariais import *
+from metrics.entities.pageSocialClass.graph_class_vs_dados_empresariais import *
+from metrics.entities.pageSocialClass.graph_comparativo_class_vs_dados_empresariais import *
+from metrics.entities.pageSallary.graph_comparativo_sallary_vs_dados import *
 
 
 def home(request):
@@ -41,7 +42,7 @@ def home(request):
             return render(request, 'metrics/home.html', contextHome)
 
         pre_validations()
-        return graphs_profissionais_vs_universidade(request)
+        return graphs_genero(request)
 
 
     return render(request, 'metrics/home.html', contextHome)
@@ -89,6 +90,8 @@ def update_graph(request):
         context["classeXmercadodetrabalho"] = graph_classe_vs_mercado_trabalho(request)
     elif graph_name == "classeXmercadodetrabalhoCompare":
         context["classeXmercadodetrabalhoCompare"] = graph_classe_vs_mercado_trabalho_comparativo(request)
+    elif graph_name == "salarioXdadosCompare":
+        context["salarioXdadosCompare"] = graph_salario_vs_dados_compare(request)
     elif graph_name == "ageXarea":
         context["ageXarea"] = graph_age_vs_area(request)
     elif graph_name == "generoXarea":
@@ -216,10 +219,287 @@ def graph_university_vs_company(request):
 
 #endregion
 
-#region Profissionais vs Empresa( Genero X Area , ...)
-def graphs_profissionais_vs_empresa(request):
+#region Gráficos de Genero
+
+def graphs_genero(request):
     context["generoXmercadodetrabalho"] = None
     context["generoXmercadodetrabalhoCompare"] = None
+
+    generoXmercadodetrabalho = graph_genero_vs_mercado_trabalho(request)
+
+    generoXmercadodetrabalhoCompare = graph_genero_vs_mercado_trabalho_comparativo(request)
+
+    context["generoXmercadodetrabalho"] = generoXmercadodetrabalho
+    context["generoXmercadodetrabalhoCompare"] = generoXmercadodetrabalhoCompare
+
+    return render(request, 'metrics/pageGender/graphs_gender.html', context)
+
+def graph_genero_vs_mercado_trabalho(request):
+    finalResult = {}
+    if GeneroDadosEmpresariais.validacao_colunas(data):
+        workingData = data
+        newData = GeneroDadosEmpresariais.unifica_colunas(workingData)
+        dictValues, dataInfo, noInfo = GeneroDadosEmpresariais.valida_dados_enviados(newData, request, context)
+
+        listTotal = []
+        indexes = []
+        if not noInfo:
+            if len(dataInfo.index.names) > 1:
+                position = dataInfo.index.names.index("Genero")
+                listLabels = dataInfo.index.levels[position].values.tolist()
+                indexes = dataInfo.index.levels[position]
+            elif len(dataInfo.index.names) == 1:
+                listLabels = dataInfo.index.values.tolist()
+                indexes = dataInfo.index
+
+            listLabels = [x for x in listLabels if str(x) != 'nan']
+            if len(listLabels) > 0:
+                for index in indexes:
+                    if index in dataInfo:
+                        sum = 0
+                        if len(dataInfo.index.names) > 1:
+                            sum = int(dataInfo[index].values.sum())
+                        elif len(dataInfo.index.names) == 1:
+                            sum = int(dataInfo[index].sum())
+                        listTotal.append(sum)
+                    elif index in listLabels:
+                        listLabels.remove(index)
+        finalResult["Labels"] = listLabels
+        finalResult["Data"] = listTotal
+        finalResult["UniversityState"] = dictValues["UniversityState"]
+        finalResult["UniversityStates"] = list(dictValues["UniversityStates"])
+        finalResult["CompanyState"] = dictValues["CompanyState"]
+        finalResult["CompanyStates"] = list(dictValues["CompanyStates"])
+        finalResult["Company"] = dictValues["Company"]
+        finalResult["Companies"] = list(dictValues["Companies"])
+        finalResult["University"] = dictValues["University"]
+        finalResult["Universities"] = list(dictValues["Universities"])
+        finalResult["Area"] = dictValues["Area"]
+        finalResult["Areas"] = list(dictValues["Areas"])
+        finalResult["Course"] = dictValues["Course"]
+        finalResult["Courses"] = list(dictValues["Courses"])
+    return finalResult
+
+def graph_genero_vs_mercado_trabalho_comparativo(request):
+    finalResult = {}
+    if GeneroDadosComparativosEmpresariais.validacao_colunas(data):
+        workingData = data
+        newData = GeneroDadosComparativosEmpresariais.unifica_colunas(workingData)
+        dictValues, complementData, finalData, noInfo = GeneroDadosComparativosEmpresariais.valida_dados_enviados(newData, request, context)
+
+        all_values = []
+        list_entities = []
+        list_values = []
+        if not noInfo:
+            for index, value in finalData.items():
+                result = {}
+                result["Entity"] = index
+                area_frame = complementData['Count'][index]
+                total_people = area_frame.sum()
+                if dictValues["Gender"] in area_frame:
+                    result["GenderValue"] = (int(area_frame[dictValues["Gender"]]) * 100) / total_people
+                    all_values.append(result)
+            if len(all_values) > 0:
+                all_values.sort(key=lambda x: x["GenderValue"], reverse=True)
+
+                list_entities = list(o["Entity"] for o in all_values)
+                list_values = list(o["GenderValue"] for o in all_values)
+
+        finalResult["Entities"] = list_entities
+        finalResult["Entity"] = dictValues["Entity"]
+        finalResult["Data"] = list_values
+        finalResult["UniversityState"] = dictValues["UniversityState"]
+        finalResult["UniversityStates"] = list(dictValues["UniversityStates"])
+        finalResult["CompanyState"] = dictValues["CompanyState"]
+        finalResult["CompanyStates"] = list(dictValues["CompanyStates"])
+        finalResult["Company"] = dictValues["Company"]
+        finalResult["Companies"] = list(dictValues["Companies"])
+        finalResult["University"] = dictValues["University"]
+        finalResult["Universities"] = list(dictValues["Universities"])
+        finalResult["Area"] = dictValues["Area"]
+        finalResult["Areas"] = list(dictValues["Areas"])
+        finalResult["Course"] = dictValues["Course"]
+        finalResult["Courses"] = list(dictValues["Courses"])
+        finalResult["Genders"] = list(dictValues["Genders"])
+        finalResult["Gender"] = dictValues["Gender"]
+        finalResult["Classes"] = list(dictValues["Classes"])
+        finalResult["Class"] = dictValues["Class"]
+        finalResult["Total"] = dictValues["Total"]
+
+    return finalResult
+#endregion
+
+#region Gráficos de Classe Social
+
+def graphs_social_class(request):
+    context["classeXmercadodetrabalho"] = None
+    context["classeXmercadodetrabalhoCompare"] = None
+
+    classeXmercadodetrabalho = graph_classe_vs_mercado_trabalho(request)
+
+    classeXmercadodetrabalhoCompare = graph_classe_vs_mercado_trabalho_comparativo(request)
+
+    context["classeXmercadodetrabalho"] = classeXmercadodetrabalho
+    context["classeXmercadodetrabalhoCompare"] = classeXmercadodetrabalhoCompare
+
+    return render(request, 'metrics/pageSocialClass/graphs_social_class.html', context)
+
+def graph_classe_vs_mercado_trabalho(request):
+    finalResult = {}
+    if ClasseDados.validacao_colunas(data):
+        workingData = data
+        newData = ClasseDados.unifica_colunas(workingData)
+        dictValues, dataValue, noInfo = ClasseDados.valida_dados_enviados(newData, request, context)
+
+        listTotal = []
+        indexes = []
+        if not noInfo:
+            if len(dataValue.index.names) > 1:
+                position = dataValue.index.names.index("Classe")
+                listLabels = dataValue.index.levels[position].values.tolist()
+                indexes = dataValue.index.levels[position]
+            elif len(dataValue.index.names) == 1:
+                listLabels = dataValue.index.values.tolist()
+                indexes = dataValue.index
+
+            listLabels = [x for x in listLabels if str(x) != 'nan']
+            if len(listLabels) > 0:
+                for index in indexes:
+                    if index in dataValue:
+                        sum = 0
+                        if len(dataValue.index.names) > 1:
+                            sum = int(dataValue[index].values.sum())
+                        elif len(dataValue.index.names) == 1:
+                            sum = int(dataValue[index].sum())
+                        listTotal.append(sum)
+                    elif index in listLabels:
+                        listLabels.remove(index)
+
+        finalResult["Labels"] = listLabels
+        finalResult["Data"] = listTotal
+        finalResult["UniversityState"] = dictValues["UniversityState"]
+        finalResult["UniversityStates"] = list(dictValues["UniversityStates"])
+        finalResult["CompanyState"] = dictValues["CompanyState"]
+        finalResult["CompanyStates"] = list(dictValues["CompanyStates"])
+        finalResult["Company"] = dictValues["Company"]
+        finalResult["Companies"] = list(dictValues["Companies"])
+        finalResult["University"] = dictValues["University"]
+        finalResult["Universities"] = list(dictValues["Universities"])
+        finalResult["Area"] = dictValues["Area"]
+        finalResult["Areas"] = list(dictValues["Areas"])
+        finalResult["Course"] = dictValues["Course"]
+        finalResult["Courses"] = list(dictValues["Courses"])
+    return finalResult
+
+def graph_classe_vs_mercado_trabalho_comparativo(request):
+    finalResult = {}
+    if ClasseDadosComparativos.validacao_colunas(data):
+        workingData = data
+        newData = ClasseDadosComparativos.unifica_colunas(workingData)
+        dictValues, complementData, finalData, noInfo = ClasseDadosComparativos.valida_dados_enviados(newData, request,
+                                                                                                      context)
+
+        all_values = []
+        list_entities = []
+        list_values = []
+        if not noInfo:
+            for index, value in finalData.items():
+                result = {}
+                result["Entity"] = index
+                area_frame = complementData['Count'][index]
+                total_people = area_frame.sum()
+                if dictValues["Class"] in area_frame:
+                    result["ClassValue"] = (int(area_frame[dictValues["Class"]]) * 100) / total_people
+                    all_values.append(result)
+            if len(all_values) > 0:
+                all_values.sort(key=lambda x: x["ClassValue"], reverse=True)
+
+                list_entities = list(o["Entity"] for o in all_values)
+                list_values = list(o["ClassValue"] for o in all_values)
+
+        finalResult["Entities"] = list_entities
+        finalResult["Entity"] = dictValues["Entity"]
+        finalResult["Data"] = list_values
+        finalResult["UniversityState"] = dictValues["UniversityState"]
+        finalResult["UniversityStates"] = list(dictValues["UniversityStates"])
+        finalResult["CompanyState"] = dictValues["CompanyState"]
+        finalResult["CompanyStates"] = list(dictValues["CompanyStates"])
+        finalResult["Company"] = dictValues["Company"]
+        finalResult["Companies"] = list(dictValues["Companies"])
+        finalResult["University"] = dictValues["University"]
+        finalResult["Universities"] = list(dictValues["Universities"])
+        finalResult["Area"] = dictValues["Area"]
+        finalResult["Areas"] = list(dictValues["Areas"])
+        finalResult["Course"] = dictValues["Course"]
+        finalResult["Courses"] = list(dictValues["Courses"])
+        finalResult["Genders"] = list(dictValues["Genders"])
+        finalResult["Gender"] = dictValues["Gender"]
+        finalResult["Classes"] = list(dictValues["Classes"])
+        finalResult["Class"] = dictValues["Class"]
+        finalResult["Total"] = dictValues["Total"]
+
+    return finalResult
+#endregion
+
+#region Gráficos de Salario
+
+def graphs_sallary(request):
+    context["salarioXdadosCompare"] = None
+
+    salarioXdados = graph_salario_vs_dados_compare(request)
+
+    context["salarioXdadosCompare"] = salarioXdados
+
+    return render(request, 'metrics/pageSallary/graphs_sallary.html', context)
+
+def graph_salario_vs_dados_compare(request):
+    finalResult = {}
+    if SalarioDadosComparativos.validacao_colunas(data):
+        workingData = data
+        newData = SalarioDadosComparativos.unifica_colunas(workingData)
+        dictValues, complementData, finalData, noInfo = SalarioDadosComparativos.valida_dados_enviados(newData, request, context)
+
+        all_values = []
+        list_entities = []
+        list_values = []
+        if not noInfo:
+            for index, value in finalData.items():
+                result = {}
+                result["Entity"] = index
+                total_sallary = complementData["Salario"][index]
+                result["SallaryValue"] = int(total_sallary) / value
+                all_values.append(result)
+            if len(all_values) > 0:
+                all_values.sort(key=lambda x: x["SallaryValue"], reverse=True)
+
+                list_entities = list(o["Entity"] for o in all_values)
+                list_values = list(o["SallaryValue"] for o in all_values)
+
+        finalResult["Entities"] = list_entities
+        finalResult["Entity"] = dictValues["Entity"]
+        finalResult["Data"] = list_values
+        finalResult["UniversityState"] = dictValues["UniversityState"]
+        finalResult["UniversityStates"] = list(dictValues["UniversityStates"])
+        finalResult["CompanyState"] = dictValues["CompanyState"]
+        finalResult["CompanyStates"] = list(dictValues["CompanyStates"])
+        finalResult["Company"] = dictValues["Company"]
+        finalResult["Companies"] = list(dictValues["Companies"])
+        finalResult["University"] = dictValues["University"]
+        finalResult["Universities"] = list(dictValues["Universities"])
+        finalResult["Area"] = dictValues["Area"]
+        finalResult["Areas"] = list(dictValues["Areas"])
+        finalResult["Course"] = dictValues["Course"]
+        finalResult["Courses"] = list(dictValues["Courses"])
+        finalResult["Genders"] = list(dictValues["Genders"])
+        finalResult["Gender"] = dictValues["Gender"]
+        finalResult["Classes"] = list(dictValues["Classes"])
+        finalResult["Class"] = dictValues["Class"]
+        finalResult["Total"] = dictValues["Total"]
+    return finalResult
+#endregion
+
+#region Profissionais vs Empresa( Genero X Area , ...)
+def graphs_profissionais_vs_empresa(request):
     context["classeXmercadodetrabalho"] = None
     context["classeXmercadodetrabalhoCompare"] = None
     context["generoXarea"] = None
@@ -249,159 +529,6 @@ def graphs_profissionais_vs_empresa(request):
     context["generoXsalario"] = generoXsalario
 
     return render(request, 'metrics/page2/graphs_profissionais_vs_empresa.html', context)
-
-def graph_genero_vs_mercado_trabalho(request):
-    finalResult = {}
-    if GeneroDadosEmpresariais.validacao_colunas(data):
-        workingData = data
-        newData = GeneroDadosEmpresariais.unifica_colunas(workingData)
-        states, state, companies, company, areas, area, areaValue, noInfo = GeneroDadosEmpresariais.valida_dados_enviados(newData, request, context)
-
-        listTotal = []
-        indexes = []
-        if not noInfo:
-            if len(areaValue.index.names) > 1:
-                position = areaValue.index.names.index("Genero")
-                listLabels = areaValue.index.levels[position].values.tolist()
-                indexes = areaValue.index.levels[position]
-            elif len(areaValue.index.names) == 1:
-                listLabels = areaValue.index.values.tolist()
-                indexes = areaValue.index
-
-            listLabels = [x for x in listLabels if str(x) != 'nan']
-            if len(listLabels) > 0:
-                for index in indexes:
-                    if index in areaValue:
-                        sum = 0
-                        if len(areaValue.index.names) > 1:
-                            sum = int(areaValue[index].values.sum())
-                        elif len(areaValue.index.names) == 1:
-                            sum = int(areaValue[index].sum())
-                        listTotal.append(sum)
-                    elif index in listLabels:
-                        listLabels.remove(index)
-        finalResult["Labels"] = listLabels
-        finalResult["Data"] = listTotal
-        finalResult["State"] = state
-        finalResult["States"] = list(states)
-        finalResult["Empresa"] = company
-        finalResult["Empresas"] = list(companies)
-        finalResult["Area"] = area
-        finalResult["Areas"] = list(areas)
-    return finalResult
-
-def graph_genero_vs_mercado_trabalho_comparativo(request):
-    finalResult = {}
-    if GeneroDadosComparativosEmpresariais.validacao_colunas(data):
-        workingData = data
-        newData = GeneroDadosComparativosEmpresariais.unifica_colunas(workingData)
-        states, state, areas, area, genders, gender, total, entity, complementData, finalData, noInfo = GeneroDadosComparativosEmpresariais.valida_dados_enviados(
-            newData, request, context)
-        all_values = []
-        list_entities = []
-        list_values = []
-        if not noInfo:
-            for index, value in finalData.items():
-                result = {}
-                result["Area"] = index
-                area_frame = complementData['Count'][index]
-                total_people = area_frame.sum()
-                if gender in area_frame:
-                    result["GenderValue"] = (int(area_frame[gender]) * 100) / total_people
-                    all_values.append(result)
-            if len(all_values) > 0:
-                all_values.sort(key=lambda x: x["GenderValue"], reverse=True)
-
-                list_entities = list(o["Area"] for o in all_values)
-                list_values = list(o["GenderValue"] for o in all_values)
-
-        finalResult["Entities"] = list_entities
-        finalResult["Entity"] = entity
-        finalResult["Data"] = list_values
-        finalResult["States"] = list(states)
-        finalResult["State"] = state
-        finalResult["Total"] = total
-        finalResult["Gender"] = gender
-        finalResult["Genders"] = list(genders)
-        finalResult["Area"] = area
-        finalResult["Areas"] = list(areas)
-    return finalResult
-
-def graph_classe_vs_mercado_trabalho(request):
-    finalResult = {}
-    if ClasseDadosEmpresariais.validacao_colunas(data):
-        workingData = data
-        newData = ClasseDadosEmpresariais.unifica_colunas(workingData)
-        states, state, companies, company, areas, area, areaValue, noInfo = ClasseDadosEmpresariais.valida_dados_enviados(newData, request, context)
-
-        listTotal = []
-        indexes = []
-        if not noInfo:
-            if len(areaValue.index.names) > 1:
-                position = areaValue.index.names.index("Classe")
-                listLabels = areaValue.index.levels[position].values.tolist()
-                indexes = areaValue.index.levels[position]
-            elif len(areaValue.index.names) == 1:
-                listLabels = areaValue.index.values.tolist()
-                indexes = areaValue.index
-
-            listLabels = [x for x in listLabels if str(x) != 'nan']
-            if len(listLabels) > 0:
-                for index in indexes:
-                    if index in areaValue:
-                        sum = 0
-                        if len(areaValue.index.names) > 1:
-                            sum = int(areaValue[index].values.sum())
-                        elif len(areaValue.index.names) == 1:
-                            sum = int(areaValue[index].sum())
-                        listTotal.append(sum)
-                    elif index in listLabels:
-                        listLabels.remove(index)
-        finalResult["Labels"] = listLabels
-        finalResult["Data"] = listTotal
-        finalResult["State"] = state
-        finalResult["States"] = list(states)
-        finalResult["Empresa"] = company
-        finalResult["Empresas"] = list(companies)
-        finalResult["Area"] = area
-        finalResult["Areas"] = list(areas)
-    return finalResult
-
-def graph_classe_vs_mercado_trabalho_comparativo(request):
-    finalResult = {}
-    if ClasseDadosComparativosEmpresariais.validacao_colunas(data):
-        workingData = data
-        newData = ClasseDadosComparativosEmpresariais.unifica_colunas(workingData)
-        states, state, areas, area, classes, selectedClass, total, entity, complementData, finalData, noInfo = ClasseDadosComparativosEmpresariais.valida_dados_enviados(newData, request, context)
-        all_values = []
-        list_entities = []
-        list_values = []
-        if not noInfo:
-            for index, value in finalData.items():
-                result = {}
-                result["Area"] = index
-                area_frame = complementData['Count'][index]
-                total_people = area_frame.sum()
-                if selectedClass in area_frame:
-                    result["ClassValue"] = (int(area_frame[selectedClass]) * 100) / total_people
-                    all_values.append(result)
-            if len(all_values) > 0:
-                all_values.sort(key=lambda x: x["ClassValue"], reverse=True)
-
-                list_entities = list(o["Area"] for o in all_values)
-                list_values = list(o["ClassValue"] for o in all_values)
-
-        finalResult["Entities"] = list_entities
-        finalResult["Entity"] = entity
-        finalResult["Data"] = list_values
-        finalResult["States"] = list(states)
-        finalResult["State"] = state
-        finalResult["Total"] = total
-        finalResult["Class"] = selectedClass
-        finalResult["Classes"] = list(classes)
-        finalResult["Area"] = area
-        finalResult["Areas"] = list(areas)
-    return finalResult
 
 def graph_genero_vs_salario(request):
     finalResult = {}

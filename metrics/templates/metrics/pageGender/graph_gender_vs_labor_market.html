@@ -22,6 +22,15 @@ margin: auto;
 <div id="div_gender_vs_labor_market" class="col-md-12">
 	<form id="myform" action="" onchange="handlerGenderLaborMarket">
 	{% csrf_token %}
+	<label for="statesUniGenderXLaborMarket">Escolha a UF da universidade:</label>
+	<input id="statesUniGenderXLaborMarket">
+	<br>
+	<label for="universityGenderXLaborMarket">Escolha a universidade:</label>
+	<input id="universityGenderXLaborMarket">
+	<br>
+	<label for="courseGenderXLaborMarket">Escolha o curso:</label>
+	<input id="courseGenderXLaborMarket">
+	<br>
 	<label for="statesGenderXLaborMarket">Escolha a UF da empresa:</label>
 	<input id="statesGenderXLaborMarket">
 	<br>
@@ -49,10 +58,22 @@ margin: auto;
 		});
 		var companyValue = $("#companyGenderXLaborMarket").select2('data').text;
 		final_request["companyGenderXLaborMarket"] = companyValue
+
 	    var stateValue = $("#statesGenderXLaborMarket").select2('data').text;
 		final_request["statesGenderXLaborMarket"] = stateValue
+
 		var areaValue = $("#areaGenderXLaborMarket").select2('data').text;
 		final_request["areaGenderXLaborMarket"] = areaValue
+
+		var courseValue = $("#courseGenderXLaborMarket").select2('data').text;
+		final_request["courseGenderXLaborMarket"] = courseValue
+
+	    var stateUniValue = $("#statesUniGenderXLaborMarket").select2('data').text;
+		final_request["statesUniGenderXLaborMarket"] = stateUniValue
+
+		var universityValue = $("#universityGenderXLaborMarket").select2('data').text;
+		final_request["universityGenderXLaborMarket"] = universityValue
+
 		final_request["graph_name"] = "generoXmercadodetrabalho"
 		return final_request
 	}
@@ -80,13 +101,19 @@ const handlerGenderLaborMarket = function(e) {
 				initValuesGenderLaborMarket("Areas", "Area", "#areaGenderXLaborMarket")
 
 				$("#statesGenderXLaborMarket").empty();
-				initValuesGenderLaborMarket("States", "State", "#statesGenderXLaborMarket")
+				initValuesGenderLaborMarket("CompanyStates", "CompanyState", "#statesGenderXLaborMarket")
 
-				if (oldStateValue != genderLaborMarket.State)
-				{
-					$("#companyGenderXLaborMarket").empty();
-					initValuesGenderLaborMarket("Empresas", "Empresa", "#companyGenderXLaborMarket")
-				}
+				$("#companyGenderXLaborMarket").empty();
+				initValuesGenderLaborMarket("Companies", "Company", "#companyGenderXLaborMarket")
+
+				$("#universityGenderXLaborMarket").empty();
+				initValuesGenderLaborMarket("UniversityStates", "UniversityState", "#universityGenderXLaborMarket")
+
+				$("#universityGenderXLaborMarket").empty();
+				initValuesGenderLaborMarket("Universities", "University", "#universityGenderXLaborMarket")
+
+				$("#courseGenderXLaborMarket").empty();
+				initValuesGenderLaborMarket("Courses", "Course", "#courseGenderXLaborMarket")
         }
     });
 }
@@ -94,6 +121,10 @@ const handlerGenderLaborMarket = function(e) {
 $('#companyGenderXLaborMarket').on('change', handlerGenderLaborMarket)
 $('#statesGenderXLaborMarket').on('change', handlerGenderLaborMarket)
 $('#areaGenderXLaborMarket').on('change', handlerGenderLaborMarket)
+
+$('#courseGenderXLaborMarket').on('change', handlerGenderLaborMarket)
+$('#statesUniGenderXLaborMarket').on('change', handlerGenderLaborMarket)
+$('#universityGenderXLaborMarket').on('change', handlerGenderLaborMarket)
 
 </script>
 
@@ -175,9 +206,17 @@ function initGenderLaborMarket(object_all) {
 	}
 	else
 	{
-	initValuesGenderLaborMarket("Empresas", "Empresa", "#companyGenderXLaborMarket")
+	if (Object.keys(object_all["Data"]).length == 0)
+	{
+		document.getElementById('no-data-gender-vs-labor-market').style.display = 'block';
+        document.getElementById('generoXmercadodetrabalho').style.display = 'none'
+	}
+	initValuesGenderLaborMarket("Companies", "Company", "#companyGenderXLaborMarket")
 	initValuesGenderLaborMarket("Areas", "Area", "#areaGenderXLaborMarket")
-	initValuesGenderLaborMarket("States", "State", "#statesGenderXLaborMarket")
+	initValuesGenderLaborMarket("CompanyStates", "CompanyState", "#statesGenderXLaborMarket")
+	initValuesGenderLaborMarket("UniversityStates", "UniversityState", "#statesUniGenderXLaborMarket")
+	initValuesGenderLaborMarket("Universities", "University", "#universityGenderXLaborMarket")
+	initValuesGenderLaborMarket("Courses", "Course", "#courseGenderXLaborMarket")
 
 	createGraphGenderLaborMarket(object_all)
 	}

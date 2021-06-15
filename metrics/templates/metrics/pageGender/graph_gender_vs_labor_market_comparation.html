@@ -18,9 +18,42 @@ margin: auto;
 
 </style>
 
-<div id="div_gen_uni" class="col-md-12">
+<div id="div_gen_vs_labor_market_comparation" class="col-md-12">
 <form id="myform2" method="POST" action="" enctype = "multipart/form-data" onchange="handlerGenderLaborMarketComparation">
 {% csrf_token %}
+<label for="entitygenderLaborMarketComparation">Comparacao por:</label>
+<select name="entitygenderLaborMarketComparation" id="entitygenderLaborMarketComparation">
+     <option value="Empresa" selected>Empresa</option>
+     <option value="Area">Area</option>
+     <option value="Instituicao">Instituicao</option>
+     <option value="Curso">Curso</option>
+     <option value="Classe">Classe Social</option>
+</select>
+<br>
+<label for="genderLaborMarketComparation">Escolha o Genero a ser comparado:</label>
+<input id="genderLaborMarketComparation">
+<br>
+<label for="statesUniLaborMarketComparation">Escolha o Estado da Instituicao:</label>
+<input id="statesUniLaborMarketComparation">
+<br>
+<label for="universityGenderXLaborMarketComparation">Escolha a instituição:</label>
+<input id="universityGenderXLaborMarketComparation">
+<br>
+<label for="courseGenderXLaborMarketComparation">Escolha o curso:</label>
+<input id="courseGenderXLaborMarketComparation">
+<br>
+<label for="statesCompanyLaborMarketComparation">Escolha o Estado da empresa:</label>
+<input id="statesCompanyLaborMarketComparation">
+<br>
+<label for="companyGenderXLaborMarketComparation">Escolha a empresa:</label>
+<input id="companyGenderXLaborMarketComparation" style="width:100%;">
+<br>
+<label for="areaGenderXLaborMarketComparation">Escolha a area:</label>
+<input id="areaGenderXLaborMarketComparation" style="width:50%;">
+<br>
+<label for="classGenderXLaborMarketComparation">Escolha a classe social:</label>
+<input id="classGenderXLaborMarketComparation">
+<br>
 <label for="qtygenderLaborMarketComparation">Escolha o numero de elementos máximo:</label>
 <select name="qtygenderLaborMarketComparation" id="qtygenderLaborMarketComparation">
   <option value="5">5</option>
@@ -28,19 +61,6 @@ margin: auto;
   <option value="15">15</option>
   <option value="20">20</option>
 </select>
-<br>
-<label for="entitygenderLaborMarketComparation">Comparacao por:</label>
-<select name="entitygenderLaborMarketComparation" id="entitygenderLaborMarketComparation">
-     <option value="Empresa" selected>Empresa</option>
-     <option value="Area">Area</option>
-</select>
-<label for="genderLaborMarketComparation">Genero:</label>
-<input id="genderLaborMarketComparation">
-<label for="areaLaborMarketComparation">Area:</label>
-<input id="areaLaborMarketComparation">
-<br>
-<label for="statesLaborMarketComparation">Estado da empresa:</label>
-<input id="statesLaborMarketComparation">
 </form>
 <div id="divgeneroLaborMarketComparation">
     <div id="no-data-gender-labor-market-comparation">
@@ -58,12 +78,31 @@ margin: auto;
 		$.each($('#myform2').serializeArray(), function(_, kv) {
 		  final_request[kv.name] = kv.value;
 		});
+
+        var companyState = $("#statesCompanyLaborMarketComparation").select2('data').text;
+		final_request["statesCompanyLaborMarketComparation"] = companyState
+
+        var universityState = $("#statesUniLaborMarketComparation").select2('data').text;
+		final_request["statesUniLaborMarketComparation"] = universityState
+
+		var university = $("#universityGenderXLaborMarketComparation").select2('data').text;
+		final_request["universityGenderXLaborMarketComparation"] = university
+
+		var company = $("#companyGenderXLaborMarketComparation").select2('data').text;
+		final_request["companyGenderXLaborMarketComparation"] = company
+
+		var course = $("#courseGenderXLaborMarketComparation").select2('data').text;
+		final_request["courseGenderXLaborMarketComparation"] = course
+
+		var area = $("#areaGenderXLaborMarketComparation").select2('data').text;
+		final_request["areaGenderXLaborMarketComparation"] = area
+
 		var gendervalue = $("#genderLaborMarketComparation").select2('data').text;
 		final_request["genderLaborMarketComparation"] = gendervalue
-	    var areaValue = $("#areaLaborMarketComparation").select2('data').text;
-		final_request["areaLaborMarketComparation"] = areaValue
-		var stateValue = $("#statesLaborMarketComparation").select2('data').text;
-		final_request["statesLaborMarketComparation"] = stateValue
+
+		var classValue = $("#classGenderXLaborMarketComparation").select2('data').text;
+		final_request["classGenderXLaborMarketComparation"] = classValue
+
 		final_request["graph_name"] = "generoXmercadodetrabalhoCompare"
 		return final_request
 	}
@@ -88,11 +127,26 @@ const handlerGenderLaborMarketComparation = function(e) {
 				$("#genderLaborMarketComparation").empty();
 				initValuesGenderLaborMarketCompare("Genders", "Gender", "#genderLaborMarketComparation", false)
 
-				$("#statesLaborMarketComparation").empty();
-				initValuesGenderLaborMarketCompare("States", "State", "#statesLaborMarketComparation", true)
+				$("#statesUniLaborMarketComparation").empty();
+				initValuesGenderLaborMarketCompare("UniversityStates", "UniversityState", "#statesUniLaborMarketComparation", true)
 
-                $("#areaLaborMarketComparation").empty();
-                initValuesGenderLaborMarketCompare("Areas", "Area", "#areaLaborMarketComparation", true)
+				$("#universityGenderXLaborMarketComparation").empty();
+				initValuesGenderLaborMarketCompare("Universities", "University", "#universityGenderXLaborMarketComparation", true)
+
+				$("#courseGenderXLaborMarketComparation").empty();
+				initValuesGenderLaborMarketCompare("Courses", "Course", "#courseGenderXLaborMarketComparation", true)
+
+				$("#statesCompanyLaborMarketComparation").empty();
+				initValuesGenderLaborMarketCompare("CompanyStates", "CompanyState", "#statesCompanyLaborMarketComparation", true)
+
+				$("#companyGenderXLaborMarketComparation").empty();
+				initValuesGenderLaborMarketCompare("Companies", "Company", "#companyGenderXLaborMarketComparation", true)
+
+				$("#areaGenderXLaborMarketComparation").empty();
+				initValuesGenderLaborMarketCompare("Areas", "Area", "#areaGenderXLaborMarketComparation", true)
+
+                $("#classGenderXLaborMarketComparation").empty();
+                initValuesGenderLaborMarketCompare("Classes", "Class", "#classGenderXLaborMarketComparation", true)
 
                 document.getElementById("qtygenderLaborMarketComparation").value = genderLaborMarketComparation["Total"];
 				document.getElementById("entitygenderLaborMarketComparation").value = genderLaborMarketComparation["Entity"];
@@ -103,8 +157,14 @@ const handlerGenderLaborMarketComparation = function(e) {
 var select = document.getElementById('myform2');
 select.addEventListener('change', handlerGenderLaborMarketComparation);
 $('#genderLaborMarketComparation').on('change', handlerGenderLaborMarketComparation)
-$('#statesLaborMarketComparation').on('change', handlerGenderLaborMarketComparation)
-$('#areaLaborMarketComparation').on('change', handlerGenderLaborMarketComparation)
+$('#statesUniLaborMarketComparation').on('change', handlerGenderLaborMarketComparation)
+$('#universityGenderXLaborMarketComparation').on('change', handlerGenderLaborMarketComparation)
+$('#courseGenderXLaborMarketComparation').on('change', handlerGenderLaborMarketComparation)
+$('#statesCompanyLaborMarketComparation').on('change', handlerGenderLaborMarketComparation)
+$('#companyGenderXLaborMarketComparation').on('change', handlerGenderLaborMarketComparation)
+$('#areaGenderXLaborMarketComparation').on('change', handlerGenderLaborMarketComparation)
+$('#classGenderXLaborMarketComparation').on('change', handlerGenderLaborMarketComparation)
+
 
 </script>
 
@@ -170,19 +230,28 @@ chartGenderLaborMarketComparation = new Chart(document.getElementById("generoXme
 <script>
 function initGenderLaborMarketComparation(object_all) {
 
-if (Object.keys(object_all).length == 0)
-{
-    document.getElementById("divgeneroCourseComparation").innerHTML = "Sem informações suficientes para gerar os gráficos!";
-}
-else
-{
+    if (Object.keys(object_all).length == 0)
+    {
+        document.getElementById("div_gen_vs_labor_market_comparation").innerHTML = "Sem informações suficientes para gerar os gráficos!";
+    }
+    else
+    {
+    if (Object.keys(object_all["Data"]).length == 0)
+	{
+		document.getElementById('no-data-gender-labor-market-comparation').style.display = 'block';
+        document.getElementById('generoXmercadodetrabalhoCompare').style.display = 'none'
+	}
+    initValuesGenderLaborMarketCompare("Genders", "Gender", "#genderLaborMarketComparation", false)
+    initValuesGenderLaborMarketCompare("UniversityStates", "UniversityState", "#statesUniLaborMarketComparation", true)
+    initValuesGenderLaborMarketCompare("Universities", "University", "#universityGenderXLaborMarketComparation", true)
+    initValuesGenderLaborMarketCompare("Courses", "Course", "#courseGenderXLaborMarketComparation", true)
+    initValuesGenderLaborMarketCompare("CompanyStates", "CompanyState", "#statesCompanyLaborMarketComparation", true)
+    initValuesGenderLaborMarketCompare("Companies", "Company", "#companyGenderXLaborMarketComparation", true)
+    initValuesGenderLaborMarketCompare("Areas", "Area", "#areaGenderXLaborMarketComparation", true)
+    initValuesGenderLaborMarketCompare("Classes", "Class", "#classGenderXLaborMarketComparation", true)
 
-initValuesGenderLaborMarketCompare("Genders", "Gender", "#genderLaborMarketComparation", false)
-initValuesGenderLaborMarketCompare("States", "State", "#statesLaborMarketComparation", true)
-initValuesGenderLaborMarketCompare("Areas", "Area", "#areaLaborMarketComparation", true)
-
-createGraphGenderLaborMarketComparation(object_all)
-}
+    createGraphGenderLaborMarketComparation(object_all)
+    }
 }
 </script>
 

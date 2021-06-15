@@ -22,6 +22,15 @@ margin: auto;
 <div id="div_gender_vs_labor_market" class="col-md-12">
 	<form id="myform3" action="" onchange="handlerClassLaborMarket">
 	{% csrf_token %}
+	<label for="statesUniClassXLaborMarket">Escolha a UF da universidade:</label>
+	<input id="statesUniClassXLaborMarket">
+	<br>
+	<label for="universityClassXLaborMarket">Escolha a universidade:</label>
+	<input id="universityClassXLaborMarket">
+	<br>
+	<label for="courseClassXLaborMarket">Escolha o curso:</label>
+	<input id="courseClassXLaborMarket">
+	<br>
 	<label for="statesClassXLaborMarket">Escolha a UF da empresa:</label>
 	<input id="statesClassXLaborMarket">
 	<br>
@@ -49,10 +58,22 @@ margin: auto;
 		});
 		var companyValue = $("#companyClassXLaborMarket").select2('data').text;
 		final_request["companyClassXLaborMarket"] = companyValue
+
 	    var stateValue = $("#statesClassXLaborMarket").select2('data').text;
 		final_request["statesClassXLaborMarket"] = stateValue
+
 		var areaValue = $("#areaClassXLaborMarket").select2('data').text;
 		final_request["areaClassXLaborMarket"] = areaValue
+
+		var courseValue = $("#courseClassXLaborMarket").select2('data').text;
+		final_request["courseClassXLaborMarket"] = courseValue
+
+	    var stateUniValue = $("#statesUniClassXLaborMarket").select2('data').text;
+		final_request["statesUniClassXLaborMarket"] = stateUniValue
+
+		var universityValue = $("#universityClassXLaborMarket").select2('data').text;
+		final_request["universityClassXLaborMarket"] = universityValue
+
 		final_request["graph_name"] = "classeXmercadodetrabalho"
 		return final_request
 	}
@@ -80,13 +101,19 @@ const handlerClassLaborMarket = function(e) {
 				initValuesClassLaborMarket("Areas", "Area", "#areaClassXLaborMarket")
 
 				$("#statesClassXLaborMarket").empty();
-				initValuesClassLaborMarket("States", "State", "#statesClassXLaborMarket")
+				initValuesClassLaborMarket("CompanyStates", "CompanyState", "#statesClassXLaborMarket")
 
-				if (oldStateValue != classLaborMarket.State)
-				{
-					$("#companyClassXLaborMarket").empty();
-					initValuesClassLaborMarket("Empresas", "Empresa", "#companyClassXLaborMarket")
-				}
+				$("#companyClassXLaborMarket").empty();
+				initValuesClassLaborMarket("Companies", "Company", "#companyClassXLaborMarket")
+
+				$("#universityClassXLaborMarket").empty();
+				initValuesClassLaborMarket("UniversityStates", "UniversityState", "#universityClassXLaborMarket")
+
+				$("#universityClassXLaborMarket").empty();
+				initValuesClassLaborMarket("Universities", "University", "#universityClassXLaborMarket")
+
+				$("#courseClassXLaborMarket").empty();
+				initValuesClassLaborMarket("Courses", "Course", "#courseClassXLaborMarket")
         }
     });
 }
@@ -94,6 +121,10 @@ const handlerClassLaborMarket = function(e) {
 $('#companyClassXLaborMarket').on('change', handlerClassLaborMarket)
 $('#statesClassXLaborMarket').on('change', handlerClassLaborMarket)
 $('#areaClassXLaborMarket').on('change', handlerClassLaborMarket)
+
+$('#courseClassXLaborMarket').on('change', handlerClassLaborMarket)
+$('#statesUniClassXLaborMarket').on('change', handlerClassLaborMarket)
+$('#universityClassXLaborMarket').on('change', handlerClassLaborMarket)
 
 </script>
 
@@ -172,13 +203,21 @@ function initClassLaborMarket(object_all) {
 
 	if (Object.keys(object_all).length == 0)
 	{
-		document.getElementById("no-data-class-vs-labor-market").innerHTML = "Sem informações suficientes para gerar os gráficos!";
+		document.getElementById("div_gender_vs_labor_market").innerHTML = "Sem informações suficientes para gerar os gráficos!";
 	}
 	else
 	{
-	initValuesClassLaborMarket("Empresas", "Empresa", "#companyClassXLaborMarket")
+	if (Object.keys(object_all["Data"]).length == 0)
+	{
+		document.getElementById('no-data-class-vs-labor-market').style.display = 'block';
+        document.getElementById('classeXmercadodetrabalho').style.display = 'none'
+	}
+	initValuesClassLaborMarket("Companies", "Company", "#companyClassXLaborMarket")
 	initValuesClassLaborMarket("Areas", "Area", "#areaClassXLaborMarket")
-	initValuesClassLaborMarket("States", "State", "#statesClassXLaborMarket")
+	initValuesClassLaborMarket("CompanyStates", "CompanyState", "#statesClassXLaborMarket")
+	initValuesClassLaborMarket("UniversityStates", "UniversityState", "#statesUniClassXLaborMarket")
+	initValuesClassLaborMarket("Universities", "University", "#universityClassXLaborMarket")
+	initValuesClassLaborMarket("Courses", "Course", "#courseClassXLaborMarket")
 
 	createGraphClassLaborMarket(object_all)
 	}
