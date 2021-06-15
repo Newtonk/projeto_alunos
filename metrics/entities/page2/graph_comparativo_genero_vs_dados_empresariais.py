@@ -20,7 +20,7 @@ class GeneroDadosComparativosEmpresariais():
         selectedState = "Todos"
         if checa_valor("Estado_Empresa", data):
             states = data.Estado_Empresa.dropna().unique()
-            selectedState = get_value_string("State", "statesLabelMarketComparation", "Todos", request, "generoXmercadodetrabalhoCompare", context)
+            selectedState = get_value_string("State", "statesLaborMarketComparation", "Todos", request, "generoXmercadodetrabalhoCompare", context)
         if selectedState != "Todos":
             data = data[data.Estado_Empresa == selectedState]
         return states, selectedState, data
@@ -28,12 +28,12 @@ class GeneroDadosComparativosEmpresariais():
     @staticmethod
     def campo_genero(data, request, context):
         genders = data.Genero.dropna().unique()
-        gender = get_value_string("Gender", 'genderLabelMarketComparation', genders[0], request, "generoXmercadodetrabalhoCompare", context)
+        gender = get_value_string("Gender", 'genderLaborMarketComparation', genders[0], request, "generoXmercadodetrabalhoCompare", context)
         return genders, gender
 
     @staticmethod
     def campo_total(request, context):
-        total = get_value_int("Total", 'qtygenderLabelMarketComparation', 10, request, "generoXmercadodetrabalhoCompare", context)
+        total = get_value_int("Total", 'qtygenderLaborMarketComparation', 10, request, "generoXmercadodetrabalhoCompare", context)
         return total
 
     @staticmethod
@@ -42,7 +42,7 @@ class GeneroDadosComparativosEmpresariais():
         selectedArea = "Todos"
         if checa_valor("Area", data):
             areas = data.Area.dropna().unique()
-            selectedArea = get_value_string("Area", "areaLabelMarketComparation", "Todos", request, "generoXmercadodetrabalhoCompare", context)
+            selectedArea = get_value_string("Area", "areaLaborMarketComparation", "Todos", request, "generoXmercadodetrabalhoCompare", context)
             if selectedArea not in data.Area.values and selectedArea != "Todos":
                 selectedArea = "Todos"
         if selectedArea != "Todos":
@@ -52,7 +52,7 @@ class GeneroDadosComparativosEmpresariais():
 
     @staticmethod
     def campo_entidade_comparacao(request, context):
-        selectedEntity = get_value_string("Entity", "entitygenderLabelMarketComparation", "Empresa", request, "generoXmercadodetrabalhoCompare", context)
+        selectedEntity = get_value_string("Entity", "entitygenderLaborMarketComparation", "Empresa", request, "generoXmercadodetrabalhoCompare", context)
 
         return selectedEntity
 

@@ -41,10 +41,10 @@ margin: auto;
 
 <!-- Create Request based on the parameters -->
 <script>
-	function changeValuesinRequest(request)
+	function changeValuesinRequestClassLaborMarket(request)
 	{
 		var final_request = {};
-		$.each($('#myform').serializeArray(), function(_, kv) {
+		$.each($('#myform3').serializeArray(), function(_, kv) {
 		  final_request[kv.name] = kv.value;
 		});
 		var companyValue = $("#companyClassXLaborMarket").select2('data').text;
@@ -63,8 +63,8 @@ margin: auto;
 <script>
 
 const handlerClassLaborMarket = function(e) {
-   var formData = $('#myform').serializeArray()
-   formData = changeValuesinRequest(formData)
+   var formData = $('#myform3').serializeArray()
+   formData = changeValuesinRequestClassLaborMarket(formData)
    e.preventDefault(); // avoid to execute the actual submit of the form.
    $.ajax({
         url: "/update_graph/",

@@ -84,5 +84,5 @@ class ClasseDadosComparativos():
             complementData = []
             noInfo = True
 
-        return ufs, uf, cursos, curso, classes, selectedClass, total, selectedEntity, complementData, newData , noInfo
+        return ufs, uf, cursos, curso, classes, selectedClass, total, selectedEntity, complementData, newData, noInfo
 

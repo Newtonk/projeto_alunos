@@ -41,7 +41,7 @@ margin: auto;
 
 <!-- Create Request based on the parameters -->
 <script>
-	function changeValuesinRequest(request)
+	function changeValuesinRequestGenderLaborMarket(request)
 	{
 		var final_request = {};
 		$.each($('#myform').serializeArray(), function(_, kv) {
@@ -64,7 +64,7 @@ margin: auto;
 
 const handlerGenderLaborMarket = function(e) {
    var formData = $('#myform').serializeArray()
-   formData = changeValuesinRequest(formData)
+   formData = changeValuesinRequestGenderLaborMarket(formData)
    e.preventDefault(); // avoid to execute the actual submit of the form.
    $.ajax({
         url: "/update_graph/",

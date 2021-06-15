@@ -52,7 +52,7 @@ margin: auto;
 
 <!-- Create Request based on the parameters -->
 <script>
-	function changeValuesinRequest(request)
+	function changeValuesinRequestGenderLaborMarketComparation(request)
 	{
 		var final_request = {};
 		$.each($('#myform2').serializeArray(), function(_, kv) {
@@ -75,7 +75,7 @@ margin: auto;
 const handlerGenderLaborMarketComparation = function(e) {
    var formData = $('#myform2').serializeArray()
    e.preventDefault(); // avoid to execute the actual submit of the form.
-   formData = changeValuesinRequest(formData)
+   formData = changeValuesinRequestGenderLaborMarketComparation(formData)
    $.ajax({
         url: "/update_graph/",
         data: formData,
@@ -140,7 +140,7 @@ var colorArray = [ 'blue'];
 chartGenderLaborMarketComparation = new Chart(document.getElementById("generoXmercadodetrabalhoCompare"), {
         type: 'bar',
         data: {
-          labels: object_all["Instituicoes"],
+          labels: object_all["Entities"],
           datasets: [{
                 label : object_all["Gender"],
                 backgroundColor: colorArray[0],

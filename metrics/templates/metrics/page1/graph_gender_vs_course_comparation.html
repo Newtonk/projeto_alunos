@@ -154,7 +154,7 @@ function updateGraphGenderCourseComparation(object_all)
         document.getElementById('no-data-gender-course-comparation').style.display = 'none';
         document.getElementById('generoXcursoCompare').style.display = 'block'
         var colorArray = [ 'blue'];
-        chartGenderCourseComparation.data.labels = object_all["Instituicoes"]
+        chartGenderCourseComparation.data.labels = object_all["Entities"]
         chartGenderCourseComparation.data.datasets[0].label = object_all["Gender"]
         chartGenderCourseComparation.data.datasets[0].backgroundColor = colorArray[0]
         chartGenderCourseComparation.data.datasets[0].data = object_all["Data"]
@@ -172,7 +172,7 @@ var colorArray = [ 'blue'];
 chartGenderCourseComparation = new Chart(document.getElementById("generoXcursoCompare"), {
         type: 'bar',
         data: {
-          labels: object_all["Instituicoes"],
+          labels: object_all["Entities"],
           datasets: [{
                 label : object_all["Gender"],
                 backgroundColor: colorArray[0],

@@ -10,7 +10,7 @@ margin: auto;
 
 </style>
 <div id="div_gen_sallary" class="col-md-12">
-    <form id="myform4" method="POST" action="" enctype = "multipart/form-data" onchange="handleGenderSallary">
+    <form id="myform44" method="POST" action="" enctype = "multipart/form-data" onchange="handleGenderSallary">
     {% csrf_token %}
     <label for="qtygendersalario">Escolha o numero de elementos máximo:</label>
     <select name="qtygendersalario" id="qtygendersalario">
@@ -28,7 +28,7 @@ margin: auto;
 <!-- Funções jQuery de atualização e afins -->
 <script>
 const handleGenderSallary = function(e) {
-   var formData = $('#myform4').serialize()
+   var formData = $('#myform44').serialize()
    e.preventDefault(); // avoid to execute the actual submit of the form.
    $.ajax({
         url: "/update_graph/",
@@ -44,7 +44,7 @@ const handleGenderSallary = function(e) {
     });
 }
 
-var select = document.getElementById('myform4');
+var select = document.getElementById('myform44');
 select.addEventListener('change', handleGenderSallary);
 
 </script>

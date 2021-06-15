@@ -55,9 +55,13 @@ class GeneroDadosAcademicos:
     @staticmethod
     def valida_dados_enviados(data, request, context):
         newData = None
+        noInfo = False
         ufs, uf , newData = GeneroDadosAcademicos.campo_uf_universidade(data, request, context)
         universidades, universidade, newData = GeneroDadosAcademicos.campo_universidade(newData, request, context)
         cursos, curso, newData = GeneroDadosAcademicos.campo_curso(newData, request, context)
+
+        if newData.items() == 0:
+            noInfo = True
 
         colunas = pegue_todas_colunas(['Curso', 'Genero', "Instituicao", "Estado_Universidade"], data)
         if checa_valor("Curso", data):
@@ -78,5 +82,5 @@ class GeneroDadosAcademicos:
                 colunas.insert(0, "Instituicao")
                 newData = newData.groupby(colunas, dropna=False).sum()
                 newData = newData['Count'][universidade]
-        return ufs, uf, universidades, universidade, cursos, curso, newData
+        return ufs, uf, universidades, universidade, cursos, curso, newData, noInfo
 
