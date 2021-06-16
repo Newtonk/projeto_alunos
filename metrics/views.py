@@ -14,6 +14,7 @@ from metrics.entities.pageGender.graph_comparativo_genero_vs_dados_empresariais 
 from metrics.entities.pageSocialClass.graph_class_vs_dados_empresariais import *
 from metrics.entities.pageSocialClass.graph_comparativo_class_vs_dados_empresariais import *
 from metrics.entities.pageSallary.graph_comparativo_sallary_vs_dados import *
+from metrics.entities.pageAge.graph_comparativo_age_vs_dados import *
 
 
 def home(request):
@@ -92,6 +93,8 @@ def update_graph(request):
         context["classeXmercadodetrabalhoCompare"] = graph_classe_vs_mercado_trabalho_comparativo(request)
     elif graph_name == "salarioXdadosCompare":
         context["salarioXdadosCompare"] = graph_salario_vs_dados_compare(request)
+    elif graph_name == "idadeXdadosCompare":
+        context["idadeXdadosCompare"] = graph_age_vs_dados_compare(request)
     elif graph_name == "ageXarea":
         context["ageXarea"] = graph_age_vs_area(request)
     elif graph_name == "generoXarea":
@@ -446,9 +449,9 @@ def graph_classe_vs_mercado_trabalho_comparativo(request):
 def graphs_sallary(request):
     context["salarioXdadosCompare"] = None
 
-    salarioXdados = graph_salario_vs_dados_compare(request)
+    salarioXdadosCompare = graph_salario_vs_dados_compare(request)
 
-    context["salarioXdadosCompare"] = salarioXdados
+    context["salarioXdadosCompare"] = salarioXdadosCompare
 
     return render(request, 'metrics/pageSallary/graphs_sallary.html', context)
 
@@ -496,6 +499,65 @@ def graph_salario_vs_dados_compare(request):
         finalResult["Class"] = dictValues["Class"]
         finalResult["Total"] = dictValues["Total"]
     return finalResult
+#endregion
+
+#region Gráficos de Idade
+
+def graphs_age(request):
+    context["idadeXdadosCompare"] = None
+
+    idadeXdadosCompare = graph_age_vs_dados_compare(request)
+
+    context["idadeXdadosCompare"] = idadeXdadosCompare
+
+    return render(request, 'metrics/pageAge/graphs_age.html', context)
+
+def graph_age_vs_dados_compare(request):
+    finalResult = {}
+    if IdadeDadosComparativos.validacao_colunas(data):
+        workingData = data
+        newData = IdadeDadosComparativos.unifica_colunas(workingData)
+        dictValues, complementData, finalData, noInfo = IdadeDadosComparativos.valida_dados_enviados(newData, request,
+                                                                                                       context)
+
+        all_values = []
+        list_entities = []
+        list_values = []
+        if not noInfo:
+            for index, value in finalData.items():
+                result = {}
+                result["Entity"] = index
+                total_age = complementData["Idade"][index]
+                result["AgeValue"] = int(total_age) / value
+                all_values.append(result)
+            if len(all_values) > 0:
+                all_values.sort(key=lambda x: x["AgeValue"], reverse=True)
+
+                list_entities = list(o["Entity"] for o in all_values)
+                list_values = list(o["AgeValue"] for o in all_values)
+
+        finalResult["Entities"] = list_entities
+        finalResult["Entity"] = dictValues["Entity"]
+        finalResult["Data"] = list_values
+        finalResult["UniversityState"] = dictValues["UniversityState"]
+        finalResult["UniversityStates"] = list(dictValues["UniversityStates"])
+        finalResult["CompanyState"] = dictValues["CompanyState"]
+        finalResult["CompanyStates"] = list(dictValues["CompanyStates"])
+        finalResult["Company"] = dictValues["Company"]
+        finalResult["Companies"] = list(dictValues["Companies"])
+        finalResult["University"] = dictValues["University"]
+        finalResult["Universities"] = list(dictValues["Universities"])
+        finalResult["Area"] = dictValues["Area"]
+        finalResult["Areas"] = list(dictValues["Areas"])
+        finalResult["Course"] = dictValues["Course"]
+        finalResult["Courses"] = list(dictValues["Courses"])
+        finalResult["Genders"] = list(dictValues["Genders"])
+        finalResult["Gender"] = dictValues["Gender"]
+        finalResult["Classes"] = list(dictValues["Classes"])
+        finalResult["Class"] = dictValues["Class"]
+        finalResult["Total"] = dictValues["Total"]
+    return finalResult
+
 #endregion
 
 #region Profissionais vs Empresa( Genero X Area , ...)

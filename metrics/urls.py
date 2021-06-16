@@ -9,6 +9,7 @@ urlpatterns = [
     path('graphs_genero/', views.graphs_genero, name="graphs_genero"),
     path('graphs_social_class/', views.graphs_social_class, name="graphs_social_class"),
     path('graphs_sallary/', views.graphs_sallary, name="graphs_sallary"),
+    path('graphs_age/', views.graphs_age, name="graphs_age"),
     path('update_graph/', views.update_graph, name="update_graph"),
     path('graphs_profissionais_vs_empresa/', views.graphs_profissionais_vs_empresa, name="graphs_profissionais_vs_empresa"),
     path('graphs_universidade_vs_empresa/', views.graphs_universidade_vs_empresa, name="graphs_universidade_vs_empresa"),

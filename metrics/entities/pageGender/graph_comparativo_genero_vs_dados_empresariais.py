@@ -126,21 +126,6 @@ class GeneroDadosComparativosEmpresariais():
     def campo_entidade_comparacao(dictValues, request, context):
         selectedEntity = get_value_string("Entity", "entitygenderLaborMarketComparation", "Empresa", request, "generoXmercadodetrabalhoCompare", context)
         dictValues["Entity"] = selectedEntity
-        if selectedEntity == "Empresa":
-            dictValues["Company"] = "Todos"
-            dictValues["Companies"] = []
-        elif selectedEntity == "Instituicao":
-            dictValues["University"] = "Todos"
-            dictValues["Universities"] = []
-        elif selectedEntity == "Area":
-            dictValues["Area"] = "Todos"
-            dictValues["Areas"] = []
-        elif selectedEntity == "Curso":
-            dictValues["Course"] = "Todos"
-            dictValues["Courses"] = []
-        elif selectedEntity == "Classe":
-            dictValues["Class"] = "Todos"
-            dictValues["Classes"] = []
 
         return dictValues
 

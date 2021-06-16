@@ -133,21 +133,6 @@ class SalarioDadosComparativos():
     def campo_entidade_comparacao(dictValues, request, context):
         selectedEntity = get_value_string("Entity", "entitySallaryDataComparation", "Empresa", request, "salarioXdadosCompare", context)
         dictValues["Entity"] = selectedEntity
-        if selectedEntity == "Empresa":
-            dictValues["Company"] = "Todos"
-            dictValues["Companies"] = []
-        elif selectedEntity == "Instituicao":
-            dictValues["University"] = "Todos"
-            dictValues["Universities"] = []
-        elif selectedEntity == "Area":
-            dictValues["Area"] = "Todos"
-            dictValues["Areas"] = []
-        elif selectedEntity == "Curso":
-            dictValues["Course"] = "Todos"
-            dictValues["Courses"] = []
-        elif selectedEntity == "Genero":
-            dictValues["Gender"] = "Todos"
-            dictValues["Genders"] = []
 
         return dictValues
 
