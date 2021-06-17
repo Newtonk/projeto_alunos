@@ -15,6 +15,7 @@ from metrics.entities.pageSocialClass.graph_class_vs_dados_empresariais import *
 from metrics.entities.pageSocialClass.graph_comparativo_class_vs_dados_empresariais import *
 from metrics.entities.pageSallary.graph_comparativo_sallary_vs_dados import *
 from metrics.entities.pageAge.graph_comparativo_age_vs_dados import *
+from metrics.entities.pageQuantity.graph_comparativo_quantity_vs_dados import *
 
 
 def home(request):
@@ -95,6 +96,8 @@ def update_graph(request):
         context["salarioXdadosCompare"] = graph_salario_vs_dados_compare(request)
     elif graph_name == "idadeXdadosCompare":
         context["idadeXdadosCompare"] = graph_age_vs_dados_compare(request)
+    elif graph_name == "quantidadeXdadosCompare":
+        context["quantidadeXdadosCompare"] = graph_quantity_vs_dados_compare(request)
     elif graph_name == "ageXarea":
         context["ageXarea"] = graph_age_vs_area(request)
     elif graph_name == "generoXarea":
@@ -557,6 +560,64 @@ def graph_age_vs_dados_compare(request):
         finalResult["Class"] = dictValues["Class"]
         finalResult["Total"] = dictValues["Total"]
     return finalResult
+
+#endregion
+
+#region Gráficos de Quantidade
+
+def graphs_quantity(request):
+    context["quantidadeXdadosCompare"] = None
+
+    quantidadeXdadosCompare = graph_quantity_vs_dados_compare(request)
+
+    context["quantidadeXdadosCompare"] = quantidadeXdadosCompare
+
+    return render(request, 'metrics/pageQuantity/graphs_quantity.html', context)
+
+def graph_quantity_vs_dados_compare(request):
+    finalResult = {}
+    if QuantidadeDadosComparativos.validacao_colunas(data):
+        workingData = data
+        newData = QuantidadeDadosComparativos.unifica_colunas(workingData)
+        dictValues, finalData, noInfo = QuantidadeDadosComparativos.valida_dados_enviados(newData, request, context)
+
+        all_values = []
+        list_entities = []
+        list_values = []
+        if not noInfo:
+            for index, value in finalData.items():
+                result = {}
+                result["Entity"] = index
+                result["Quantity"] = int(value)
+                all_values.append(result)
+            if len(all_values) > 0:
+                all_values.sort(key=lambda x: x["Quantity"], reverse=True)
+
+                list_entities = list(o["Entity"] for o in all_values)
+                list_values = list(o["Quantity"] for o in all_values)
+
+        finalResult["Entities"] = list_entities
+        finalResult["Entity"] = dictValues["Entity"]
+        finalResult["Data"] = list_values
+        finalResult["UniversityState"] = dictValues["UniversityState"]
+        finalResult["UniversityStates"] = list(dictValues["UniversityStates"])
+        finalResult["CompanyState"] = dictValues["CompanyState"]
+        finalResult["CompanyStates"] = list(dictValues["CompanyStates"])
+        finalResult["Company"] = dictValues["Company"]
+        finalResult["Companies"] = list(dictValues["Companies"])
+        finalResult["University"] = dictValues["University"]
+        finalResult["Universities"] = list(dictValues["Universities"])
+        finalResult["Area"] = dictValues["Area"]
+        finalResult["Areas"] = list(dictValues["Areas"])
+        finalResult["Course"] = dictValues["Course"]
+        finalResult["Courses"] = list(dictValues["Courses"])
+        finalResult["Genders"] = list(dictValues["Genders"])
+        finalResult["Gender"] = dictValues["Gender"]
+        finalResult["Classes"] = list(dictValues["Classes"])
+        finalResult["Class"] = dictValues["Class"]
+        finalResult["Total"] = dictValues["Total"]
+    return finalResult
+
 
 #endregion
 

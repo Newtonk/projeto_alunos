@@ -1,7 +1,5 @@
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
-<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" />
 <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/select2/3.5.4/select2.min.css" />
 <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/select2-bootstrap-css/1.4.6/select2-bootstrap.min.css" />
@@ -161,6 +159,7 @@ var select = document.getElementById('myform');
 select.addEventListener('change', handlerAgeDataComparation);
 
 $('#genderAgeDataComparation').on('change', handlerAgeDataComparation)
+$('#companyAgeDataComparation').on('change', handlerAgeDataComparation)
 $('#statesUniAgeDataComparation').on('change', handlerAgeDataComparation)
 $('#universityAgeDataComparation').on('change', handlerAgeDataComparation)
 $('#courseAgeDataComparation').on('change', handlerAgeDataComparation)
@@ -210,6 +209,17 @@ chartAgeDataComparation = new Chart(document.getElementById("idadeXdadosCompare"
         },
         options: {
         scales: {
+        xAxes: [{
+          ticks: {
+            callback: function(value) {
+                    if (value.length > 25) {
+                        return value.substr(0, 25) + '...'; //truncate
+                    } else {
+                        return value
+                    }
+                },
+            }
+        }],
         yAxes: [{
             ticks: {
                 min: 0,
