@@ -35,3 +35,11 @@ def get_unique_values(dictValues, data, tag, labelFile):
     else:
         dictValues[tag] = []
     return dictValues
+
+def separate_values_into_list(value, data, tag):
+    list_values = value.split(",")
+    newData = data[data[tag].isin(list_values)]
+    if newData.size == 0:
+        value = "Todos"
+        newData = data
+    return newData, value

@@ -75,14 +75,21 @@ margin: auto;
 
 <!-- Create Request based on the parameters -->
 -<script>
+    function getValuesfromField(fieldData)
+    {
+        text = fieldData.map(item => item.text).join();
+        return text;
+    }
+
 	function changeValuesinRequestQuantityDataComparation(request)
 	{
 		var final_request = {};
 		$.each($('#myform').serializeArray(), function(_, kv) {
 		  final_request[kv.name] = kv.value;
 		});
-		var companyState = $("#statesQuantityDataComparation").select2('data').text;
-		final_request["statesQuantityDataComparation"] = companyState
+		var companyState = $("#statesQuantityDataComparation").select2('data');
+		textField = getValuesfromField(companyState)
+		final_request["statesQuantityDataComparation"] = textField
 
         var universityState = $("#statesUniQuantityDataComparation").select2('data').text;
 		final_request["statesUniQuantityDataComparation"] = universityState
@@ -113,6 +120,14 @@ margin: auto;
 
 <!-- Funções jQuery de atualização e afins -->
 <script>
+const tryRemoveValue = function(e)
+{
+ if($(this).val().length === 1) {
+    alert("You cannot remove last value");
+    e.preventDefault();
+        }
+}
+
 const handlerQuantityDataComparation = function(e) {
    var formData = $('#myform').serializeArray()
    e.preventDefault(); // avoid to execute the actual submit of the form.
@@ -168,6 +183,15 @@ $('#statesQuantityDataComparation').on('change', handlerQuantityDataComparation)
 $('#companyQuantityDataComparation').on('change', handlerQuantityDataComparation)
 $('#areaQuantityDataComparation').on('change', handlerQuantityDataComparation)
 $('#classQuantityDataComparation').on('change', handlerQuantityDataComparation)
+
+$('#genderQuantityDataComparation').on('select2-removing', tryRemoveValue)
+$('#statesUniQuantityDataComparation').on('select2-removing', tryRemoveValue)
+$('#universityQuantityDataComparation').on('select2-removing', tryRemoveValue)
+$('#courseQuantityDataComparation').on('select2-removing', tryRemoveValue)
+$('#statesQuantityDataComparation').on('select2-removing', tryRemoveValue)
+$('#companyQuantityDataComparation').on('select2-removing', tryRemoveValue)
+$('#areaQuantityDataComparation').on('select2-removing', tryRemoveValue)
+$('#classQuantityDataComparation').on('select2-removing', tryRemoveValue)
 
 </script>
 
@@ -296,7 +320,7 @@ function initValuesQuantityDataCompare(all_fields, field, divNameWithTag, hasAll
 
 	$(divNameWithTag).select2({
 	  data: testData,
-	  multiple: false,
+	  multiple: true,
 	  query: function(q) {
       var pageSize,
         results,
@@ -317,11 +341,24 @@ function initValuesQuantityDataCompare(all_fields, field, divNameWithTag, hasAll
       });
     }
 	})
-
-	var data = testData.find(o => o.text === quantityDataComparation[field])
+	var data = getAllValues(testData, quantityDataComparation[field])
 
 	$(divNameWithTag).select2("data", data);
 }
+
+function getAllValues(testData, field)
+{
+    all_values = []
+    const splits = field.split(',')
+
+    for(var i = 0; i < splits.length; i++)
+    {
+        var data = testData.find(o => o.text === splits[i])
+        all_values.push(data)
+    }
+    return all_values
+}
+
 </script>
 
 <!-- Execucao inicial do método init -->

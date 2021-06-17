@@ -24,11 +24,7 @@ class QuantidadeDadosComparativos():
         selectedState = "Todos"
         if checa_valor("Estado_Empresa", data):
             selectedState = get_value_string("CompanyState", "statesQuantityDataComparation", "Todos", request, "quantidadeXdadosCompare", context)
-            if selectedState not in data.Estado_Empresa.values and selectedState != "Todos":
-                selectedState = "Todos"
-        if selectedState != "Todos":
-            data = data[data.Estado_Empresa == selectedState]
-
+            data, selectedState = separate_values_into_list(selectedState, data, "Estado_Empresa")
         dictValues["CompanyState"] = selectedState
         return dictValues, data
 
