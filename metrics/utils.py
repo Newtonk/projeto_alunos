@@ -50,6 +50,15 @@ def get_unique_values(dictValues, data, tag, labelFile, contextName):
         dictValues[tag]["SameState"] = "False"
     return dictValues
 
+def separate_single_value(value, data, tag):
+    newData = data
+    if "Todos" == value:
+        newData = data[data[tag] == value]
+        if newData.size == 0:
+            list_values = ["Todos"]
+            newData = data
+    return newData, value
+
 def separate_values_into_list(list_values, data, tag):
     newData = data
     if "Todos" not in list_values:

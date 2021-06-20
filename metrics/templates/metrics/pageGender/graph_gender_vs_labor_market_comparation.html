@@ -18,6 +18,29 @@ margin: auto;
 
 </style>
 
+<style>
+.alert {
+  padding: 20px;
+  background-color: #f44336;
+  color: white;
+}
+
+.closebtn {
+  margin-left: 15px;
+  color: white;
+  font-weight: bold;
+  float: right;
+  font-size: 22px;
+  line-height: 20px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.closebtn:hover {
+  color: black;
+}
+</style>
+
 <div id="div_gen_vs_labor_market_comparation" class="col-md-12">
 <form id="myform2" method="POST" action="" enctype = "multipart/form-data" onchange="handlerGenderLaborMarketComparation">
 {% csrf_token %}
@@ -62,6 +85,10 @@ margin: auto;
   <option value="20">20</option>
 </select>
 </form>
+<div class="alert" id="error-message-2" style="display:none;">
+<span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+<strong>O campo deve conter pelo menos 1 valor!</strong>
+</div>
 <div id="divgeneroLaborMarketComparation">
     <div id="no-data-gender-labor-market-comparation">
         <h2>Informação insuficiente para gerar o gráfico</h2>
@@ -72,6 +99,23 @@ margin: auto;
 
 <!-- Create Request based on the parameters -->
 <script>
+    function getValuesfromField(divField)
+    {
+        var value = $(divField).select2('data');
+        all_texts = [];
+        for(var i = 0; i < value.length; i++)
+        {
+            text = value[i].text;
+            all_texts.push(text);
+        }
+        return JSON.stringify(all_texts);
+    }
+
+    function getSingleValue(divField)
+    {
+        var value = $(divField).select2('data').text;
+        return value;
+    }
 	function changeValuesinRequestGenderLaborMarketComparation(request)
 	{
 		var final_request = {};
@@ -79,29 +123,14 @@ margin: auto;
 		  final_request[kv.name] = kv.value;
 		});
 
-        var companyState = $("#statesCompanyLaborMarketComparation").select2('data').text;
-		final_request["statesCompanyLaborMarketComparation"] = companyState
-
-        var universityState = $("#statesUniLaborMarketComparation").select2('data').text;
-		final_request["statesUniLaborMarketComparation"] = universityState
-
-		var university = $("#universityGenderXLaborMarketComparation").select2('data').text;
-		final_request["universityGenderXLaborMarketComparation"] = university
-
-		var company = $("#companyGenderXLaborMarketComparation").select2('data').text;
-		final_request["companyGenderXLaborMarketComparation"] = company
-
-		var course = $("#courseGenderXLaborMarketComparation").select2('data').text;
-		final_request["courseGenderXLaborMarketComparation"] = course
-
-		var area = $("#areaGenderXLaborMarketComparation").select2('data').text;
-		final_request["areaGenderXLaborMarketComparation"] = area
-
-		var gendervalue = $("#genderLaborMarketComparation").select2('data').text;
-		final_request["genderLaborMarketComparation"] = gendervalue
-
-		var classValue = $("#classGenderXLaborMarketComparation").select2('data').text;
-		final_request["classGenderXLaborMarketComparation"] = classValue
+        final_request["genderLaborMarketComparation"] = getSingleValue("#genderLaborMarketComparation")
+        final_request["statesCompanyLaborMarketComparation"] = getValuesfromField("#statesCompanyLaborMarketComparation")
+        final_request["statesUniLaborMarketComparation"] = getValuesfromField("#statesUniLaborMarketComparation")
+        final_request["universityGenderXLaborMarketComparation"] = getValuesfromField("#universityGenderXLaborMarketComparation")
+        final_request["companyGenderXLaborMarketComparation"] = getValuesfromField("#companyGenderXLaborMarketComparation")
+        final_request["courseGenderXLaborMarketComparation"] = getValuesfromField("#courseGenderXLaborMarketComparation")
+        final_request["areaGenderXLaborMarketComparation"] = getValuesfromField("#areaGenderXLaborMarketComparation")
+        final_request["classGenderXLaborMarketComparation"] = getValuesfromField("#classGenderXLaborMarketComparation")
 
 		final_request["graph_name"] = "generoXmercadodetrabalhoCompare"
 		return final_request
@@ -111,6 +140,15 @@ margin: auto;
 
 <!-- Funções jQuery de atualização e afins -->
 <script>
+const tryRemoveValueComparation = function(e)
+{
+ if($(this).val().length === 1) {
+   $('#error-message-2').show();
+    $('#error-message-2').fadeIn();
+    e.preventDefault();
+        }
+}
+
 const handlerGenderLaborMarketComparation = function(e) {
    var formData = $('#myform2').serializeArray()
    e.preventDefault(); // avoid to execute the actual submit of the form.
@@ -124,29 +162,22 @@ const handlerGenderLaborMarketComparation = function(e) {
         success: function (data, status) {
         		genderLaborMarketComparation = data.generoXmercadodetrabalhoCompare
 				updateGraphGenderLaborMarketComparation(genderLaborMarketComparation)
-				$("#genderLaborMarketComparation").empty();
-				initValuesGenderLaborMarketCompare("Genders", "Gender", "#genderLaborMarketComparation", false)
 
-				$("#statesUniLaborMarketComparation").empty();
-				initValuesGenderLaborMarketCompare("UniversityStates", "UniversityState", "#statesUniLaborMarketComparation", true)
+				initValuesGenderLaborMarketCompare("Genders", "Gender", "#genderLaborMarketComparation", false, false)
 
-				$("#universityGenderXLaborMarketComparation").empty();
-				initValuesGenderLaborMarketCompare("Universities", "University", "#universityGenderXLaborMarketComparation", true)
+				initValuesGenderLaborMarketCompare("UniversityStates", "UniversityState", "#statesUniLaborMarketComparation", true, true)
 
-				$("#courseGenderXLaborMarketComparation").empty();
-				initValuesGenderLaborMarketCompare("Courses", "Course", "#courseGenderXLaborMarketComparation", true)
+				initValuesGenderLaborMarketCompare("Universities", "University", "#universityGenderXLaborMarketComparation", true, true)
 
-				$("#statesCompanyLaborMarketComparation").empty();
-				initValuesGenderLaborMarketCompare("CompanyStates", "CompanyState", "#statesCompanyLaborMarketComparation", true)
+				initValuesGenderLaborMarketCompare("Courses", "Course", "#courseGenderXLaborMarketComparation", true, true)
 
-				$("#companyGenderXLaborMarketComparation").empty();
-				initValuesGenderLaborMarketCompare("Companies", "Company", "#companyGenderXLaborMarketComparation", true)
+				initValuesGenderLaborMarketCompare("CompanyStates", "CompanyState", "#statesCompanyLaborMarketComparation", true, true)
 
-				$("#areaGenderXLaborMarketComparation").empty();
-				initValuesGenderLaborMarketCompare("Areas", "Area", "#areaGenderXLaborMarketComparation", true)
+				initValuesGenderLaborMarketCompare("Companies", "Company", "#companyGenderXLaborMarketComparation", true, true)
 
-                $("#classGenderXLaborMarketComparation").empty();
-                initValuesGenderLaborMarketCompare("Classes", "Class", "#classGenderXLaborMarketComparation", true)
+				initValuesGenderLaborMarketCompare("Areas", "Area", "#areaGenderXLaborMarketComparation", true, true)
+
+                initValuesGenderLaborMarketCompare("Classes", "Class", "#classGenderXLaborMarketComparation", true, true)
 
                 document.getElementById("qtygenderLaborMarketComparation").value = genderLaborMarketComparation["Total"];
 				document.getElementById("entitygenderLaborMarketComparation").value = genderLaborMarketComparation["Entity"];
@@ -156,6 +187,7 @@ const handlerGenderLaborMarketComparation = function(e) {
 
 var select = document.getElementById('myform2');
 select.addEventListener('change', handlerGenderLaborMarketComparation);
+
 $('#genderLaborMarketComparation').on('change', handlerGenderLaborMarketComparation)
 $('#statesUniLaborMarketComparation').on('change', handlerGenderLaborMarketComparation)
 $('#universityGenderXLaborMarketComparation').on('change', handlerGenderLaborMarketComparation)
@@ -164,6 +196,14 @@ $('#statesCompanyLaborMarketComparation').on('change', handlerGenderLaborMarketC
 $('#companyGenderXLaborMarketComparation').on('change', handlerGenderLaborMarketComparation)
 $('#areaGenderXLaborMarketComparation').on('change', handlerGenderLaborMarketComparation)
 $('#classGenderXLaborMarketComparation').on('change', handlerGenderLaborMarketComparation)
+
+$('#statesUniLaborMarketComparation').on('select2-removing', tryRemoveValueComparation)
+$('#universityGenderXLaborMarketComparation').on('select2-removing', tryRemoveValueComparation)
+$('#courseGenderXLaborMarketComparation').on('select2-removing', tryRemoveValueComparation)
+$('#statesCompanyLaborMarketComparation').on('select2-removing', tryRemoveValueComparation)
+$('#companyGenderXLaborMarketComparation').on('select2-removing', tryRemoveValueComparation)
+$('#areaGenderXLaborMarketComparation').on('select2-removing', tryRemoveValueComparation)
+$('#classGenderXLaborMarketComparation').on('select2-removing', tryRemoveValueComparation)
 
 
 </script>
@@ -241,14 +281,14 @@ function initGenderLaborMarketComparation(object_all) {
 		document.getElementById('no-data-gender-labor-market-comparation').style.display = 'block';
         document.getElementById('generoXmercadodetrabalhoCompare').style.display = 'none'
 	}
-    initValuesGenderLaborMarketCompare("Genders", "Gender", "#genderLaborMarketComparation", false)
-    initValuesGenderLaborMarketCompare("UniversityStates", "UniversityState", "#statesUniLaborMarketComparation", true)
-    initValuesGenderLaborMarketCompare("Universities", "University", "#universityGenderXLaborMarketComparation", true)
-    initValuesGenderLaborMarketCompare("Courses", "Course", "#courseGenderXLaborMarketComparation", true)
-    initValuesGenderLaborMarketCompare("CompanyStates", "CompanyState", "#statesCompanyLaborMarketComparation", true)
-    initValuesGenderLaborMarketCompare("Companies", "Company", "#companyGenderXLaborMarketComparation", true)
-    initValuesGenderLaborMarketCompare("Areas", "Area", "#areaGenderXLaborMarketComparation", true)
-    initValuesGenderLaborMarketCompare("Classes", "Class", "#classGenderXLaborMarketComparation", true)
+    initValuesGenderLaborMarketCompare("Genders", "Gender", "#genderLaborMarketComparation", false, false)
+    initValuesGenderLaborMarketCompare("UniversityStates", "UniversityState", "#statesUniLaborMarketComparation", true, true)
+    initValuesGenderLaborMarketCompare("Universities", "University", "#universityGenderXLaborMarketComparation", true, true)
+    initValuesGenderLaborMarketCompare("Courses", "Course", "#courseGenderXLaborMarketComparation", true, true)
+    initValuesGenderLaborMarketCompare("CompanyStates", "CompanyState", "#statesCompanyLaborMarketComparation", true, true)
+    initValuesGenderLaborMarketCompare("Companies", "Company", "#companyGenderXLaborMarketComparation", true, true)
+    initValuesGenderLaborMarketCompare("Areas", "Area", "#areaGenderXLaborMarketComparation", true, true)
+    initValuesGenderLaborMarketCompare("Classes", "Class", "#classGenderXLaborMarketComparation", true, true)
 
     createGraphGenderLaborMarketComparation(object_all)
     }
@@ -257,7 +297,7 @@ function initGenderLaborMarketComparation(object_all) {
 
 <script>
 
-function initValuesGenderLaborMarketCompare(all_fields, field, divNameWithTag, hasAllFlag) {
+function initValuesGenderLaborMarketCompare(all_fields, field, divNameWithTag, hasAllFlag, isMultiple) {
 	var testData = [];
 
     if (hasAllFlag)
@@ -269,44 +309,74 @@ function initValuesGenderLaborMarketCompare(all_fields, field, divNameWithTag, h
 		});
     }
 	// Instead of doing this use the AJAX call to poulate the data.
-	for (var i=0; i < genderLaborMarketComparation[all_fields].length; i++) {
+	for (var i=0; i < genderLaborMarketComparation[all_fields]["Item"].length; i++) {
 		testData.push(
 		{
 		id : i+1,
-		text: genderLaborMarketComparation[all_fields][i]
+		text: genderLaborMarketComparation[all_fields]["Item"][i]
 		});
 	}
 
 
-
-	$(divNameWithTag).select2({
-	  data: testData,
-	  multiple: false,
-	  query: function(q) {
-      var pageSize,
-        results,
-        that = this;
-      pageSize = 20; // or whatever pagesize
-      results = [];
-      if (q.term && q.term !== '') {
-        // HEADS UP; for the _.filter function i use underscore (actually lo-dash) here
-        results = _.filter(that.data, function(e) {
-          return e.text.toUpperCase().indexOf(q.term.toUpperCase()) >= 0;
-        });
-      } else if (q.term === '') {
-        results = that.data;
-      }
-      q.callback({
-        results: results.slice((q.page - 1) * pageSize, q.page * pageSize),
-        more: results.length >= q.page * pageSize,
-      });
+    if (genderLaborMarketComparation[all_fields]["SameState"] == "False")
+    {
+        $(divNameWithTag).select2({
+          data: testData,
+          multiple: isMultiple,
+          closeOnSelect: false,
+          allowClear: true,
+          query: function(q) {
+          var pageSize,
+            results,
+            that = this;
+          pageSize = 20; // or whatever pagesize
+          results = [];
+          if (q.term && q.term !== '') {
+            // HEADS UP; for the _.filter function i use underscore (actually lo-dash) here
+            results = _.filter(that.data, function(e) {
+              return e.text.toUpperCase().indexOf(q.term.toUpperCase()) >= 0;
+            });
+          } else if (q.term === '') {
+            results = that.data;
+          }
+          q.callback({
+            results: results.slice((q.page - 1) * pageSize, q.page * pageSize),
+            more: results.length >= q.page * pageSize,
+          });
+        }
+        })
+        if ( isMultiple)
+        {
+            var data = getMultipleValues(testData, genderLaborMarketComparation[field])
+        } else
+        {
+            var data = getSingleValues(testData, genderLaborMarketComparation[field])
+        }
+        $(divNameWithTag).select2("data", data);
     }
-	})
-
-	var data = testData.find(o => o.text === genderLaborMarketComparation[field])
-
-	$(divNameWithTag).select2("data", data);
 }
+
+function getMultipleValues(testData, field)
+{
+    all_values = []
+
+    for(var i = 0; i < field.length; i++)
+    {
+        var data = testData.find(o => o.text === field[i])
+        if (data != undefined)
+        {
+            all_values.push(data)
+        }
+    }
+    return all_values
+}
+
+function getSingleValues(testData, field)
+{
+    var data = testData.find(o => o.text === field[0])
+    return data
+}
+
 </script>
 
 <!-- Execucao inicial do método init -->

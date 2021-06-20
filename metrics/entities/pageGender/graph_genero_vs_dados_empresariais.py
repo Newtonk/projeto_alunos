@@ -16,85 +16,66 @@ class GeneroDadosEmpresariais:
 
     @staticmethod
     def campo_uf_empresa(dictValues, data, request, contextName):
-        selectedState = "Todos"
+        selectedState = ["Todos"]
         if checa_valor("Estado_Empresa", data):
-            selectedState = get_value_string("CompanyState", "statesGenderXLaborMarket", "Todos", request,
+            selectedState = get_multiple_value_string("CompanyState", "statesGenderXLaborMarket", "Todos", request,
                                              contextName)
-            if selectedState not in data.Estado_Empresa.values and selectedState != "Todos":
-                selectedState = "Todos"
-        if selectedState != "Todos":
-            data = data[data.Estado_Empresa == selectedState]
+            data, selectedState = separate_values_into_list(selectedState, data, "Estado_Empresa")
 
         dictValues["CompanyState"] = selectedState
         return dictValues, data
 
     @staticmethod
     def campo_empresa(dictValues, data, request, contextName):
-        selectedCompany = "Todos"
+        selectedCompany = ["Todos"]
         if checa_valor("Empresa", data):
-            selectedCompany = get_value_string("Company", "companyGenderXLaborMarket", "Todos", request,
+            selectedCompany = get_multiple_value_string("Company", "companyGenderXLaborMarket", "Todos", request,
                                                contextName)
-            if selectedCompany not in data.Empresa.values and selectedCompany != "Todos":
-                selectedCompany = "Todos"
-        if selectedCompany != "Todos":
-            data = data[data.Empresa == selectedCompany]
+            data, selectedCompany = separate_values_into_list(selectedCompany, data, "Empresa")
 
         dictValues["Company"] = selectedCompany
         return dictValues, data
 
     @staticmethod
     def campo_area(dictValues, data, request, contextName):
-        selectedArea = "Todos"
+        selectedArea = ["Todos"]
         if checa_valor("Area", data):
-            selectedArea = get_value_string("Area", "areaGenderXLaborMarket", "Todos", request,
+            selectedArea = get_multiple_value_string("Area", "areaGenderXLaborMarket", "Todos", request,
                                             contextName)
-            if selectedArea not in data.Area.values and selectedArea != "Todos":
-                selectedArea = "Todos"
-        if selectedArea != "Todos":
-            data = data[data.Area == selectedArea]
+            data, selectedArea = separate_values_into_list(selectedArea, data, "Area")
 
         dictValues["Area"] = selectedArea
         return dictValues, data
 
     @staticmethod
     def campo_uf_universidade(dictValues, data, request, contextName):
-        selectedState = "Todos"
+        selectedState = ["Todos"]
         if checa_valor("Estado_Universidade", data):
-            selectedState = get_value_string("UniversityState", "statesUniGenderXLaborMarket", "Todos", request,
+            selectedState = get_multiple_value_string("UniversityState", "statesUniGenderXLaborMarket", "Todos", request,
                                              contextName)
-            if selectedState not in data.Estado_Universidade.values and selectedState != "Todos":
-                selectedState = "Todos"
-        if selectedState != "Todos":
-            data = data[data.Estado_Universidade == selectedState]
+            data, selectedState = separate_values_into_list(selectedState, data, "Estado_Universidade")
 
         dictValues["UniversityState"] = selectedState
         return dictValues, data
 
     @staticmethod
     def campo_universidade(dictValues, data, request, contextName):
-        selectedUniversity = "Todos"
+        selectedUniversity = ["Todos"]
         if checa_valor("Instituicao", data):
-            selectedUniversity = get_value_string("University", "universityGenderXLaborMarket", "Todos",
-                                                  request,
-                                                  contextName)
-            if selectedUniversity not in data.Instituicao.values and selectedUniversity != "Todos":
-                selectedUniversity = "Todos"
-        if selectedUniversity != "Todos":
-            data = data[data.Instituicao == selectedUniversity]
+            selectedUniversity = get_multiple_value_string("University", "universityGenderXLaborMarket", "Todos",
+                                                  request, contextName)
+            data, selectedUniversity = separate_values_into_list(selectedUniversity, data, "Instituicao")
 
         dictValues["University"] = selectedUniversity
         return dictValues, data
 
     @staticmethod
     def campo_curso(dictValues, data, request, contextName):
-        selectedCurso = "Todos"
+        selectedCurso = ["Todos"]
         if checa_valor("Curso", data):
-            selectedCurso = get_value_string("Course", "courseGenderXLaborMarket", "Todos", request,
+            selectedCurso = get_multiple_value_string("Course", "courseGenderXLaborMarket", "Todos", request,
                                              contextName)
-            if selectedCurso not in data.Curso.values and selectedCurso != "Todos":
-                selectedCurso = "Todos"
-        if selectedCurso != "Todos":
-            data = data[data.Curso == selectedCurso]
+            data, selectedCurso = separate_values_into_list(selectedCurso, data, "Curso")
 
         dictValues["Course"] = selectedCurso
         return dictValues, data
