@@ -1,3 +1,4 @@
+import json
 
 
 def pegue_todas_colunas(columns, data):
@@ -12,34 +13,48 @@ def checa_valor(value, data):
         return False
     return True
 
-def get_value_string(objName , key, defaultValue, request, contextName, context):
+def get_value_string(objName , key, defaultValue, request, contextName):
     finalValue = defaultValue
     if key in request.POST:
         finalValue = request.POST[key]
-    elif context[contextName] is not None:
-        finalValue = context[contextName][objName]
+    elif contextName is not None:
+        finalValue = contextName[objName]
+    return finalValue
+
+def get_multiple_value_string(objName , key, defaultValue, request, contextName):
+    finalValue = [defaultValue]
+    if key in request.POST:
+        finalValue = json.loads(request.POST[key])
+    elif contextName is not None:
+        finalValue = contextName[objName]
     return finalValue
 
 
-def get_value_int(objName , key, defaultValue, request, contextName, context):
+def get_value_int(objName , key, defaultValue, request, contextName):
     finalValue = defaultValue
     if key in request.POST:
         finalValue = int(request.POST[key])
-    elif context[contextName] is not None:
-        finalValue = context[contextName][objName]
+    elif contextName is not None:
+        finalValue = contextName[objName]
     return finalValue
 
-def get_unique_values(dictValues, data, tag, labelFile):
+def get_unique_values(dictValues, data, tag, labelFile, contextName):
+    dictValues[tag] = {}
     if checa_valor(labelFile, data):
-        dictValues[tag] = data[labelFile].dropna().unique()
+        dictValues[tag]["Item"] = list(data[labelFile].dropna().unique())
     else:
-        dictValues[tag] = []
+        dictValues[tag]["Item"] = []
+    if contextName is not None and set(dictValues[tag]["Item"]) == set(contextName[tag]["Item"]):
+        dictValues[tag]["SameState"] = "True"
+    else:
+        dictValues[tag]["SameState"] = "False"
     return dictValues
 
-def separate_values_into_list(value, data, tag):
-    list_values = value.split(",")
-    newData = data[data[tag].isin(list_values)]
-    if newData.size == 0:
-        value = "Todos"
-        newData = data
-    return newData, value
+def separate_values_into_list(list_values, data, tag):
+    newData = data
+    if "Todos" not in list_values:
+        newData = data[data[tag].isin(list_values)]
+        if newData.size == 0:
+            list_values = ["Todos"]
+            newData = data
+    return newData, list_values

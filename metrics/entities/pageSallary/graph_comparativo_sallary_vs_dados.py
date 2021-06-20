@@ -15,123 +15,99 @@ class SalarioDadosComparativos():
         return dados_unificados
 
     @staticmethod
-    def campo_total(request, context):
-        total = get_value_int("Total", 'qtySallaryDataComparation', 10, request, "salarioXdadosCompare", context)
+    def campo_total(request, contextName):
+        total = get_value_int("Total", 'qtySallaryDataComparation', 10, request, contextName)
         return total
 
     @staticmethod
-    def campo_uf_empresa(dictValues, data, request, context):
-        selectedState = "Todos"
+    def campo_uf_empresa(dictValues, data, request, contextName):
+        selectedState = ["Todos"]
         if checa_valor("Estado_Empresa", data):
-            selectedState = get_value_string("CompanyState", "statesSallaryDataComparation", "Todos", request, "salarioXdadosCompare", context)
-            if selectedState not in data.Estado_Empresa.values and selectedState != "Todos":
-                selectedState = "Todos"
-        if selectedState != "Todos":
-            data = data[data.Estado_Empresa == selectedState]
+            selectedState = get_value_string("CompanyState", "statesSallaryDataComparation", "Todos", request, contextName)
+            data, selectedState = separate_values_into_list(selectedState, data, "Estado_Empresa")
 
         dictValues["CompanyState"] = selectedState
         return dictValues, data
 
     @staticmethod
-    def campo_empresa(dictValues, data, request, context):
-        selectedCompany = "Todos"
+    def campo_empresa(dictValues, data, request, contextName):
+        selectedCompany = ["Todos"]
         if checa_valor("Empresa", data):
-            selectedCompany = get_value_string("Company", "companySallaryDataComparation", "Todos", request, "salarioXdadosCompare", context)
-            if selectedCompany not in data.Empresa.values and selectedCompany != "Todos":
-                selectedCompany = "Todos"
-        if selectedCompany != "Todos":
-            data = data[data.Empresa == selectedCompany]
+            selectedCompany = get_value_string("Company", "companySallaryDataComparation", "Todos", request, contextName)
+            data, selectedCompany = separate_values_into_list(selectedCompany, data, "Empresa")
 
         dictValues["Company"] = selectedCompany
         return dictValues, data
 
     @staticmethod
-    def campo_area(dictValues, data, request, context):
-        selectedArea = "Todos"
+    def campo_area(dictValues, data, request, contextName):
+        selectedArea = ["Todos"]
         if checa_valor("Area", data):
-            selectedArea = get_value_string("Area", "areaSallaryDataComparation", "Todos", request, "salarioXdadosCompare", context)
-            if selectedArea not in data.Area.values and selectedArea != "Todos":
-                selectedArea = "Todos"
-        if selectedArea != "Todos":
-            data = data[data.Area == selectedArea]
+            selectedArea = get_value_string("Area", "areaSallaryDataComparation", "Todos", request, contextName)
+            data, selectedArea = separate_values_into_list(selectedArea, data, "Area")
 
         dictValues["Area"] = selectedArea
         return dictValues, data
 
     @staticmethod
-    def campo_uf_universidade(dictValues, data, request, context):
-        selectedState = "Todos"
+    def campo_uf_universidade(dictValues, data, request, contextName):
+        selectedState = ["Todos"]
         if checa_valor("Estado_Universidade", data):
             selectedState = get_value_string("UniversityState", "statesUniSallaryDataComparation", "Todos", request,
-                                             "salarioXdadosCompare", context)
-            if selectedState not in data.Estado_Universidade.values and selectedState != "Todos":
-                selectedState = "Todos"
-        if selectedState != "Todos":
-            data = data[data.Estado_Universidade == selectedState]
+                                             contextName)
+            data, selectedState = separate_values_into_list(selectedState, data, "Estado_Universidade")
 
         dictValues["UniversityState"] = selectedState
         return dictValues, data
 
     @staticmethod
-    def campo_universidade(dictValues, data, request, context):
-        selectedUniversity = "Todos"
+    def campo_universidade(dictValues, data, request, contextName):
+        selectedUniversity = ["Todos"]
         if checa_valor("Instituicao", data):
             selectedUniversity = get_value_string("University", "universitySallaryDataComparation", "Todos", request,
-                                                  "salarioXdadosCompare", context)
-            if selectedUniversity not in data.Instituicao.values and selectedUniversity != "Todos":
-                selectedUniversity = "Todos"
-        if selectedUniversity != "Todos":
-            data = data[data.Instituicao == selectedUniversity]
+                                                  contextName)
+            data, selectedUniversity = separate_values_into_list(selectedUniversity, data, "Instituicao")
 
         dictValues["University"] = selectedUniversity
         return dictValues, data
 
     @staticmethod
-    def campo_curso(dictValues, data, request, context):
-        selectedCurso = "Todos"
+    def campo_curso(dictValues, data, request, contextName):
+        selectedCurso = ["Todos"]
         if checa_valor("Curso", data):
             selectedCurso = get_value_string("Course", "courseSallaryDataComparation", "Todos", request,
-                                             "salarioXdadosCompare", context)
-            if selectedCurso not in data.Curso.values and selectedCurso != "Todos":
-                selectedCurso = "Todos"
-        if selectedCurso != "Todos":
-            data = data[data.Curso == selectedCurso]
+                                             contextName)
+            data, selectedCurso = separate_values_into_list(selectedCurso, data, "Curso")
 
         dictValues["Course"] = selectedCurso
         return dictValues, data
 
     @staticmethod
-    def campo_classe(dictValues, data, request, context):
-        selectedClass = "Todos"
+    def campo_classe(dictValues, data, request, contextName):
+        selectedClass = ["Todos"]
         if checa_valor("Classe", data):
             selectedClass = get_value_string("Class", "classSallaryDataComparation", "Todos", request,
-                                              "salarioXdadosCompare", context)
-            if selectedClass not in data.Classe.values and selectedClass != "Todos":
-                selectedClass = "Todos"
-        if selectedClass != "Todos":
-            data = data[data.Classe == selectedClass]
+                                              contextName)
+            data, selectedClass = separate_values_into_list(selectedClass, data, "Classe")
 
         dictValues["Class"] = selectedClass
 
         return dictValues, data
 
     @staticmethod
-    def campo_genero(dictValues, data, request, context):
-        selectedGender = "Todos"
+    def campo_genero(dictValues, data, request, contextName):
+        selectedGender = ["Todos"]
         if checa_valor("Genero", data):
             selectedGender = get_value_string("Gender", "genderSallaryDataComparation", "Todos", request,
-                                             "salarioXdadosCompare", context)
-            if selectedGender not in data.Genero.values and selectedGender != "Todos":
-                selectedGender = "Todos"
-        if selectedGender != "Todos":
-            data = data[data.Genero == selectedGender]
+                                             contextName)
+            data, selectedGender = separate_values_into_list(selectedGender, data, "Genero")
 
         dictValues["Gender"] = selectedGender
         return dictValues, data
 
     @staticmethod
-    def campo_entidade_comparacao(dictValues, request, context):
-        selectedEntity = get_value_string("Entity", "entitySallaryDataComparation", "Empresa", request, "salarioXdadosCompare", context)
+    def campo_entidade_comparacao(dictValues, request, contextName):
+        selectedEntity = get_value_string("Entity", "entitySallaryDataComparation", "Empresa", request, contextName)
         dictValues["Entity"] = selectedEntity
 
         return dictValues
@@ -141,34 +117,35 @@ class SalarioDadosComparativos():
         newData = data
         dictValues = {}
         noInfo = False
+        contextName = context["salarioXdadosCompare"]
 
-        dictValues = get_unique_values(dictValues, data, "CompanyStates", "Estado_Empresa")
-        dictValues, newData = SalarioDadosComparativos.campo_uf_empresa(dictValues, data, request, context)
+        dictValues = get_unique_values(dictValues, data, "CompanyStates", "Estado_Empresa", contextName)
+        dictValues, newData = SalarioDadosComparativos.campo_uf_empresa(dictValues, data, request, contextName)
 
-        dictValues = get_unique_values(dictValues, newData, "UniversityStates", "Estado_Universidade")
-        dictValues, newData = SalarioDadosComparativos.campo_uf_universidade(dictValues, newData, request, context)
+        dictValues = get_unique_values(dictValues, newData, "UniversityStates", "Estado_Universidade", contextName)
+        dictValues, newData = SalarioDadosComparativos.campo_uf_universidade(dictValues, newData, request, contextName)
 
-        dictValues = get_unique_values(dictValues, newData, "Companies", "Empresa")
-        dictValues, newData = SalarioDadosComparativos.campo_empresa(dictValues, newData, request, context)
+        dictValues = get_unique_values(dictValues, newData, "Companies", "Empresa", contextName)
+        dictValues, newData = SalarioDadosComparativos.campo_empresa(dictValues, newData, request, contextName)
 
-        dictValues = get_unique_values(dictValues, newData, "Universities", "Instituicao")
-        dictValues, newData = SalarioDadosComparativos.campo_universidade(dictValues, newData, request, context)
+        dictValues = get_unique_values(dictValues, newData, "Universities", "Instituicao", contextName)
+        dictValues, newData = SalarioDadosComparativos.campo_universidade(dictValues, newData, request, contextName)
 
-        dictValues = get_unique_values(dictValues, newData, "Areas", "Area")
-        dictValues, newData = SalarioDadosComparativos.campo_area(dictValues, newData, request, context)
+        dictValues = get_unique_values(dictValues, newData, "Areas", "Area", contextName)
+        dictValues, newData = SalarioDadosComparativos.campo_area(dictValues, newData, request, contextName)
 
-        dictValues = get_unique_values(dictValues, newData, "Courses", "Curso")
-        dictValues, newData = SalarioDadosComparativos.campo_curso(dictValues, newData, request, context)
+        dictValues = get_unique_values(dictValues, newData, "Courses", "Curso", contextName)
+        dictValues, newData = SalarioDadosComparativos.campo_curso(dictValues, newData, request, contextName)
 
-        dictValues = get_unique_values(dictValues, newData, "Genders", "Genero")
-        dictValues, newData = SalarioDadosComparativos.campo_genero(dictValues, newData, request, context)
+        dictValues = get_unique_values(dictValues, newData, "Genders", "Genero", contextName)
+        dictValues, newData = SalarioDadosComparativos.campo_genero(dictValues, newData, request, contextName)
 
-        dictValues = get_unique_values(dictValues, newData, "Classes", "Classe")
-        dictValues, newData = SalarioDadosComparativos.campo_classe(dictValues, newData, request, context)
+        dictValues = get_unique_values(dictValues, newData, "Classes", "Classe", contextName)
+        dictValues, newData = SalarioDadosComparativos.campo_classe(dictValues, newData, request, contextName)
 
-        dictValues["Total"] = SalarioDadosComparativos.campo_total(request, context)
+        dictValues["Total"] = SalarioDadosComparativos.campo_total(request, contextName)
 
-        dictValues = SalarioDadosComparativos.campo_entidade_comparacao(dictValues, request, context)
+        dictValues = SalarioDadosComparativos.campo_entidade_comparacao(dictValues, request, contextName)
 
         if newData.items() == 0:
             noInfo = True

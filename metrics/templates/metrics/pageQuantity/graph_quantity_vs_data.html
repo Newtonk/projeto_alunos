@@ -18,6 +18,29 @@ margin: auto;
 
 </style>
 
+<style>
+.alert {
+  padding: 20px;
+  background-color: #f44336;
+  color: white;
+}
+
+.closebtn {
+  margin-left: 15px;
+  color: white;
+  font-weight: bold;
+  float: right;
+  font-size: 22px;
+  line-height: 20px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.closebtn:hover {
+  color: black;
+}
+</style>
+
 <div id="div_quantity_vs_data" class="col-md-12">
 <form id="myform" method="POST" action="" enctype = "multipart/form-data" onchange="handlerQuantityDataComparation">
 {% csrf_token %}
@@ -63,6 +86,10 @@ margin: auto;
   <option value="20">20</option>
 </select>
 </form>
+<div class="alert" id="error-message" style="display:none;">
+<span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+<strong>O campo deve conter pelo menos 1 valor!</strong>
+</div>
 <div id="divQuantityDataComparation">
     <div id="no-data-quantity-vs-data-comparation">
         <h2>Informação insuficiente para gerar o gráfico</h2>
@@ -75,10 +102,16 @@ margin: auto;
 
 <!-- Create Request based on the parameters -->
 -<script>
-    function getValuesfromField(fieldData)
+    function getValuesfromField(divField)
     {
-        text = fieldData.map(item => item.text).join();
-        return text;
+        var value = $(divField).select2('data');
+        all_texts = [];
+        for(var i = 0; i < value.length; i++)
+        {
+            text = value[i].text;
+            all_texts.push(text);
+        }
+        return JSON.stringify(all_texts);
     }
 
 	function changeValuesinRequestQuantityDataComparation(request)
@@ -87,30 +120,14 @@ margin: auto;
 		$.each($('#myform').serializeArray(), function(_, kv) {
 		  final_request[kv.name] = kv.value;
 		});
-		var companyState = $("#statesQuantityDataComparation").select2('data');
-		textField = getValuesfromField(companyState)
-		final_request["statesQuantityDataComparation"] = textField
-
-        var universityState = $("#statesUniQuantityDataComparation").select2('data').text;
-		final_request["statesUniQuantityDataComparation"] = universityState
-
-		var university = $("#universityQuantityDataComparation").select2('data').text;
-		final_request["universityQuantityDataComparation"] = university
-
-		var company = $("#companyQuantityDataComparation").select2('data').text;
-		final_request["companyQuantityDataComparation"] = company
-
-		var course = $("#courseQuantityDataComparation").select2('data').text;
-		final_request["courseQuantityDataComparation"] = course
-
-		var area = $("#areaQuantityDataComparation").select2('data').text;
-		final_request["areaQuantityDataComparation"] = area
-
-		var gendervalue = $("#genderQuantityDataComparation").select2('data').text;
-		final_request["genderQuantityDataComparation"] = gendervalue
-
-		var classValue = $("#classQuantityDataComparation").select2('data').text;
-		final_request["classQuantityDataComparation"] = classValue
+		final_request["statesQuantityDataComparation"] = getValuesfromField("#statesQuantityDataComparation")
+		final_request["statesUniQuantityDataComparation"] = getValuesfromField("#statesUniQuantityDataComparation")
+		final_request["universityQuantityDataComparation"] = getValuesfromField("#universityQuantityDataComparation")
+		final_request["companyQuantityDataComparation"] = getValuesfromField("#companyQuantityDataComparation")
+		final_request["courseQuantityDataComparation"] = getValuesfromField("#courseQuantityDataComparation")
+		final_request["areaQuantityDataComparation"] = getValuesfromField("#areaQuantityDataComparation")
+		final_request["genderQuantityDataComparation"] = getValuesfromField("#genderQuantityDataComparation")
+		final_request["classQuantityDataComparation"] = getValuesfromField("#classQuantityDataComparation")
 
 		final_request["graph_name"] = "quantidadeXdadosCompare"
 		return final_request
@@ -123,7 +140,8 @@ margin: auto;
 const tryRemoveValue = function(e)
 {
  if($(this).val().length === 1) {
-    alert("You cannot remove last value");
+   $('#error-message').show();
+    $('#error-message').fadeIn();
     e.preventDefault();
         }
 }
@@ -142,28 +160,20 @@ const handlerQuantityDataComparation = function(e) {
         		quantityDataComparation = data.quantidadeXdadosCompare
 				updateQuantityDataComparation(quantityDataComparation)
 
-                $("#classQuantityDataComparation").empty();
                 initValuesQuantityDataCompare("Classes", "Class", "#classQuantityDataComparation", true)
 
-				$("#genderQuantityDataComparation").empty();
 				initValuesQuantityDataCompare("Genders", "Gender", "#genderQuantityDataComparation", true)
 
-				$("#statesUniQuantityDataComparation").empty();
 				initValuesQuantityDataCompare("UniversityStates", "UniversityState", "#statesUniQuantityDataComparation", true)
 
-				$("#universityQuantityDataComparation").empty();
 				initValuesQuantityDataCompare("Universities", "University", "#universityQuantityDataComparation", true)
 
-				$("#courseQuantityDataComparation").empty();
 				initValuesQuantityDataCompare("Courses", "Course", "#courseQuantityDataComparation", true)
 
-				$("#statesQuantityDataComparation").empty();
 				initValuesQuantityDataCompare("CompanyStates", "CompanyState", "#statesQuantityDataComparation", true)
 
-				$("#companyQuantityDataComparation").empty();
 				initValuesQuantityDataCompare("Companies", "Company", "#companyQuantityDataComparation", true)
 
-				$("#areaQuantityDataComparation").empty();
 				initValuesQuantityDataCompare("Areas", "Area", "#areaQuantityDataComparation", true)
 
                 document.getElementById("qtyQuantityDataComparation").value = quantityDataComparation["Total"];
@@ -298,7 +308,7 @@ function initQuantityDataComparation(object_all) {
 
 function initValuesQuantityDataCompare(all_fields, field, divNameWithTag, hasAllFlag) {
 	var testData = [];
-
+    createSelect = false
     if (hasAllFlag)
     {
 	testData.push(
@@ -308,53 +318,59 @@ function initValuesQuantityDataCompare(all_fields, field, divNameWithTag, hasAll
 		});
     }
 	// Instead of doing this use the AJAX call to poulate the data.
-	for (var i=0; i < quantityDataComparation[all_fields].length; i++) {
+	for (var i=0; i < quantityDataComparation[all_fields]["Item"].length; i++) {
 		testData.push(
 		{
 		id : i+1,
-		text: quantityDataComparation[all_fields][i]
+		text: quantityDataComparation[all_fields]["Item"][i]
 		});
 	}
 
+    if (quantityDataComparation[all_fields]["SameState"] == "False")
+    {
+        $(divNameWithTag).select2({
+          data: testData,
+          multiple: true,
+          closeOnSelect: false,
+          query: function(q) {
+          var pageSize,
+            results,
+            that = this;
+          pageSize = 20; // or whatever pagesize
+          results = [];
+          if (q.term && q.term !== '') {
+            // HEADS UP; for the _.filter function i use underscore (actually lo-dash) here
+            results = _.filter(that.data, function(e) {
+              return e.text.toUpperCase().indexOf(q.term.toUpperCase()) >= 0;
+            });
+          } else if (q.term === '') {
+            results = that.data;
+          }
+          q.callback({
+            results: results.slice((q.page - 1) * pageSize, q.page * pageSize),
+            more: results.length >= q.page * pageSize,
+          });
+        }
+        })
 
+        var data = getMultipleValues(testData, quantityDataComparation[field])
 
-	$(divNameWithTag).select2({
-	  data: testData,
-	  multiple: true,
-	  query: function(q) {
-      var pageSize,
-        results,
-        that = this;
-      pageSize = 20; // or whatever pagesize
-      results = [];
-      if (q.term && q.term !== '') {
-        // HEADS UP; for the _.filter function i use underscore (actually lo-dash) here
-        results = _.filter(that.data, function(e) {
-          return e.text.toUpperCase().indexOf(q.term.toUpperCase()) >= 0;
-        });
-      } else if (q.term === '') {
-        results = that.data;
-      }
-      q.callback({
-        results: results.slice((q.page - 1) * pageSize, q.page * pageSize),
-        more: results.length >= q.page * pageSize,
-      });
+        $(divNameWithTag).select2("data", data);
     }
-	})
-	var data = getAllValues(testData, quantityDataComparation[field])
 
-	$(divNameWithTag).select2("data", data);
 }
 
-function getAllValues(testData, field)
+function getMultipleValues(testData, field)
 {
     all_values = []
-    const splits = field.split(',')
 
-    for(var i = 0; i < splits.length; i++)
+    for(var i = 0; i < field.length; i++)
     {
-        var data = testData.find(o => o.text === splits[i])
-        all_values.push(data)
+        var data = testData.find(o => o.text === field[i])
+        if (data != undefined)
+        {
+            all_values.push(data)
+        }
     }
     return all_values
 }

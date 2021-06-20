@@ -15,23 +15,23 @@ class GeneroDadosComparativosEmpresariais():
         return dados_unificados
 
     @staticmethod
-    def campo_genero(dictValues, data, request, context):
+    def campo_genero(dictValues, data, request, contextName):
         genders = data.Genero.dropna().unique()
-        gender = get_value_string("Gender", 'genderLaborMarketComparation', genders[0], request, "generoXmercadodetrabalhoCompare", context)
+        gender = get_value_string("Gender", 'genderLaborMarketComparation', genders[0], request, contextName)
         dictValues["Gender"] = gender
         dictValues["Genders"] = genders
         return dictValues
 
     @staticmethod
-    def campo_total(request, context):
-        total = get_value_int("Total", 'qtygenderLaborMarketComparation', 10, request, "generoXmercadodetrabalhoCompare", context)
+    def campo_total(request, contextName):
+        total = get_value_int("Total", 'qtygenderLaborMarketComparation', 10, request, contextName)
         return total
 
     @staticmethod
-    def campo_uf_empresa(dictValues, data, request, context):
+    def campo_uf_empresa(dictValues, data, request, contextName):
         selectedState = "Todos"
         if checa_valor("Estado_Empresa", data):
-            selectedState = get_value_string("CompanyState", "statesCompanyLaborMarketComparation", "Todos", request, "generoXmercadodetrabalhoCompare", context)
+            selectedState = get_value_string("CompanyState", "statesCompanyLaborMarketComparation", "Todos", request, contextName)
             if selectedState not in data.Estado_Empresa.values and selectedState != "Todos":
                 selectedState = "Todos"
         if selectedState != "Todos":
@@ -41,10 +41,10 @@ class GeneroDadosComparativosEmpresariais():
         return dictValues, data
 
     @staticmethod
-    def campo_empresa(dictValues, data, request, context):
+    def campo_empresa(dictValues, data, request, contextName):
         selectedCompany = "Todos"
         if checa_valor("Empresa", data):
-            selectedCompany = get_value_string("Company", "companyGenderXLaborMarketComparation", "Todos", request, "generoXmercadodetrabalhoCompare", context)
+            selectedCompany = get_value_string("Company", "companyGenderXLaborMarketComparation", "Todos", request, contextName)
             if selectedCompany not in data.Empresa.values and selectedCompany != "Todos":
                 selectedCompany = "Todos"
         if selectedCompany != "Todos":
@@ -54,10 +54,10 @@ class GeneroDadosComparativosEmpresariais():
         return dictValues, data
 
     @staticmethod
-    def campo_area(dictValues, data, request, context):
+    def campo_area(dictValues, data, request, contextName):
         selectedArea = "Todos"
         if checa_valor("Area", data):
-            selectedArea = get_value_string("Area", "areaGenderXLaborMarketComparation", "Todos", request, "generoXmercadodetrabalhoCompare", context)
+            selectedArea = get_value_string("Area", "areaGenderXLaborMarketComparation", "Todos", request, contextName)
             if selectedArea not in data.Area.values and selectedArea != "Todos":
                 selectedArea = "Todos"
         if selectedArea != "Todos":
@@ -67,11 +67,11 @@ class GeneroDadosComparativosEmpresariais():
         return dictValues, data
 
     @staticmethod
-    def campo_uf_universidade(dictValues, data, request, context):
+    def campo_uf_universidade(dictValues, data, request, contextName):
         selectedState = "Todos"
         if checa_valor("Estado_Universidade", data):
             selectedState = get_value_string("UniversityState", "statesUniLaborMarketComparation", "Todos", request,
-                                             "generoXmercadodetrabalhoCompare", context)
+                                             contextName)
             if selectedState not in data.Estado_Universidade.values and selectedState != "Todos":
                 selectedState = "Todos"
         if selectedState != "Todos":
@@ -81,11 +81,11 @@ class GeneroDadosComparativosEmpresariais():
         return dictValues, data
 
     @staticmethod
-    def campo_universidade(dictValues, data, request, context):
+    def campo_universidade(dictValues, data, request, contextName):
         selectedUniversity = "Todos"
         if checa_valor("Instituicao", data):
             selectedUniversity = get_value_string("University", "universityGenderXLaborMarketComparation", "Todos", request,
-                                                  "generoXmercadodetrabalhoCompare", context)
+                                                  contextName)
             if selectedUniversity not in data.Instituicao.values and selectedUniversity != "Todos":
                 selectedUniversity = "Todos"
         if selectedUniversity != "Todos":
@@ -95,11 +95,11 @@ class GeneroDadosComparativosEmpresariais():
         return dictValues, data
 
     @staticmethod
-    def campo_curso(dictValues, data, request, context):
+    def campo_curso(dictValues, data, request, contextName):
         selectedCurso = "Todos"
         if checa_valor("Curso", data):
             selectedCurso = get_value_string("Course", "courseGenderXLaborMarketComparation", "Todos", request,
-                                             "generoXmercadodetrabalhoCompare", context)
+                                             contextName)
             if selectedCurso not in data.Curso.values and selectedCurso != "Todos":
                 selectedCurso = "Todos"
         if selectedCurso != "Todos":
@@ -109,11 +109,11 @@ class GeneroDadosComparativosEmpresariais():
         return dictValues, data
 
     @staticmethod
-    def campo_classe(dictValues, data, request, context):
+    def campo_classe(dictValues, data, request, contextName):
         selectedClass = "Todos"
         if checa_valor("Classe", data):
             selectedClass = get_value_string("Class", "classGenderXLaborMarketComparation", "Todos", request,
-                                             "generoXmercadodetrabalhoCompare", context)
+                                             contextName)
             if selectedClass not in data.Classe.values and selectedClass != "Todos":
                 selectedClass = "Todos"
         if selectedClass != "Todos":
@@ -123,8 +123,8 @@ class GeneroDadosComparativosEmpresariais():
         return dictValues, data
 
     @staticmethod
-    def campo_entidade_comparacao(dictValues, request, context):
-        selectedEntity = get_value_string("Entity", "entitygenderLaborMarketComparation", "Empresa", request, "generoXmercadodetrabalhoCompare", context)
+    def campo_entidade_comparacao(dictValues, request, contextName):
+        selectedEntity = get_value_string("Entity", "entitygenderLaborMarketComparation", "Empresa", request, contextName)
         dictValues["Entity"] = selectedEntity
 
         return dictValues
@@ -134,33 +134,34 @@ class GeneroDadosComparativosEmpresariais():
         newData = data
         dictValues = {}
         noInfo = False
+        contextName = context["generoXmercadodetrabalhoCompare"]
 
-        dictValues = GeneroDadosComparativosEmpresariais.campo_genero(dictValues, data, request, context)
+        dictValues = GeneroDadosComparativosEmpresariais.campo_genero(dictValues, data, request, contextName)
 
-        dictValues = get_unique_values(dictValues, data, "CompanyStates", "Estado_Empresa")
-        dictValues, newData = GeneroDadosComparativosEmpresariais.campo_uf_empresa(dictValues, data, request, context)
+        dictValues = get_unique_values(dictValues, data, "CompanyStates", "Estado_Empresa", contextName)
+        dictValues, newData = GeneroDadosComparativosEmpresariais.campo_uf_empresa(dictValues, data, request, contextName)
 
-        dictValues = get_unique_values(dictValues, newData, "UniversityStates", "Estado_Universidade")
-        dictValues, newData = GeneroDadosComparativosEmpresariais.campo_uf_universidade(dictValues, newData, request, context)
+        dictValues = get_unique_values(dictValues, newData, "UniversityStates", "Estado_Universidade", contextName)
+        dictValues, newData = GeneroDadosComparativosEmpresariais.campo_uf_universidade(dictValues, newData, request, contextName)
 
-        dictValues = get_unique_values(dictValues, newData, "Companies", "Empresa")
-        dictValues, newData = GeneroDadosComparativosEmpresariais.campo_empresa(dictValues, newData, request, context)
+        dictValues = get_unique_values(dictValues, newData, "Companies", "Empresa", contextName)
+        dictValues, newData = GeneroDadosComparativosEmpresariais.campo_empresa(dictValues, newData, request, contextName)
 
-        dictValues = get_unique_values(dictValues, newData, "Universities", "Instituicao")
-        dictValues, newData = GeneroDadosComparativosEmpresariais.campo_universidade(dictValues, newData, request, context)
+        dictValues = get_unique_values(dictValues, newData, "Universities", "Instituicao", contextName)
+        dictValues, newData = GeneroDadosComparativosEmpresariais.campo_universidade(dictValues, newData, request, contextName)
 
-        dictValues = get_unique_values(dictValues, newData, "Areas", "Area")
-        dictValues, newData = GeneroDadosComparativosEmpresariais.campo_area(dictValues, newData, request, context)
+        dictValues = get_unique_values(dictValues, newData, "Areas", "Area", contextName)
+        dictValues, newData = GeneroDadosComparativosEmpresariais.campo_area(dictValues, newData, request, contextName)
 
-        dictValues = get_unique_values(dictValues, newData, "Courses", "Curso")
-        dictValues, newData = GeneroDadosComparativosEmpresariais.campo_curso(dictValues, newData, request, context)
+        dictValues = get_unique_values(dictValues, newData, "Courses", "Curso", contextName)
+        dictValues, newData = GeneroDadosComparativosEmpresariais.campo_curso(dictValues, newData, request, contextName)
 
-        dictValues = get_unique_values(dictValues, newData, "Classes", "Classe")
-        dictValues, newData = GeneroDadosComparativosEmpresariais.campo_classe(dictValues, newData, request, context)
+        dictValues = get_unique_values(dictValues, newData, "Classes", "Classe", contextName)
+        dictValues, newData = GeneroDadosComparativosEmpresariais.campo_classe(dictValues, newData, request, contextName)
 
-        dictValues["Total"] = GeneroDadosComparativosEmpresariais.campo_total(request, context)
+        dictValues["Total"] = GeneroDadosComparativosEmpresariais.campo_total(request, contextName)
 
-        dictValues = GeneroDadosComparativosEmpresariais.campo_entidade_comparacao(dictValues, request, context)
+        dictValues = GeneroDadosComparativosEmpresariais.campo_entidade_comparacao(dictValues, request, contextName)
 
         if newData.items() == 0:
             noInfo = True

@@ -18,92 +18,117 @@ margin: auto;
 
 </style>
 
+<style>
+.alert {
+  padding: 20px;
+  background-color: #f44336;
+  color: white;
+}
+
+.closebtn {
+  margin-left: 15px;
+  color: white;
+  font-weight: bold;
+  float: right;
+  font-size: 22px;
+  line-height: 20px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.closebtn:hover {
+  color: black;
+}
+</style>
+
 <div id="div_sallary_vs_data" class="col-md-12">
-<form id="myform" method="POST" action="" enctype = "multipart/form-data" onchange="handlerSallaryDataComparation">
-{% csrf_token %}
-<label for="entitySallaryDataComparation">Comparacao por:</label>
-<select name="entitySallaryDataComparation" id="entitySallaryDataComparation">
-     <option value="Empresa" selected>Empresa</option>
-     <option value="Area">Area</option>
-     <option value="Instituicao">Instituicao</option>
-     <option value="Curso">Curso</option>
-     <option value="Genero">Genero</option>
-     <option value="Classe">Classe Social</option>
-</select>
-<br>
-<label for="statesUniSallaryDataComparation">Escolha o Estado da Instituicao:</label>
-<input id="statesUniSallaryDataComparation">
-<br>
-<label for="universitySallaryDataComparation">Escolha a instituição:</label>
-<input id="universitySallaryDataComparation">
-<br>
-<label for="courseSallaryDataComparation">Escolha o curso:</label>
-<input id="courseSallaryDataComparation">
-<br>
-<label for="statesSallaryDataComparation">Escolha o Estado da empresa:</label>
-<input id="statesSallaryDataComparation">
-<br>
-<label for="companySallaryDataComparation">Escolha a empresa:</label>
-<input id="companySallaryDataComparation" style="width:100%;">
-<br>
-<label for="areaSallaryDataComparation">Escolha a area:</label>
-<input id="areaSallaryDataComparation" style="width:50%;">
-<br>
-<label for="genderSallaryDataComparation">Escolha o Genero a ser comparado:</label>
-<input id="genderSallaryDataComparation">
-<br>
-<label for="classSallaryDataComparation">Escolha a classe social:</label>
-<input id="classSallaryDataComparation">
-<br>
-<label for="qtySallaryDataComparation">Escolha o numero de elementos máximo:</label>
-<select name="qtySallaryDataComparation" id="qtySallaryDataComparation">
-  <option value="5">5</option>
-  <option value="10" selected>10</option>
-  <option value="15">15</option>
-  <option value="20">20</option>
-</select>
-</form>
-<div id="divSallaryDataComparation">
-    <div id="no-data-sallary-vs-data-comparation">
-        <h2>Informação insuficiente para gerar o gráfico</h2>
+    <form id="myform" method="POST" action="" enctype = "multipart/form-data" onchange="handlerSallaryDataComparation">
+    {% csrf_token %}
+    <label for="entitySallaryDataComparation">Comparacao por:</label>
+    <select name="entitySallaryDataComparation" id="entitySallaryDataComparation">
+         <option value="Empresa" selected>Empresa</option>
+         <option value="Area">Area</option>
+         <option value="Instituicao">Instituicao</option>
+         <option value="Curso">Curso</option>
+         <option value="Genero">Genero</option>
+         <option value="Classe">Classe Social</option>
+    </select>
+    <br>
+    <label for="statesUniSallaryDataComparation">Escolha o Estado da Instituicao:</label>
+    <input id="statesUniSallaryDataComparation">
+    <br>
+    <label for="universitySallaryDataComparation">Escolha a instituição:</label>
+    <input id="universitySallaryDataComparation">
+    <br>
+    <label for="courseSallaryDataComparation">Escolha o curso:</label>
+    <input id="courseSallaryDataComparation">
+    <br>
+    <label for="statesSallaryDataComparation">Escolha o Estado da empresa:</label>
+    <input id="statesSallaryDataComparation">
+    <br>
+    <label for="companySallaryDataComparation">Escolha a empresa:</label>
+    <input id="companySallaryDataComparation" style="width:100%;">
+    <br>
+    <label for="areaSallaryDataComparation">Escolha a area:</label>
+    <input id="areaSallaryDataComparation" style="width:50%;">
+    <br>
+    <label for="genderSallaryDataComparation">Escolha o Genero a ser comparado:</label>
+    <input id="genderSallaryDataComparation">
+    <br>
+    <label for="classSallaryDataComparation">Escolha a classe social:</label>
+    <input id="classSallaryDataComparation">
+    <br>
+    <label for="qtySallaryDataComparation">Escolha o numero de elementos máximo:</label>
+    <select name="qtySallaryDataComparation" id="qtySallaryDataComparation">
+      <option value="5">5</option>
+      <option value="10" selected>10</option>
+      <option value="15">15</option>
+      <option value="20">20</option>
+    </select>
+    </form>
+    <div class="alert" id="error-message" style="display:none;">
+    <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+    <strong>O campo deve conter pelo menos 1 valor!</strong>
     </div>
-    <canvas id="salarioXdadosCompare" ng-if="data != 0"></canvas>
-    <br>
-    <br>
+    <div id="divSallaryDataComparation">
+        <div id="no-data-sallary-vs-data-comparation">
+            <h2>Informação insuficiente para gerar o gráfico</h2>
+        </div>
+        <canvas id="salarioXdadosCompare" ng-if="data != 0"></canvas>
+        <br>
+        <br>
+    </div>
 </div>
-</div>
+
+
 
 <!-- Create Request based on the parameters -->
 -<script>
+    function getValuesfromField(divField)
+    {
+        var value = $(divField).select2('data');
+        all_texts = [];
+        for(var i = 0; i < value.length; i++)
+        {
+            text = value[i].text;
+            all_texts.push(text);
+        }
+        return JSON.stringify(all_texts);
+    }
 	function changeValuesinRequestSallaryDataComparation(request)
 	{
 		var final_request = {};
 		$.each($('#myform').serializeArray(), function(_, kv) {
 		  final_request[kv.name] = kv.value;
 		});
-		var companyState = $("#statesSallaryDataComparation").select2('data').text;
-		final_request["statesSallaryDataComparation"] = companyState
-
-        var universityState = $("#statesUniSallaryDataComparation").select2('data').text;
-		final_request["statesUniSallaryDataComparation"] = universityState
-
-		var university = $("#universitySallaryDataComparation").select2('data').text;
-		final_request["universitySallaryDataComparation"] = university
-
-		var company = $("#companySallaryDataComparation").select2('data').text;
-		final_request["companySallaryDataComparation"] = company
-
-		var course = $("#courseSallaryDataComparation").select2('data').text;
-		final_request["courseSallaryDataComparation"] = course
-
-		var area = $("#areaSallaryDataComparation").select2('data').text;
-		final_request["areaSallaryDataComparation"] = area
-
-		var gendervalue = $("#genderSallaryDataComparation").select2('data').text;
-		final_request["genderSallaryDataComparation"] = gendervalue
-
-		var classValue = $("#classSallaryDataComparation").select2('data').text;
-		final_request["classSallaryDataComparation"] = classValue
+		final_request["statesSallaryDataComparation"] = getValuesfromField("#statesSallaryDataComparation")
+		final_request["statesUniSallaryDataComparation"] = getValuesfromField("#statesUniSallaryDataComparation")
+		final_request["universitySallaryDataComparation"] = getValuesfromField("#universitySallaryDataComparation")
+		final_request["companySallaryDataComparation"] = getValuesfromField("#companySallaryDataComparation")
+		final_request["courseSallaryDataComparation"] = getValuesfromField("#courseSallaryDataComparation")
+		final_request["areaSallaryDataComparation"] = getValuesfromField("#areaSallaryDataComparation")
+		final_request["genderSallaryDataComparation"] = getValuesfromField("#genderSallaryDataComparation")
+		final_request["classSallaryDataComparation"] = getValuesfromField("#classSallaryDataComparation")
 
 		final_request["graph_name"] = "salarioXdadosCompare"
 		return final_request
@@ -113,6 +138,15 @@ margin: auto;
 
 <!-- Funções jQuery de atualização e afins -->
 <script>
+const tryRemoveValue = function(e)
+{
+ if($(this).val().length === 1) {
+   $('#error-message').show();
+    $('#error-message').fadeIn();
+    e.preventDefault();
+        }
+}
+
 const handlerSallaryDataComparation = function(e) {
    var formData = $('#myform').serializeArray()
    e.preventDefault(); // avoid to execute the actual submit of the form.
@@ -127,28 +161,20 @@ const handlerSallaryDataComparation = function(e) {
         		sallaryDataComparation = data.salarioXdadosCompare
 				updateSallaryDataComparation(sallaryDataComparation)
 
-                $("#classSallaryDataComparation").empty();
                 initValuesSallaryDataCompare("Classes", "Class", "#classSallaryDataComparation", true)
 
-				$("#genderSallaryDataComparation").empty();
 				initValuesSallaryDataCompare("Genders", "Gender", "#genderSallaryDataComparation", true)
 
-				$("#statesUniSallaryDataComparation").empty();
 				initValuesSallaryDataCompare("UniversityStates", "UniversityState", "#statesUniSallaryDataComparation", true)
 
-				$("#universitySallaryDataComparation").empty();
 				initValuesSallaryDataCompare("Universities", "University", "#universitySallaryDataComparation", true)
 
-				$("#courseSallaryDataComparation").empty();
 				initValuesSallaryDataCompare("Courses", "Course", "#courseSallaryDataComparation", true)
 
-				$("#statesSallaryDataComparation").empty();
 				initValuesSallaryDataCompare("CompanyStates", "CompanyState", "#statesSallaryDataComparation", true)
 
-				$("#companySallaryDataComparation").empty();
 				initValuesSallaryDataCompare("Companies", "Company", "#companySallaryDataComparation", true)
 
-				$("#areaSallaryDataComparation").empty();
 				initValuesSallaryDataCompare("Areas", "Area", "#areaSallaryDataComparation", true)
 
                 document.getElementById("qtySallaryDataComparation").value = sallaryDataComparation["Total"];
@@ -169,6 +195,14 @@ $('#companySallaryDataComparation').on('change', handlerSallaryDataComparation)
 $('#areaSallaryDataComparation').on('change', handlerSallaryDataComparation)
 $('#classSallaryDataComparation').on('change', handlerSallaryDataComparation)
 
+$('#genderSallaryDataComparation').on('select2-removing', tryRemoveValue)
+$('#statesUniSallaryDataComparation').on('select2-removing', tryRemoveValue)
+$('#universitySallaryDataComparation').on('select2-removing', tryRemoveValue)
+$('#courseSallaryDataComparation').on('select2-removing', tryRemoveValue)
+$('#statesSallaryDataComparation').on('select2-removing', tryRemoveValue)
+$('#companySallaryDataComparation').on('select2-removing', tryRemoveValue)
+$('#areaSallaryDataComparation').on('select2-removing', tryRemoveValue)
+$('#classSallaryDataComparation').on('select2-removing', tryRemoveValue)
 </script>
 
 <!-- Método que realiza a atualização do gráfico -->
@@ -273,43 +307,65 @@ function initValuesSallaryDataCompare(all_fields, field, divNameWithTag, hasAllF
 		});
     }
 	// Instead of doing this use the AJAX call to poulate the data.
-	for (var i=0; i < sallaryDataComparation[all_fields].length; i++) {
+	for (var i=0; i < sallaryDataComparation[all_fields]["Item"].length; i++) {
 		testData.push(
 		{
 		id : i+1,
-		text: sallaryDataComparation[all_fields][i]
+		text: sallaryDataComparation[all_fields]["Item"][i]
 		});
 	}
 
 
+    if (sallaryDataComparation[all_fields]["SameState"] == "False")
+    {
+        $(divNameWithTag).select2({
+          data: testData,
+          multiple: true,
+          closeOnSelect: false,
+          allowClear: true,
+          query: function(q) {
+          var pageSize,
+            results,
+            that = this;
+          pageSize = 20; // or whatever pagesize
+          results = [];
+          if (q.term && q.term !== '') {
+            // HEADS UP; for the _.filter function i use underscore (actually lo-dash) here
+            results = _.filter(that.data, function(e) {
+              return e.text.toUpperCase().indexOf(q.term.toUpperCase()) >= 0;
+            });
+          } else if (q.term === '') {
+            results = that.data;
+          }
+          q.callback({
+            results: results.slice((q.page - 1) * pageSize, q.page * pageSize),
+            more: results.length >= q.page * pageSize,
+          });
+        }
+        })
 
-	$(divNameWithTag).select2({
-	  data: testData,
-	  multiple: false,
-	  query: function(q) {
-      var pageSize,
-        results,
-        that = this;
-      pageSize = 20; // or whatever pagesize
-      results = [];
-      if (q.term && q.term !== '') {
-        // HEADS UP; for the _.filter function i use underscore (actually lo-dash) here
-        results = _.filter(that.data, function(e) {
-          return e.text.toUpperCase().indexOf(q.term.toUpperCase()) >= 0;
-        });
-      } else if (q.term === '') {
-        results = that.data;
-      }
-      q.callback({
-        results: results.slice((q.page - 1) * pageSize, q.page * pageSize),
-        more: results.length >= q.page * pageSize,
-      });
+        var data = getMultipleValues(testData, sallaryDataComparation[field])
+
+        $(divNameWithTag).select2("data", data);
     }
-	})
-
 	var data = testData.find(o => o.text === sallaryDataComparation[field])
 
 	$(divNameWithTag).select2("data", data);
+}
+
+function getMultipleValues(testData, field)
+{
+    all_values = []
+
+    for(var i = 0; i < field.length; i++)
+    {
+        var data = testData.find(o => o.text === field[i])
+        if (data != undefined)
+        {
+            all_values.push(data)
+        }
+    }
+    return all_values
 }
 </script>
 

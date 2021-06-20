@@ -1,3 +1,4 @@
+import json
 from io import BytesIO
 
 from django.contrib.auth import logout
@@ -75,7 +76,6 @@ def logoutUser(request):
 
 def update_graph(request):
     graph_name = request.POST["graph_name"]
-
     if graph_name == "generoXcurso":
         context["generoXcurso"] = graph_genero_vs_course(request)
     elif graph_name == "generoXcursoCompare":
@@ -463,7 +463,7 @@ def graph_salario_vs_dados_compare(request):
     if SalarioDadosComparativos.validacao_colunas(data):
         workingData = data
         newData = SalarioDadosComparativos.unifica_colunas(workingData)
-        dictValues, complementData, finalData, noInfo = SalarioDadosComparativos.valida_dados_enviados(newData, request, context)
+        finalResult, complementData, finalData, noInfo = SalarioDadosComparativos.valida_dados_enviados(newData, request, context)
 
         all_values = []
         list_entities = []
@@ -482,25 +482,7 @@ def graph_salario_vs_dados_compare(request):
                 list_values = list(o["SallaryValue"] for o in all_values)
 
         finalResult["Entities"] = list_entities
-        finalResult["Entity"] = dictValues["Entity"]
         finalResult["Data"] = list_values
-        finalResult["UniversityState"] = dictValues["UniversityState"]
-        finalResult["UniversityStates"] = list(dictValues["UniversityStates"])
-        finalResult["CompanyState"] = dictValues["CompanyState"]
-        finalResult["CompanyStates"] = list(dictValues["CompanyStates"])
-        finalResult["Company"] = dictValues["Company"]
-        finalResult["Companies"] = list(dictValues["Companies"])
-        finalResult["University"] = dictValues["University"]
-        finalResult["Universities"] = list(dictValues["Universities"])
-        finalResult["Area"] = dictValues["Area"]
-        finalResult["Areas"] = list(dictValues["Areas"])
-        finalResult["Course"] = dictValues["Course"]
-        finalResult["Courses"] = list(dictValues["Courses"])
-        finalResult["Genders"] = list(dictValues["Genders"])
-        finalResult["Gender"] = dictValues["Gender"]
-        finalResult["Classes"] = list(dictValues["Classes"])
-        finalResult["Class"] = dictValues["Class"]
-        finalResult["Total"] = dictValues["Total"]
     return finalResult
 #endregion
 
@@ -520,7 +502,7 @@ def graph_age_vs_dados_compare(request):
     if IdadeDadosComparativos.validacao_colunas(data):
         workingData = data
         newData = IdadeDadosComparativos.unifica_colunas(workingData)
-        dictValues, complementData, finalData, noInfo = IdadeDadosComparativos.valida_dados_enviados(newData, request,
+        finalResult, complementData, finalData, noInfo = IdadeDadosComparativos.valida_dados_enviados(newData, request,
                                                                                                        context)
 
         all_values = []
@@ -540,25 +522,7 @@ def graph_age_vs_dados_compare(request):
                 list_values = list(o["AgeValue"] for o in all_values)
 
         finalResult["Entities"] = list_entities
-        finalResult["Entity"] = dictValues["Entity"]
         finalResult["Data"] = list_values
-        finalResult["UniversityState"] = dictValues["UniversityState"]
-        finalResult["UniversityStates"] = list(dictValues["UniversityStates"])
-        finalResult["CompanyState"] = dictValues["CompanyState"]
-        finalResult["CompanyStates"] = list(dictValues["CompanyStates"])
-        finalResult["Company"] = dictValues["Company"]
-        finalResult["Companies"] = list(dictValues["Companies"])
-        finalResult["University"] = dictValues["University"]
-        finalResult["Universities"] = list(dictValues["Universities"])
-        finalResult["Area"] = dictValues["Area"]
-        finalResult["Areas"] = list(dictValues["Areas"])
-        finalResult["Course"] = dictValues["Course"]
-        finalResult["Courses"] = list(dictValues["Courses"])
-        finalResult["Genders"] = list(dictValues["Genders"])
-        finalResult["Gender"] = dictValues["Gender"]
-        finalResult["Classes"] = list(dictValues["Classes"])
-        finalResult["Class"] = dictValues["Class"]
-        finalResult["Total"] = dictValues["Total"]
     return finalResult
 
 #endregion
@@ -579,7 +543,7 @@ def graph_quantity_vs_dados_compare(request):
     if QuantidadeDadosComparativos.validacao_colunas(data):
         workingData = data
         newData = QuantidadeDadosComparativos.unifica_colunas(workingData)
-        dictValues, finalData, noInfo = QuantidadeDadosComparativos.valida_dados_enviados(newData, request, context)
+        finalResult, finalData, noInfo = QuantidadeDadosComparativos.valida_dados_enviados(newData, request, context)
 
         all_values = []
         list_entities = []
@@ -597,25 +561,8 @@ def graph_quantity_vs_dados_compare(request):
                 list_values = list(o["Quantity"] for o in all_values)
 
         finalResult["Entities"] = list_entities
-        finalResult["Entity"] = dictValues["Entity"]
         finalResult["Data"] = list_values
-        finalResult["UniversityState"] = dictValues["UniversityState"]
-        finalResult["UniversityStates"] = list(dictValues["UniversityStates"])
-        finalResult["CompanyState"] = dictValues["CompanyState"]
-        finalResult["CompanyStates"] = list(dictValues["CompanyStates"])
-        finalResult["Company"] = dictValues["Company"]
-        finalResult["Companies"] = list(dictValues["Companies"])
-        finalResult["University"] = dictValues["University"]
-        finalResult["Universities"] = list(dictValues["Universities"])
-        finalResult["Area"] = dictValues["Area"]
-        finalResult["Areas"] = list(dictValues["Areas"])
-        finalResult["Course"] = dictValues["Course"]
-        finalResult["Courses"] = list(dictValues["Courses"])
-        finalResult["Genders"] = list(dictValues["Genders"])
-        finalResult["Gender"] = dictValues["Gender"]
-        finalResult["Classes"] = list(dictValues["Classes"])
-        finalResult["Class"] = dictValues["Class"]
-        finalResult["Total"] = dictValues["Total"]
+
     return finalResult
 
 
