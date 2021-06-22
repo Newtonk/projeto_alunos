@@ -12,6 +12,4 @@ urlpatterns = [
     path('graphs_age/', views.graphs_age, name="graphs_age"),
     path('graphs_quantity/', views.graphs_quantity, name="graphs_quantity"),
     path('update_graph/', views.update_graph, name="update_graph"),
-    path('graphs_profissionais_vs_empresa/', views.graphs_profissionais_vs_empresa, name="graphs_profissionais_vs_empresa"),
-    path('graphs_universidade_vs_empresa/', views.graphs_universidade_vs_empresa, name="graphs_universidade_vs_empresa"),
 ]
