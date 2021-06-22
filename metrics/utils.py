@@ -38,6 +38,13 @@ def get_value_int(objName , key, defaultValue, request, contextName):
         finalValue = contextName[objName]
     return finalValue
 
+def check_minium_values(listValues, data):
+
+    for value in listValues:
+        if value not in data or data[value].count() == 0:
+            return False
+    return True
+
 def get_unique_values(dictValues, data, tag, labelFile, contextName):
     dictValues[tag] = {}
     if checa_valor(labelFile, data):
