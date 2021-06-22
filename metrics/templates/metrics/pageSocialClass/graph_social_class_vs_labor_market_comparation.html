@@ -18,6 +18,29 @@ margin: auto;
 
 </style>
 
+<style>
+.alert {
+  padding: 20px;
+  background-color: #f44336;
+  color: white;
+}
+
+.closebtn {
+  margin-left: 15px;
+  color: white;
+  font-weight: bold;
+  float: right;
+  font-size: 22px;
+  line-height: 20px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.closebtn:hover {
+  color: black;
+}
+</style>
+
 <div id="div_social_class_vs_labor_market_comparation" class="col-md-12">
 <form id="myform2" method="POST" action="" enctype = "multipart/form-data" onchange="handlerClassLaborMarketComparation">
 {% csrf_token %}
@@ -62,6 +85,10 @@ margin: auto;
   <option value="20">20</option>
 </select>
 </form>
+<div class="alert" id="error-message-2" style="display:none;">
+<span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+<strong>O campo deve conter pelo menos 1 valor!</strong>
+</div>
 <div id="divclassLaborMarketComparation">
     <div id="no-data-class-labor-market-comparation">
         <h2>Informação insuficiente para gerar o gráfico</h2>
@@ -74,35 +101,39 @@ margin: auto;
 
 <!-- Create Request based on the parameters -->
 <script>
+    function getValuesfromFieldComparation(divField)
+    {
+        var value = $(divField).select2('data');
+        all_texts = [];
+        for(var i = 0; i < value.length; i++)
+        {
+            text = value[i].text;
+            all_texts.push(text);
+        }
+        return JSON.stringify(all_texts);
+    }
+
+    function getSingleValue(divField)
+    {
+        var value = $(divField).select2('data').text;
+        return value;
+    }
+
 	function changeValuesinRequestClassLaborMarketComparation(request)
 	{
 		var final_request = {};
 		$.each($('#myform2').serializeArray(), function(_, kv) {
 		  final_request[kv.name] = kv.value;
 		});
-		var companyState = $("#statesCompanyLaborMarketComparation").select2('data').text;
-		final_request["statesCompanyLaborMarketComparation"] = companyState
 
-        var universityState = $("#statesUniClassLaborMarketComparation").select2('data').text;
-		final_request["statesUniClassLaborMarketComparation"] = universityState
-
-		var university = $("#universityClassXLaborMarketComparation").select2('data').text;
-		final_request["universityClassXLaborMarketComparation"] = university
-
-		var company = $("#companyClassXLaborMarketComparation").select2('data').text;
-		final_request["companyClassXLaborMarketComparation"] = company
-
-		var course = $("#courseClassXLaborMarketComparation").select2('data').text;
-		final_request["courseClassXLaborMarketComparation"] = course
-
-		var area = $("#areaClassXLaborMarketComparation").select2('data').text;
-		final_request["areaClassXLaborMarketComparation"] = area
-
-		var gendervalue = $("#genderClassLaborMarketComparation").select2('data').text;
-		final_request["genderClassLaborMarketComparation"] = gendervalue
-
-		var classValue = $("#classClassXLaborMarketComparation").select2('data').text;
-		final_request["classClassXLaborMarketComparation"] = classValue
+        final_request["statesCompanyLaborMarketComparation"] = getValuesfromFieldComparation("#statesCompanyLaborMarketComparation")
+        final_request["statesUniClassLaborMarketComparation"] = getValuesfromFieldComparation("#statesUniClassLaborMarketComparation")
+        final_request["universityClassXLaborMarketComparation"] = getValuesfromFieldComparation("#universityClassXLaborMarketComparation")
+        final_request["companyClassXLaborMarketComparation"] = getValuesfromFieldComparation("#companyClassXLaborMarketComparation")
+        final_request["courseClassXLaborMarketComparation"] = getValuesfromFieldComparation("#courseClassXLaborMarketComparation")
+        final_request["areaClassXLaborMarketComparation"] = getValuesfromFieldComparation("#areaClassXLaborMarketComparation")
+        final_request["genderClassLaborMarketComparation"] = getValuesfromFieldComparation("#genderClassLaborMarketComparation")
+        final_request["classClassXLaborMarketComparation"] = getSingleValue("#classClassXLaborMarketComparation")
 
 		final_request["graph_name"] = "classeXmercadodetrabalhoCompare"
 		return final_request
@@ -112,6 +143,15 @@ margin: auto;
 
 <!-- Funções jQuery de atualização e afins -->
 <script>
+const tryRemoveValueComparation = function(e)
+{
+ if($(this).val().length === 1) {
+   $('#error-message-2').show();
+    $('#error-message-2').fadeIn();
+    e.preventDefault();
+        }
+}
+
 const handlerClassLaborMarketComparation = function(e) {
    var formData = $('#myform2').serializeArray()
    e.preventDefault(); // avoid to execute the actual submit of the form.
@@ -126,29 +166,21 @@ const handlerClassLaborMarketComparation = function(e) {
         		classLaborMarketComparation = data.classeXmercadodetrabalhoCompare
 				updateGraphClassLaborMarketComparation(classLaborMarketComparation)
 
-                $("#classClassXLaborMarketComparation").empty();
-                initValuesClassLaborMarketCompare("Classes", "Class", "#classClassXLaborMarketComparation", false)
+                initValuesClassLaborMarketCompare("Classes", "Class", "#classClassXLaborMarketComparation", false, false)
 
-				$("#genderClassLaborMarketComparation").empty();
-				initValuesClassLaborMarketCompare("Genders", "Gender", "#genderClassLaborMarketComparation", true)
+				initValuesClassLaborMarketCompare("Genders", "Gender", "#genderClassLaborMarketComparation", true, true)
 
-				$("#statesUniClassLaborMarketComparation").empty();
-				initValuesClassLaborMarketCompare("UniversityStates", "UniversityState", "#statesUniClassLaborMarketComparation", true)
+				initValuesClassLaborMarketCompare("UniversityStates", "UniversityState", "#statesUniClassLaborMarketComparation", true, true)
 
-				$("#universityClassXLaborMarketComparation").empty();
-				initValuesClassLaborMarketCompare("Universities", "University", "#universityClassXLaborMarketComparation", true)
+				initValuesClassLaborMarketCompare("Universities", "University", "#universityClassXLaborMarketComparation", true, true)
 
-				$("#courseClassXLaborMarketComparation").empty();
-				initValuesClassLaborMarketCompare("Courses", "Course", "#courseClassXLaborMarketComparation", true)
+				initValuesClassLaborMarketCompare("Courses", "Course", "#courseClassXLaborMarketComparation", true, true)
 
-				$("#statesCompanyLaborMarketComparation").empty();
-				initValuesClassLaborMarketCompare("CompanyStates", "CompanyState", "#statesCompanyLaborMarketComparation", true)
+				initValuesClassLaborMarketCompare("CompanyStates", "CompanyState", "#statesCompanyLaborMarketComparation", true, true)
 
-				$("#companyClassXLaborMarketComparation").empty();
-				initValuesClassLaborMarketCompare("Companies", "Company", "#companyClassXLaborMarketComparation", true)
+				initValuesClassLaborMarketCompare("Companies", "Company", "#companyClassXLaborMarketComparation", true, true)
 
-				$("#areaClassXLaborMarketComparation").empty();
-				initValuesClassLaborMarketCompare("Areas", "Area", "#areaClassXLaborMarketComparation", true)
+				initValuesClassLaborMarketCompare("Areas", "Area", "#areaClassXLaborMarketComparation", true, true)
 
                 document.getElementById("qtyclassLaborMarketComparation").value = classLaborMarketComparation["Total"];
 				document.getElementById("entityclassLaborMarketComparation").value = classLaborMarketComparation["Entity"];
@@ -167,6 +199,15 @@ $('#statesCompanyLaborMarketComparation').on('change', handlerClassLaborMarketCo
 $('#companyClassXLaborMarketComparation').on('change', handlerClassLaborMarketComparation)
 $('#areaClassXLaborMarketComparation').on('change', handlerClassLaborMarketComparation)
 $('#classClassXLaborMarketComparation').on('change', handlerClassLaborMarketComparation)
+
+$('#genderClassLaborMarketComparation').on('select2-removing', tryRemoveValueComparation)
+$('#statesUniClassLaborMarketComparation').on('select2-removing', tryRemoveValueComparation)
+$('#universityClassXLaborMarketComparation').on('select2-removing', tryRemoveValueComparation)
+$('#courseClassXLaborMarketComparation').on('select2-removing', tryRemoveValueComparation)
+$('#statesCompanyLaborMarketComparation').on('select2-removing', tryRemoveValueComparation)
+$('#companyClassXLaborMarketComparation').on('select2-removing', tryRemoveValueComparation)
+$('#areaClassXLaborMarketComparation').on('select2-removing', tryRemoveValueComparation)
+$('#classClassXLaborMarketComparation').on('select2-removing', tryRemoveValueComparation)
 
 </script>
 
@@ -243,14 +284,14 @@ function initClassLaborMarketComparation(object_all) {
 		document.getElementById('no-data-class-labor-market-comparation').style.display = 'block';
         document.getElementById('classeXmercadodetrabalhoCompare').style.display = 'none'
 	}
-    initValuesClassLaborMarketCompare("Classes", "Class", "#classClassXLaborMarketComparation", false)
-    initValuesClassLaborMarketCompare("Genders", "Gender", "#genderClassLaborMarketComparation", true)
-    initValuesClassLaborMarketCompare("UniversityStates", "UniversityState", "#statesUniClassLaborMarketComparation", true)
-    initValuesClassLaborMarketCompare("Universities", "University", "#universityClassXLaborMarketComparation", true)
-    initValuesClassLaborMarketCompare("Courses", "Course", "#courseClassXLaborMarketComparation", true)
-    initValuesClassLaborMarketCompare("CompanyStates", "CompanyState", "#statesCompanyLaborMarketComparation", true)
-    initValuesClassLaborMarketCompare("Companies", "Company", "#companyClassXLaborMarketComparation", true)
-    initValuesClassLaborMarketCompare("Areas", "Area", "#areaClassXLaborMarketComparation", true)
+    initValuesClassLaborMarketCompare("Classes", "Class", "#classClassXLaborMarketComparation", false, false)
+    initValuesClassLaborMarketCompare("Genders", "Gender", "#genderClassLaborMarketComparation", true, true)
+    initValuesClassLaborMarketCompare("UniversityStates", "UniversityState", "#statesUniClassLaborMarketComparation", true, true)
+    initValuesClassLaborMarketCompare("Universities", "University", "#universityClassXLaborMarketComparation", true, true)
+    initValuesClassLaborMarketCompare("Courses", "Course", "#courseClassXLaborMarketComparation", true, true)
+    initValuesClassLaborMarketCompare("CompanyStates", "CompanyState", "#statesCompanyLaborMarketComparation", true, true)
+    initValuesClassLaborMarketCompare("Companies", "Company", "#companyClassXLaborMarketComparation", true, true)
+    initValuesClassLaborMarketCompare("Areas", "Area", "#areaClassXLaborMarketComparation", true, true)
 
     createGraphClassLaborMarketComparation(object_all)
     }
@@ -259,7 +300,7 @@ function initClassLaborMarketComparation(object_all) {
 
 <script>
 
-function initValuesClassLaborMarketCompare(all_fields, field, divNameWithTag, hasAllFlag) {
+function initValuesClassLaborMarketCompare(all_fields, field, divNameWithTag, hasAllFlag, isMultiple) {
 	var testData = [];
 
     if (hasAllFlag)
@@ -271,44 +312,73 @@ function initValuesClassLaborMarketCompare(all_fields, field, divNameWithTag, ha
 		});
     }
 	// Instead of doing this use the AJAX call to poulate the data.
-	for (var i=0; i < classLaborMarketComparation[all_fields].length; i++) {
+	for (var i=0; i < classLaborMarketComparation[all_fields]["Item"].length; i++) {
 		testData.push(
 		{
 		id : i+1,
-		text: classLaborMarketComparation[all_fields][i]
+		text: classLaborMarketComparation[all_fields]["Item"][i]
 		});
 	}
 
 
-
-	$(divNameWithTag).select2({
-	  data: testData,
-	  multiple: false,
-	  query: function(q) {
-      var pageSize,
-        results,
-        that = this;
-      pageSize = 20; // or whatever pagesize
-      results = [];
-      if (q.term && q.term !== '') {
-        // HEADS UP; for the _.filter function i use underscore (actually lo-dash) here
-        results = _.filter(that.data, function(e) {
-          return e.text.toUpperCase().indexOf(q.term.toUpperCase()) >= 0;
-        });
-      } else if (q.term === '') {
-        results = that.data;
-      }
-      q.callback({
-        results: results.slice((q.page - 1) * pageSize, q.page * pageSize),
-        more: results.length >= q.page * pageSize,
-      });
+    if (classLaborMarketComparation[all_fields]["SameState"] == "False")
+    {
+        $(divNameWithTag).select2({
+          data: testData,
+          multiple: isMultiple,
+          closeOnSelect: false,
+          allowClear: true,
+          query: function(q) {
+          var pageSize,
+            results,
+            that = this;
+          pageSize = 20; // or whatever pagesize
+          results = [];
+          if (q.term && q.term !== '') {
+            // HEADS UP; for the _.filter function i use underscore (actually lo-dash) here
+            results = _.filter(that.data, function(e) {
+              return e.text.toUpperCase().indexOf(q.term.toUpperCase()) >= 0;
+            });
+          } else if (q.term === '') {
+            results = that.data;
+          }
+          q.callback({
+            results: results.slice((q.page - 1) * pageSize, q.page * pageSize),
+            more: results.length >= q.page * pageSize,
+          });
+        }
+        })
+        if ( isMultiple)
+        {
+            var data = getMultipleValues(testData, classLaborMarketComparation[field])
+        } else
+        {
+            var data = getSingleValues(testData, classLaborMarketComparation[field])
+        }
+        $(divNameWithTag).select2("data", data);
     }
-	})
-
-	var data = testData.find(o => o.text === classLaborMarketComparation[field])
-
-	$(divNameWithTag).select2("data", data);
 }
+function getMultipleValues(testData, field)
+{
+    all_values = []
+
+    for(var i = 0; i < field.length; i++)
+    {
+        var data = testData.find(o => o.text === field[i])
+        if (data != undefined)
+        {
+            all_values.push(data)
+        }
+    }
+    return all_values
+}
+
+function getSingleValues(testData, field)
+{
+    var data = testData.find(o => o.text === field[0])
+    return data
+}
+
 </script>
 
 <!-- Execucao inicial do método init -->

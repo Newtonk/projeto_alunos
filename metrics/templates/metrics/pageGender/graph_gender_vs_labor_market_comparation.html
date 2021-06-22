@@ -99,7 +99,7 @@ margin: auto;
 
 <!-- Create Request based on the parameters -->
 <script>
-    function getValuesfromField(divField)
+    function getValuesfromFieldComparation(divField)
     {
         var value = $(divField).select2('data');
         all_texts = [];
@@ -124,13 +124,13 @@ margin: auto;
 		});
 
         final_request["genderLaborMarketComparation"] = getSingleValue("#genderLaborMarketComparation")
-        final_request["statesCompanyLaborMarketComparation"] = getValuesfromField("#statesCompanyLaborMarketComparation")
-        final_request["statesUniLaborMarketComparation"] = getValuesfromField("#statesUniLaborMarketComparation")
-        final_request["universityGenderXLaborMarketComparation"] = getValuesfromField("#universityGenderXLaborMarketComparation")
-        final_request["companyGenderXLaborMarketComparation"] = getValuesfromField("#companyGenderXLaborMarketComparation")
-        final_request["courseGenderXLaborMarketComparation"] = getValuesfromField("#courseGenderXLaborMarketComparation")
-        final_request["areaGenderXLaborMarketComparation"] = getValuesfromField("#areaGenderXLaborMarketComparation")
-        final_request["classGenderXLaborMarketComparation"] = getValuesfromField("#classGenderXLaborMarketComparation")
+        final_request["statesCompanyLaborMarketComparation"] = getValuesfromFieldComparation("#statesCompanyLaborMarketComparation")
+        final_request["statesUniLaborMarketComparation"] = getValuesfromFieldComparation("#statesUniLaborMarketComparation")
+        final_request["universityGenderXLaborMarketComparation"] = getValuesfromFieldComparation("#universityGenderXLaborMarketComparation")
+        final_request["companyGenderXLaborMarketComparation"] = getValuesfromFieldComparation("#companyGenderXLaborMarketComparation")
+        final_request["courseGenderXLaborMarketComparation"] = getValuesfromFieldComparation("#courseGenderXLaborMarketComparation")
+        final_request["areaGenderXLaborMarketComparation"] = getValuesfromFieldComparation("#areaGenderXLaborMarketComparation")
+        final_request["classGenderXLaborMarketComparation"] = getValuesfromFieldComparation("#classGenderXLaborMarketComparation")
 
 		final_request["graph_name"] = "generoXmercadodetrabalhoCompare"
 		return final_request

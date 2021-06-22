@@ -15,86 +15,61 @@ class ClasseDados:
         return dados_unificados
 
     @staticmethod
-    def campo_uf_empresa(dictValues, data, request, context):
-        selectedState = "Todos"
+    def campo_uf_empresa(dictValues, data, request, contextName):
+        selectedState = ["Todos"]
         if checa_valor("Estado_Empresa", data):
-            selectedState = get_value_string("CompanyState", "statesClassXLaborMarket", "Todos", request,
-                                             "classeXmercadodetrabalhoCompare", context)
-            if selectedState not in data.Estado_Empresa.values and selectedState != "Todos":
-                selectedState = "Todos"
-        if selectedState != "Todos":
-            data = data[data.Estado_Empresa == selectedState]
+            selectedState = get_multiple_value_string("CompanyState", "statesClassXLaborMarket", "Todos", request, contextName)
+            data, selectedState = separate_values_into_list(selectedState, data, "Estado_Empresa")
 
         dictValues["CompanyState"] = selectedState
         return dictValues, data
 
     @staticmethod
-    def campo_empresa(dictValues, data, request, context):
+    def campo_empresa(dictValues, data, request, contextName):
         selectedCompany = "Todos"
         if checa_valor("Empresa", data):
-            selectedCompany = get_value_string("Company", "companyClassXLaborMarket", "Todos", request,
-                                               "classeXmercadodetrabalhoCompare", context)
-            if selectedCompany not in data.Empresa.values and selectedCompany != "Todos":
-                selectedCompany = "Todos"
-        if selectedCompany != "Todos":
-            data = data[data.Empresa == selectedCompany]
+            selectedCompany = get_multiple_value_string("Company", "companyClassXLaborMarket", "Todos", request, contextName)
+            data, selectedCompany = separate_values_into_list(selectedCompany, data, "Empresa")
 
         dictValues["Company"] = selectedCompany
         return dictValues, data
 
     @staticmethod
-    def campo_area(dictValues, data, request, context):
+    def campo_area(dictValues, data, request, contextName):
         selectedArea = "Todos"
         if checa_valor("Area", data):
-            selectedArea = get_value_string("Area", "areaClassXLaborMarket", "Todos", request,
-                                            "classeXmercadodetrabalhoCompare", context)
-            if selectedArea not in data.Area.values and selectedArea != "Todos":
-                selectedArea = "Todos"
-        if selectedArea != "Todos":
-            data = data[data.Area == selectedArea]
+            selectedArea = get_multiple_value_string("Area", "areaClassXLaborMarket", "Todos", request, contextName)
+            data, selectedArea = separate_values_into_list(selectedArea, data, "Area")
 
         dictValues["Area"] = selectedArea
         return dictValues, data
 
     @staticmethod
-    def campo_uf_universidade(dictValues, data, request, context):
+    def campo_uf_universidade(dictValues, data, request, contextName):
         selectedState = "Todos"
         if checa_valor("Estado_Universidade", data):
-            selectedState = get_value_string("UniversityState", "statesUniClassXLaborMarket", "Todos", request,
-                                             "classeXmercadodetrabalhoCompare", context)
-            if selectedState not in data.Estado_Universidade.values and selectedState != "Todos":
-                selectedState = "Todos"
-        if selectedState != "Todos":
-            data = data[data.Estado_Universidade == selectedState]
+            selectedState = get_multiple_value_string("UniversityState", "statesUniClassXLaborMarket", "Todos", request, contextName)
+            data, selectedState = separate_values_into_list(selectedState, data, "Estado_Universidade")
 
         dictValues["UniversityState"] = selectedState
         return dictValues, data
 
     @staticmethod
-    def campo_universidade(dictValues, data, request, context):
+    def campo_universidade(dictValues, data, request, contextName):
         selectedUniversity = "Todos"
         if checa_valor("Instituicao", data):
-            selectedUniversity = get_value_string("University", "universityClassXLaborMarket", "Todos",
-                                                  request,
-                                                  "classeXmercadodetrabalhoCompare", context)
-            if selectedUniversity not in data.Instituicao.values and selectedUniversity != "Todos":
-                selectedUniversity = "Todos"
-        if selectedUniversity != "Todos":
-            data = data[data.Instituicao == selectedUniversity]
+            selectedUniversity = get_multiple_value_string("University", "universityClassXLaborMarket", "Todos", request, contextName)
+            data, selectedUniversity = separate_values_into_list(selectedUniversity, data, "Instituicao")
 
         dictValues["University"] = selectedUniversity
         return dictValues, data
 
     @staticmethod
-    def campo_curso(dictValues, data, request, context):
+    def campo_curso(dictValues, data, request, contextName):
         selectedCurso = "Todos"
         if checa_valor("Curso", data):
-            selectedCurso = get_value_string("Course", "courseClassXLaborMarket", "Todos", request,
-                                             "classeXmercadodetrabalhoCompare", context)
-            if selectedCurso not in data.Curso.values and selectedCurso != "Todos":
-                selectedCurso = "Todos"
-        if selectedCurso != "Todos":
-            data = data[data.Curso == selectedCurso]
+            selectedCurso = get_multiple_value_string("Course", "courseClassXLaborMarket", "Todos", request, contextName)
+            data, selectedCurso = separate_values_into_list(selectedCurso, data, "Curso")
 
         dictValues["Course"] = selectedCurso
         return dictValues, data
@@ -104,24 +79,25 @@ class ClasseDados:
         newData = None
         noInfo = False
         dictValues = {}
+        contextName = context["classeXmercadodetrabalho"]
 
-        dictValues = get_unique_values(dictValues, data, "CompanyStates", "Estado_Empresa")
-        dictValues, newData = ClasseDados.campo_uf_empresa(dictValues, data, request, context)
+        dictValues = get_unique_values(dictValues, data, "CompanyStates", "Estado_Empresa", contextName)
+        dictValues, newData = ClasseDados.campo_uf_empresa(dictValues, data, request, contextName)
 
-        dictValues = get_unique_values(dictValues, newData, "UniversityStates", "Estado_Universidade")
-        dictValues, newData = ClasseDados.campo_uf_universidade(dictValues, newData, request, context)
+        dictValues = get_unique_values(dictValues, newData, "UniversityStates", "Estado_Universidade", contextName)
+        dictValues, newData = ClasseDados.campo_uf_universidade(dictValues, newData, request, contextName)
 
-        dictValues = get_unique_values(dictValues, newData, "Companies", "Empresa")
-        dictValues, newData = ClasseDados.campo_empresa(dictValues, newData, request, context)
+        dictValues = get_unique_values(dictValues, newData, "Companies", "Empresa", contextName)
+        dictValues, newData = ClasseDados.campo_empresa(dictValues, newData, request, contextName)
 
-        dictValues = get_unique_values(dictValues, newData, "Universities", "Instituicao")
-        dictValues, newData = ClasseDados.campo_universidade(dictValues, newData, request, context)
+        dictValues = get_unique_values(dictValues, newData, "Universities", "Instituicao", contextName)
+        dictValues, newData = ClasseDados.campo_universidade(dictValues, newData, request, contextName)
 
-        dictValues = get_unique_values(dictValues, newData, "Areas", "Area")
-        dictValues, newData = ClasseDados.campo_area(dictValues, newData, request, context)
+        dictValues = get_unique_values(dictValues, newData, "Areas", "Area", contextName)
+        dictValues, newData = ClasseDados.campo_area(dictValues, newData, request, contextName)
 
-        dictValues = get_unique_values(dictValues, newData, "Courses", "Curso")
-        dictValues, newData = ClasseDados.campo_curso(dictValues, newData, request, context)
+        dictValues = get_unique_values(dictValues, newData, "Courses", "Curso", contextName)
+        dictValues, newData = ClasseDados.campo_curso(dictValues, newData, request, contextName)
 
         if newData.items() == 0:
             noInfo = True

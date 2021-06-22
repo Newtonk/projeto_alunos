@@ -361,7 +361,7 @@ def graph_classe_vs_mercado_trabalho_comparativo(request):
     if ClasseDadosComparativos.validacao_colunas(data):
         workingData = data
         newData = ClasseDadosComparativos.unifica_colunas(workingData)
-        dictValues, complementData, finalData, noInfo = ClasseDadosComparativos.valida_dados_enviados(newData, request,
+        finalResult, complementData, finalData, noInfo = ClasseDadosComparativos.valida_dados_enviados(newData, request,
                                                                                                       context)
 
         all_values = []
@@ -373,8 +373,8 @@ def graph_classe_vs_mercado_trabalho_comparativo(request):
                 result["Entity"] = index
                 area_frame = complementData['Count'][index]
                 total_people = area_frame.sum()
-                if dictValues["Class"] in area_frame:
-                    result["ClassValue"] = (int(area_frame[dictValues["Class"]]) * 100) / total_people
+                if finalResult["Class"][0] in area_frame:
+                    result["ClassValue"] = (int(area_frame[finalResult["Class"][0]]) * 100) / total_people
                     all_values.append(result)
             if len(all_values) > 0:
                 all_values.sort(key=lambda x: x["ClassValue"], reverse=True)
@@ -383,25 +383,7 @@ def graph_classe_vs_mercado_trabalho_comparativo(request):
                 list_values = list(o["ClassValue"] for o in all_values)
 
         finalResult["Entities"] = list_entities
-        finalResult["Entity"] = dictValues["Entity"]
         finalResult["Data"] = list_values
-        finalResult["UniversityState"] = dictValues["UniversityState"]
-        finalResult["UniversityStates"] = list(dictValues["UniversityStates"])
-        finalResult["CompanyState"] = dictValues["CompanyState"]
-        finalResult["CompanyStates"] = list(dictValues["CompanyStates"])
-        finalResult["Company"] = dictValues["Company"]
-        finalResult["Companies"] = list(dictValues["Companies"])
-        finalResult["University"] = dictValues["University"]
-        finalResult["Universities"] = list(dictValues["Universities"])
-        finalResult["Area"] = dictValues["Area"]
-        finalResult["Areas"] = list(dictValues["Areas"])
-        finalResult["Course"] = dictValues["Course"]
-        finalResult["Courses"] = list(dictValues["Courses"])
-        finalResult["Genders"] = list(dictValues["Genders"])
-        finalResult["Gender"] = dictValues["Gender"]
-        finalResult["Classes"] = list(dictValues["Classes"])
-        finalResult["Class"] = dictValues["Class"]
-        finalResult["Total"] = dictValues["Total"]
 
     return finalResult
 #endregion
