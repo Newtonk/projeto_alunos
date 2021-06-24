@@ -62,7 +62,6 @@ def separate_single_value(value, data, tag):
     if "Todos" == value:
         newData = data[data[tag] == value]
         if newData.size == 0:
-            list_values = ["Todos"]
             newData = data
     return newData, value
 
@@ -73,4 +72,7 @@ def separate_values_into_list(list_values, data, tag):
         if newData.size == 0:
             list_values = ["Todos"]
             newData = data
+        else:
+            actual_values = list(newData[tag].dropna().unique())
+            list_values = list(set(list_values) & set(actual_values))
     return newData, list_values

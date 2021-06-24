@@ -145,7 +145,8 @@ margin: auto;
 <script>
 const tryRemoveValueComparation = function(e)
 {
- if($(this).val().length === 1) {
+ var list_values = $(this).val().split(',')
+ if(list_values.length === 1) {
    $('#error-message-2').show();
     $('#error-message-2').fadeIn();
     e.preventDefault();

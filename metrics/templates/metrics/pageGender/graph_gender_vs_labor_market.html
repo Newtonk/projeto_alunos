@@ -63,6 +63,9 @@ margin: auto;
 	<br>
 	<label for="areaGenderXLaborMarket">Escolha a area:</label>
 	<input id="areaGenderXLaborMarket" style="width:50%;">
+	<br>
+	<label for="classGenderXLaborMarket">Escolha a classe social:</label>
+	<input id="classGenderXLaborMarket" style="width:50%;">
 	</form>
 	<div class="alert" id="error-message" style="display:none;">
 	<span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
@@ -102,6 +105,7 @@ margin: auto;
 		final_request["statesUniGenderXLaborMarket"] = getValuesfromField("#statesUniGenderXLaborMarket")
 		final_request["universityGenderXLaborMarket"] = getValuesfromField("#universityGenderXLaborMarket")
 		final_request["companyGenderXLaborMarket"] = getValuesfromField("#companyGenderXLaborMarket")
+		final_request["classGenderXLaborMarket"] = getValuesfromField("#classGenderXLaborMarket")
 
 		final_request["graph_name"] = "generoXmercadodetrabalho"
 		return final_request
@@ -113,7 +117,8 @@ margin: auto;
 <script>
 const tryRemoveValue = function(e)
 {
- if($(this).val().length === 1) {
+ var list_values = $(this).val().split(',')
+ if(list_values.length === 1) {
    $('#error-message').show();
     $('#error-message').fadeIn();
     e.preventDefault();
@@ -145,6 +150,8 @@ const handlerGenderLaborMarket = function(e) {
 				initValuesGenderLaborMarket("Universities", "University", "#universityGenderXLaborMarket")
 
 				initValuesGenderLaborMarket("Courses", "Course", "#courseGenderXLaborMarket")
+
+				initValuesGenderLaborMarket("Classes", "Class", "#classGenderXLaborMarket")
         }
     });
 }
@@ -155,6 +162,7 @@ $('#areaGenderXLaborMarket').on('change', handlerGenderLaborMarket)
 $('#courseGenderXLaborMarket').on('change', handlerGenderLaborMarket)
 $('#statesUniGenderXLaborMarket').on('change', handlerGenderLaborMarket)
 $('#universityGenderXLaborMarket').on('change', handlerGenderLaborMarket)
+$('#classGenderXLaborMarket').on('change', handlerGenderLaborMarket)
 
 $('#companyGenderXLaborMarket').on('select2-removing', tryRemoveValue)
 $('#statesGenderXLaborMarket').on('select2-removing', tryRemoveValue)
@@ -162,6 +170,7 @@ $('#areaGenderXLaborMarket').on('select2-removing', tryRemoveValue)
 $('#courseGenderXLaborMarket').on('select2-removing', tryRemoveValue)
 $('#statesUniGenderXLaborMarket').on('select2-removing', tryRemoveValue)
 $('#universityGenderXLaborMarket').on('select2-removing', tryRemoveValue)
+$('#classGenderXLaborMarket').on('select2-removing', tryRemoveValue)
 
 </script>
 
@@ -254,6 +263,7 @@ function initGenderLaborMarket(object_all) {
 	initValuesGenderLaborMarket("UniversityStates", "UniversityState", "#statesUniGenderXLaborMarket")
 	initValuesGenderLaborMarket("Universities", "University", "#universityGenderXLaborMarket")
 	initValuesGenderLaborMarket("Courses", "Course", "#courseGenderXLaborMarket")
+	initValuesGenderLaborMarket("Classes", "Class", "#classGenderXLaborMarket")
 
 	createGraphGenderLaborMarket(object_all)
 	}

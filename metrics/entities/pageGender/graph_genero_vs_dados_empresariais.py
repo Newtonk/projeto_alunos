@@ -3,14 +3,14 @@ from metrics.utils import *
 class GeneroDadosEmpresariais:
     @staticmethod
     def validacao_colunas(data):
-        colunas = pegue_todas_colunas(['Area', 'Empresa', "Instituicao" , "Curso", "Genero", "Estado_Empresa" , "Estado_Universidade"], data)
+        colunas = pegue_todas_colunas(['Area', 'Empresa', "Instituicao" , "Curso", "Genero", "Estado_Empresa" , "Estado_Universidade", "Classe"], data)
         if "Genero" in colunas and ("Area" in colunas or "Empresa" in colunas or "Curso" in colunas or "Instituicao" in colunas):
             return True
         return False
 
     @staticmethod
     def unifica_colunas(data):
-        colunas = pegue_todas_colunas(['Genero', 'Area', "Curso" , "Empresa", "Instituicao", "Estado_Empresa" , "Estado_Universidade"], data)
+        colunas = pegue_todas_colunas(['Genero', 'Area', "Curso" , "Empresa", "Instituicao", "Estado_Empresa" , "Estado_Universidade" , "Classe"], data)
         dados_unificados = data.groupby(colunas, dropna=False).size().reset_index(name='Count')
         return dados_unificados
 
@@ -81,6 +81,17 @@ class GeneroDadosEmpresariais:
         return dictValues, data
 
     @staticmethod
+    def campo_classe_social(dictValues, data, request, contextName):
+        selectedClass = ["Todos"]
+        if checa_valor("Classe", data):
+            selectedClass = get_multiple_value_string("Class", "classGenderXLaborMarket", "Todos", request,
+                                                      contextName)
+            data, selectedClass = separate_values_into_list(selectedClass, data, "Classe")
+
+        dictValues["Class"] = selectedClass
+        return dictValues, data
+
+    @staticmethod
     def valida_dados_enviados(data, request, context):
         newData = None
         noInfo = False
@@ -102,9 +113,11 @@ class GeneroDadosEmpresariais:
         dictValues = get_unique_values(dictValues, newData, "Areas", "Area", contextName)
         dictValues, newData = GeneroDadosEmpresariais.campo_area(dictValues, newData, request, contextName)
 
-        dictValues = get_unique_values(dictValues, newData, "Courses", "Curso",contextName)
+        dictValues = get_unique_values(dictValues, newData, "Courses", "Curso", contextName)
         dictValues, newData = GeneroDadosEmpresariais.campo_curso(dictValues, newData, request, contextName)
 
+        dictValues = get_unique_values(dictValues, newData, "Classes", "Classe", contextName)
+        dictValues, newData = GeneroDadosEmpresariais.campo_classe_social(dictValues, newData, request, contextName)
 
         if newData.items() == 0:
             noInfo = True
