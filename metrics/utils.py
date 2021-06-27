@@ -57,9 +57,19 @@ def get_unique_values(dictValues, data, tag, labelFile, contextName):
         dictValues[tag]["SameState"] = "False"
     return dictValues
 
+def separate_single_value_secondary(value, data, tag, entity):
+    newData = data
+    if "Todos" != value:
+        all_entities = list(data[data[tag] == value][entity].dropna().unique())
+        if len(all_entities) > 0:
+            newData = data[data[entity].isin(all_entities)]
+            if newData.size == 0:
+                newData = data
+    return newData, value
+
 def separate_single_value(value, data, tag):
     newData = data
-    if "Todos" == value:
+    if "Todos" != value:
         newData = data[data[tag] == value]
         if newData.size == 0:
             newData = data

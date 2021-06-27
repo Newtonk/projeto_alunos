@@ -78,12 +78,7 @@ margin: auto;
 <input id="genderClassLaborMarketComparation">
 <br>
 <label for="qtyclassLaborMarketComparation">Escolha o numero de elementos máximo:</label>
-<select name="qtyclassLaborMarketComparation" id="qtyclassLaborMarketComparation">
-  <option value="5">5</option>
-  <option value="10" selected>10</option>
-  <option value="15">15</option>
-  <option value="20">20</option>
-</select>
+<input id="qtyclassLaborMarketComparation" name="qtyclassLaborMarketComparation" type="number" value="10" min="1" max="100">
 </form>
 <div class="alert" id="error-message-2" style="display:none;">
 <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
@@ -101,6 +96,14 @@ margin: auto;
 
 <!-- Create Request based on the parameters -->
 <script>
+    qtyclassLaborMarketComparation.oninput = function () {
+        if (this.value < 0) {
+            this.value = 0
+        } else if (this.value > 100)
+        {
+            this.value = 100
+        }
+    }
     function getValuesfromFieldComparation(divField)
     {
         var value = $(divField).select2('data');

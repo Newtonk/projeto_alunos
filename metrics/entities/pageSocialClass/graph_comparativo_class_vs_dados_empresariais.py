@@ -80,12 +80,11 @@ class ClasseDadosComparativos():
         return dictValues, data
 
     @staticmethod
-    def campo_classe(dictValues, data, request, contextName):
-        dictValues = get_unique_values(dictValues, data, "Classes", "Classe", contextName)
+    def campo_classe(dictValues, data, request, contextName, entity):
         selectedClass = get_value_string("Class", 'classClassXLaborMarketComparation', dictValues["Classes"]["Item"][0], request, contextName)
-        data, selectedClass = separate_single_value(selectedClass, data, "Classe")
+        data, selectedClass = separate_single_value_secondary(selectedClass, data, "Classe", entity)
         dictValues["Class"] = selectedClass
-        return dictValues
+        return dictValues, data
 
 
     @staticmethod
@@ -112,10 +111,10 @@ class ClasseDadosComparativos():
         noInfo = False
         contextName = context["classeXmercadodetrabalhoCompare"]
 
-        dictValues = ClasseDadosComparativos.campo_classe(dictValues, data, request, contextName)
+        dictValues = get_unique_values(dictValues, data, "Classes", "Classe", contextName)
 
         dictValues = get_unique_values(dictValues, data, "CompanyStates", "Estado_Empresa", contextName)
-        dictValues, newData = ClasseDadosComparativos.campo_uf_empresa(dictValues, data, request, contextName)
+        dictValues, newData = ClasseDadosComparativos.campo_uf_empresa(dictValues, newData, request, contextName)
 
         dictValues = get_unique_values(dictValues, newData, "UniversityStates", "Estado_Universidade", contextName)
         dictValues, newData = ClasseDadosComparativos.campo_uf_universidade(dictValues, newData, request, contextName)
@@ -144,7 +143,9 @@ class ClasseDadosComparativos():
 
         if dictValues["Entity"] in newData:
             complementData = newData.groupby([dictValues["Entity"], 'Classe']).sum()
-            newData = complementData.groupby([dictValues["Entity"]]).sum()
+            dictValues, newData = ClasseDadosComparativos.campo_classe(dictValues, newData, request, contextName, dictValues["Entity"])
+            newData = newData.groupby([dictValues["Entity"], 'Classe']).sum()
+            newData = newData.groupby([dictValues["Entity"]]).sum()
 
             newData = newData['Count'].nlargest(dictValues["Total"])
         else:

@@ -40,7 +40,7 @@ def home(request):
             messages.info(request, "Arquivo de envio está corrompido!")
             return render(request, 'metrics/home.html', contextHome)
 
-        pre_validations()
+        # pre_validations()
         return graphs_genero(request)
 
 
@@ -53,16 +53,17 @@ def pre_validations():
         data.loc[data['Curso'].str.contains("COMPUTACAO", na=False), "Curso"] = "COMPUTACAO"
         data.loc[(data['Curso'] != "SISTEMAS") & (data['Curso'] != "ENGENHARIA") & (data['Curso'] != "COMPUTACAO"), "Curso"] = "OUTROS CURSOS DE TI"
 
-def read_file_success(filename, fileExtension):
+def read_file_success(fileName, fileExtension):
     global data
     try:
         myFile = None
         if fileExtension == "csv":
-            myFile = pd.read_csv(BytesIO(filename.read()))
+            myFile = pd.read_csv(fileName, chunksize=10000000)
         elif fileExtension == "xlsx":
-            myFile = pd.read_excel(BytesIO(filename.read()))
-
-        data = pd.DataFrame(data=myFile, index=None)
+            myFile = pd.read_excel(fileName)
+        for df in myFile:
+            data = pd.DataFrame(data=df, index=None)
+            break;
     except:
         return False
     return True
