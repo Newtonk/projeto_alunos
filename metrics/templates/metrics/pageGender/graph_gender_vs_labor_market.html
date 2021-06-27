@@ -119,8 +119,9 @@ const tryRemoveValue = function(e)
 {
  var list_values = $(this).val().split(',')
  if(list_values.length === 1) {
-   $('#error-message').show();
-    $('#error-message').fadeIn();
+   $("#error-message").fadeTo(2000, 500).slideUp(500, function() {
+      $("#error-message").slideUp(500);
+    });
     e.preventDefault();
         }
 }

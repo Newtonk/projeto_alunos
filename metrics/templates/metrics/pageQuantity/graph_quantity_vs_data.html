@@ -141,8 +141,9 @@ const tryRemoveValue = function(e)
 {
  var list_values = $(this).val().split(',')
  if(list_values.length === 1) {
-   $('#error-message').show();
-    $('#error-message').fadeIn();
+    $("#error-message").fadeTo(2000, 500).slideUp(500, function() {
+      $("#error-message").slideUp(500);
+    });
     e.preventDefault();
         }
 }
@@ -224,6 +225,8 @@ function updateQuantityDataComparation(object_all)
         chartQuantityDataComparation.data.datasets[0].backgroundColor = colorArray[0]
         chartQuantityDataComparation.data.datasets[0].data = object_all["Data"]
         chartQuantityDataComparation.options.scales.yAxes[0].ticks.max = object_all["Data"][0]
+        chartQuantityDataComparation.options.title.text = ['Comparativo de Quantidade por '+object_all["Entity"]+''
+            , 'Media Quantitativa : '+sumAllQuantities(object_all["Data"])+'']
         chartQuantityDataComparation.update();
 	}
 }
@@ -231,6 +234,17 @@ function updateQuantityDataComparation(object_all)
 
 <!-- Função que cria o gráfico inicialmente -->
 <script>
+function sumAllQuantities(data)
+{
+    sum = 0
+    for( var i = 0 ; i < data.length; i++)
+    {
+       sum += data[i]
+    }
+    sum = sum / data.length;
+
+    return sum;
+}
 function createGraphQuantityDataComparation(object_all)
 {
 var colorArray = [ 'blue'];
@@ -250,8 +264,8 @@ chartQuantityDataComparation = new Chart(document.getElementById("quantidadeXdad
         xAxes: [{
           ticks: {
             callback: function(value) {
-                    if (value.length > 25) {
-                        return value.substr(0, 25) + '...'; //truncate
+                    if (value.length > 20) {
+                        return value.substr(0, 20) + '...'; //truncate
                     } else {
                         return value
                     }
@@ -268,7 +282,8 @@ chartQuantityDataComparation = new Chart(document.getElementById("quantidadeXdad
         },
         title: {
             display: true,
-            text: 'Comparativo por quantidade'
+            text: ['Comparativo de Quantidade por '+object_all["Entity"]+''
+            , 'Media Quantitativa : '+sumAllQuantities(object_all["Data"])+'']
          },
         }
         });

@@ -147,8 +147,9 @@ const tryRemoveValueComparation = function(e)
 {
  var list_values = $(this).val().split(',')
  if(list_values.length === 1) {
-   $('#error-message-2').show();
-    $('#error-message-2').fadeIn();
+   $("#error-message-2").fadeTo(2000, 500).slideUp(500, function() {
+      $("#error-message-2").slideUp(500);
+    });
     e.preventDefault();
         }
 }
@@ -230,6 +231,8 @@ function updateGraphClassLaborMarketComparation(object_all)
         chartClassLaborMarketComparation.data.datasets[0].label = object_all["Class"]
         chartClassLaborMarketComparation.data.datasets[0].backgroundColor = colorArray[0]
         chartClassLaborMarketComparation.data.datasets[0].data = object_all["Data"]
+        chartClassLaborMarketComparation.options.title.text = ['Comparativo de Classe Social em (%) por '+object_all["Entity"]+''
+            , 'Media em (%) da Classe Social : '+sumAllClassesPercent(object_all["Data"])+'']
         chartClassLaborMarketComparation.update();
 	}
 }
@@ -237,6 +240,17 @@ function updateGraphClassLaborMarketComparation(object_all)
 
 <!-- Função que cria o gráfico inicialmente -->
 <script>
+function sumAllClassesPercent(data)
+{
+    sum = 0
+    for( var i = 0 ; i < data.length; i++)
+    {
+       sum += data[i]
+    }
+    sum = sum / data.length;
+
+    return sum;
+}
 function createGraphClassLaborMarketComparation(object_all)
 {
 var colorArray = [ 'blue'];
@@ -253,6 +267,20 @@ chartClassLaborMarketComparation = new Chart(document.getElementById("classeXmer
         },
         options: {
         scales: {
+        xAxes: [{
+          ticks: {
+            callback: function(label) {
+              if (label.length > 20)
+              {
+              return label.substring(0, 20) + "...";
+              }
+              else {
+              return label;
+              }
+            }
+          }
+        }
+        ],
         yAxes: [{
             ticks: {
                 min: 0,
@@ -263,7 +291,8 @@ chartClassLaborMarketComparation = new Chart(document.getElementById("classeXmer
         },
       title: {
             display: true,
-            text: 'Comparativo Classe Social em (%)'
+            text: ['Comparativo de Classe Social em (%) por '+object_all["Entity"]+''
+            , 'Media em (%) da Classe Social : '+sumAllClassesPercent(object_all["Data"])+'']
          },
         }
         });

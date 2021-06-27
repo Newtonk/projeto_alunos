@@ -142,8 +142,9 @@ const tryRemoveValue = function(e)
 {
  var list_values = $(this).val().split(',')
  if(list_values.length === 1) {
-   $('#error-message').show();
-    $('#error-message').fadeIn();
+   $("#error-message").fadeTo(2000, 500).slideUp(500, function() {
+      $("#error-message").slideUp(500);
+    });
     e.preventDefault();
         }
 }
@@ -225,7 +226,7 @@ function updateSallaryDataComparation(object_all)
         chartSallaryDataComparation.data.datasets[0].data = object_all["Data"]
         chartSallaryDataComparation.options.scales.yAxes[0].ticks.max = object_all["Data"][0]
         chartSallaryDataComparation.options.title.text = ['Comparativo de Media Salarial por '+object_all["Entity"]+''
-            , 'Media Salarial Geral : '+sumAllAges(object_all["Data"])+'']
+            , 'Media Salarial Geral : '+sumAllSallarys(object_all["Data"])+'']
 
         chartSallaryDataComparation.update();
 	}
@@ -234,7 +235,7 @@ function updateSallaryDataComparation(object_all)
 
 <!-- Função que cria o gráfico inicialmente -->
 <script>
-function sumAllAges(data)
+function sumAllSallarys(data)
 {
     sum = 0
     for( var i = 0 ; i < data.length; i++)
@@ -287,7 +288,7 @@ chartSallaryDataComparation = new Chart(document.getElementById("salarioXdadosCo
         title: {
             display: true,
             text: ['Comparativo de Media Salarial por '+object_all["Entity"]+''
-            , 'Media Salarial Geral : '+sumAllAges(object_all["Data"])+'']
+            , 'Media Salarial Geral : '+sumAllSallarys(object_all["Data"])+'']
          },
         }
         });

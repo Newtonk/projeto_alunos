@@ -138,8 +138,9 @@ const tryRemoveValue = function(e)
 {
  var list_values = $(this).val().split(',')
  if(list_values.length === 1) {
-   $('#error-message').show();
-    $('#error-message').fadeIn();
+   $("#error-message").fadeTo(2000, 500).slideUp(500, function() {
+      $("#error-message").slideUp(500);
+    });
     e.preventDefault();
         }
 }
@@ -220,6 +221,8 @@ function updateAgeDataComparation(object_all)
         chartAgeDataComparation.data.labels = object_all["Entities"]
         chartAgeDataComparation.data.datasets[0].backgroundColor = colorArray[0]
         chartAgeDataComparation.data.datasets[0].data = object_all["Data"]
+        chartAgeDataComparation.options.title.text = ['Comparativo de Media de Idade por '+object_all["Entity"]+''
+            , 'Media de Idade Geral : '+sumAllAges(object_all["Data"])+'']
         chartAgeDataComparation.update();
 	}
 }
@@ -227,6 +230,18 @@ function updateAgeDataComparation(object_all)
 
 <!-- Função que cria o gráfico inicialmente -->
 <script>
+function sumAllAges(data)
+{
+    sum = 0
+    for( var i = 0 ; i < data.length; i++)
+    {
+       sum += data[i]
+    }
+    sum = sum / data.length;
+
+    return sum;
+}
+
 function createGraphAgeDataComparation(object_all)
 {
 var colorArray = [ 'blue'];
@@ -246,8 +261,8 @@ chartAgeDataComparation = new Chart(document.getElementById("idadeXdadosCompare"
         xAxes: [{
           ticks: {
             callback: function(value) {
-                    if (value.length > 25) {
-                        return value.substr(0, 25) + '...'; //truncate
+                    if (value.length > 20) {
+                        return value.substring(0, 20) + '...'; //truncate
                     } else {
                         return value
                     }
@@ -264,7 +279,8 @@ chartAgeDataComparation = new Chart(document.getElementById("idadeXdadosCompare"
         },
         title: {
             display: true,
-            text: 'Comparativo de Media de Idade'
+            text: ['Comparativo de Media de Idade por '+object_all["Entity"]+''
+            , 'Media de Idade Geral : '+sumAllAges(object_all["Data"])+'']
          },
         }
         });
