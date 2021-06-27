@@ -23,7 +23,7 @@ class SalarioDadosComparativos():
     def campo_uf_empresa(dictValues, data, request, contextName):
         selectedState = ["Todos"]
         if checa_valor("Estado_Empresa", data):
-            selectedState = get_value_string("CompanyState", "statesSallaryDataComparation", "Todos", request, contextName)
+            selectedState = get_multiple_value_string("CompanyState", "statesSallaryDataComparation", "Todos", request, contextName)
             data, selectedState = separate_values_into_list(selectedState, data, "Estado_Empresa")
 
         dictValues["CompanyState"] = selectedState
@@ -33,7 +33,7 @@ class SalarioDadosComparativos():
     def campo_empresa(dictValues, data, request, contextName):
         selectedCompany = ["Todos"]
         if checa_valor("Empresa", data):
-            selectedCompany = get_value_string("Company", "companySallaryDataComparation", "Todos", request, contextName)
+            selectedCompany = get_multiple_value_string("Company", "companySallaryDataComparation", "Todos", request, contextName)
             data, selectedCompany = separate_values_into_list(selectedCompany, data, "Empresa")
 
         dictValues["Company"] = selectedCompany
@@ -43,7 +43,7 @@ class SalarioDadosComparativos():
     def campo_area(dictValues, data, request, contextName):
         selectedArea = ["Todos"]
         if checa_valor("Area", data):
-            selectedArea = get_value_string("Area", "areaSallaryDataComparation", "Todos", request, contextName)
+            selectedArea = get_multiple_value_string("Area", "areaSallaryDataComparation", "Todos", request, contextName)
             data, selectedArea = separate_values_into_list(selectedArea, data, "Area")
 
         dictValues["Area"] = selectedArea
@@ -53,7 +53,7 @@ class SalarioDadosComparativos():
     def campo_uf_universidade(dictValues, data, request, contextName):
         selectedState = ["Todos"]
         if checa_valor("Estado_Universidade", data):
-            selectedState = get_value_string("UniversityState", "statesUniSallaryDataComparation", "Todos", request,
+            selectedState = get_multiple_value_string("UniversityState", "statesUniSallaryDataComparation", "Todos", request,
                                              contextName)
             data, selectedState = separate_values_into_list(selectedState, data, "Estado_Universidade")
 
@@ -64,7 +64,7 @@ class SalarioDadosComparativos():
     def campo_universidade(dictValues, data, request, contextName):
         selectedUniversity = ["Todos"]
         if checa_valor("Instituicao", data):
-            selectedUniversity = get_value_string("University", "universitySallaryDataComparation", "Todos", request,
+            selectedUniversity = get_multiple_value_string("University", "universitySallaryDataComparation", "Todos", request,
                                                   contextName)
             data, selectedUniversity = separate_values_into_list(selectedUniversity, data, "Instituicao")
 
@@ -75,7 +75,7 @@ class SalarioDadosComparativos():
     def campo_curso(dictValues, data, request, contextName):
         selectedCurso = ["Todos"]
         if checa_valor("Curso", data):
-            selectedCurso = get_value_string("Course", "courseSallaryDataComparation", "Todos", request,
+            selectedCurso = get_multiple_value_string("Course", "courseSallaryDataComparation", "Todos", request,
                                              contextName)
             data, selectedCurso = separate_values_into_list(selectedCurso, data, "Curso")
 
@@ -86,7 +86,7 @@ class SalarioDadosComparativos():
     def campo_classe(dictValues, data, request, contextName):
         selectedClass = ["Todos"]
         if checa_valor("Classe", data):
-            selectedClass = get_value_string("Class", "classSallaryDataComparation", "Todos", request,
+            selectedClass = get_multiple_value_string("Class", "classSallaryDataComparation", "Todos", request,
                                               contextName)
             data, selectedClass = separate_values_into_list(selectedClass, data, "Classe")
 
@@ -98,7 +98,7 @@ class SalarioDadosComparativos():
     def campo_genero(dictValues, data, request, contextName):
         selectedGender = ["Todos"]
         if checa_valor("Genero", data):
-            selectedGender = get_value_string("Gender", "genderSallaryDataComparation", "Todos", request,
+            selectedGender = get_multiple_value_string("Gender", "genderSallaryDataComparation", "Todos", request,
                                              contextName)
             data, selectedGender = separate_values_into_list(selectedGender, data, "Genero")
 

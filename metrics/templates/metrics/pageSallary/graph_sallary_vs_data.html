@@ -223,7 +223,10 @@ function updateSallaryDataComparation(object_all)
         chartSallaryDataComparation.data.labels = object_all["Entities"]
         chartSallaryDataComparation.data.datasets[0].backgroundColor = colorArray[0]
         chartSallaryDataComparation.data.datasets[0].data = object_all["Data"]
-        chartSallaryDataComparation.options.scales.yAxes[0].ticks.max = object_all["Data"][0] + 500
+        chartSallaryDataComparation.options.scales.yAxes[0].ticks.max = object_all["Data"][0]
+        chartSallaryDataComparation.options.title.text = ['Comparativo de Media Salarial por '+object_all["Entity"]+''
+            , 'Media Salarial Geral : '+sumAllAges(object_all["Data"])+'']
+
         chartSallaryDataComparation.update();
 	}
 }
@@ -231,6 +234,18 @@ function updateSallaryDataComparation(object_all)
 
 <!-- Função que cria o gráfico inicialmente -->
 <script>
+function sumAllAges(data)
+{
+    sum = 0
+    for( var i = 0 ; i < data.length; i++)
+    {
+       sum += data[i]
+    }
+    sum = sum / data.length;
+
+    return sum;
+}
+
 function createGraphSallaryDataComparation(object_all)
 {
 var colorArray = [ 'blue'];
@@ -247,17 +262,32 @@ chartSallaryDataComparation = new Chart(document.getElementById("salarioXdadosCo
         },
         options: {
         scales: {
+        xAxes: [{
+          ticks: {
+            callback: function(label) {
+              if (label.length > 20)
+              {
+              return label.substring(0, 20) + "...";
+              }
+              else {
+              return label;
+              }
+            }
+          }
+        }
+        ],
         yAxes: [{
             ticks: {
                 min: 0,
-                max: object_all["Data"][0] + 500,
-                stepSize: 500
+                max: object_all["Data"][0],
+                stepSize: 1000
             }
         }]
         },
         title: {
             display: true,
-            text: 'Comparativo de Media Salarial'
+            text: ['Comparativo de Media Salarial por '+object_all["Entity"]+''
+            , 'Media Salarial Geral : '+sumAllAges(object_all["Data"])+'']
          },
         }
         });
@@ -349,9 +379,6 @@ function initValuesSallaryDataCompare(all_fields, field, divNameWithTag, hasAllF
 
         $(divNameWithTag).select2("data", data);
     }
-	var data = testData.find(o => o.text === sallaryDataComparation[field])
-
-	$(divNameWithTag).select2("data", data);
 }
 
 function getMultipleValues(testData, field)
