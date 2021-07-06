@@ -27,6 +27,11 @@ class GeneroDadosComparativosEmpresariais():
         return total
 
     @staticmethod
+    def campo_ordenacao(request, contextName):
+        order = get_value_string("Order", 'maxMingenderLaborMarketComparation', "Max", request, contextName)
+        return order
+
+    @staticmethod
     def campo_uf_empresa(dictValues, data, request, contextName):
         selectedState = ["Todos"]
         if checa_valor("Estado_Empresa", data):
@@ -138,6 +143,8 @@ class GeneroDadosComparativosEmpresariais():
         dictValues, newData = GeneroDadosComparativosEmpresariais.campo_classe(dictValues, newData, request, contextName)
 
         dictValues["Total"] = GeneroDadosComparativosEmpresariais.campo_total(request, contextName)
+
+        dictValues["Order"] = GeneroDadosComparativosEmpresariais.campo_ordenacao(request, contextName)
 
         dictValues = GeneroDadosComparativosEmpresariais.campo_entidade_comparacao(dictValues, request, contextName)
 

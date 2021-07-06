@@ -162,7 +162,10 @@ def graph_genero_vs_mercado_trabalho_comparativo(request):
                     result["GenderValue"] = (int(area_frame[finalResult["Gender"][0]]) * 100) / total_people
                     all_values.append(result)
             if len(all_values) > 0:
-                all_values.sort(key=lambda x: x["GenderValue"], reverse=True)
+                if finalResult["Order"] == "Max":
+                    all_values.sort(key=lambda x: x["GenderValue"], reverse=True)
+                else:
+                    all_values.sort(key=lambda x: x["GenderValue"])
 
                 list_entities = list(o["Entity"] for o in all_values)
                 list_values = list(o["GenderValue"] for o in all_values)

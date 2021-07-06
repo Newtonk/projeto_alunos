@@ -44,44 +44,113 @@ margin: auto;
 <div id="div_gen_vs_labor_market_comparation" class="col-md-12">
     <form id="myform2" method="POST" action="" enctype = "multipart/form-data" onchange="handlerGenderLaborMarketComparation">
     {% csrf_token %}
-    <div class="col-md-12">
-        <label for="entitygenderLaborMarketComparation">Comparacao por:</label>
+    <div class="wrapper">
+        <div class="card">
+          <h5 class="card-header">Comparativos</h5>
+          <div class="card-body">
+                    <div class="input-group">
+          <div class="input-group-prepend">
+            <span class="input-group-text" >Comparacao Por</span>
+          </div>
         <select name="entitygenderLaborMarketComparation" id="entitygenderLaborMarketComparation">
-             <option value="Empresa" selected>Empresa</option>
-             <option value="Area">Area</option>
-             <option value="Instituicao">Instituicao</option>
-             <option value="Curso">Curso</option>
-             <option value="Classe">Classe Social</option>
-        </select>
+                     <option value="Empresa" selected>Empresa</option>
+                     <option value="Area">Area</option>
+                     <option value="Instituicao">Instituicao</option>
+                     <option value="Curso">Curso</option>
+                     <option value="Classe">Classe Social</option>
+                </select>
+        </div>
+                    <br>
+                    <div class="input-group">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text" >Escolha o Genero a ser Comparado</span>
+                      </div>
+                    <input id="genderLaborMarketComparation" name="genderLaborMarketComparation" class="form-control">
+                    </div>
+          </div>
+        </div>
+        <div class="card">
+          <h5 class="card-header">Dados Acadêmicos</h5>
+          <div class="card-body">
+                <div class="input-group">
+          <div class="input-group-prepend">
+            <span class="input-group-text" >Escolha o Estado da Instituicao</span>
+          </div>
+        <input id="statesUniLaborMarketComparation" name="statesUniLaborMarketComparation" class="form-control">
+        </div>
+                <br>
+                <div class="input-group">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text" >Escolha a Instituição</span>
+                  </div>
+                <input id="universityGenderXLaborMarketComparation" name="universityGenderXLaborMarketComparation" class="form-control">
+                </div>
+                <br>
+                <div class="input-group">
+          <div class="input-group-prepend">
+            <span class="input-group-text" >Escolha o Curso</span>
+          </div>
+        <input id="courseGenderXLaborMarketComparation" class="form-control">
+        </div>
+          </div>
+        </div>
+        <div class="card">
+          <h5 class="card-header">Dados Profissionais</h5>
+          <div class="card-body">
+                    <div class="input-group">
+          <div class="input-group-prepend">
+            <span class="input-group-text" >Escolha o Estado da Empresa</span>
+          </div>
+        <input id="statesCompanyLaborMarketComparation" class="form-control">
+        </div>
+                    <br>
+                    <div class="input-group">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text" >Escolha a Empresa</span>
+                      </div>
+                    <input id="companyGenderXLaborMarketComparation" class="form-control">
+                    </div>
+                    <br>
+                    <div class="input-group">
+          <div class="input-group-prepend">
+            <span class="input-group-text" >Escolha a Area</span>
+          </div>
+        <input id="areaGenderXLaborMarketComparation" class="form-control">
+        </div>
+          </div>
+        </div>
+        <div class="card">
+          <h5 class="card-header">Dados Pessoais</h5>
+          <div class="card-body">
+                        <div class="input-group">
+          <div class="input-group-prepend">
+            <span class="input-group-text" >Escolha a Classe Social</span>
+          </div>
+        <input id="classGenderXLaborMarketComparation" class="form-control">
+        </div></div>
+        </div>
+        <div class="card">
+          <h5 class="card-header">Ordenação e Tamanho do Gráfico</h5>
+          <div class="card-body">
+                    <div class="input-group">
+    <div class="input-group-prepend">
+    <span class="input-group-text" >Escolha a Quantidade de Valores Exibidos</span>
     </div>
-    <div class="col-md-5">
-        <label for="genderLaborMarketComparation">Escolha o Genero a ser comparado:</label>
-        <input id="genderLaborMarketComparation">
-        <br>
-        <label for="statesUniLaborMarketComparation">Escolha o Estado da Instituicao:</label>
-        <input id="statesUniLaborMarketComparation">
-        <br>
-        <label for="universityGenderXLaborMarketComparation">Escolha a instituição:</label>
-        <input id="universityGenderXLaborMarketComparation">
+    <input id="qtygenderLaborMarketComparation" name="qtygenderLaborMarketComparation" type="number" value="10" min="1" max="100" >
     </div>
-<br>
-<label for="courseGenderXLaborMarketComparation">Escolha o curso:</label>
-<input id="courseGenderXLaborMarketComparation">
-<br>
-<label for="statesCompanyLaborMarketComparation">Escolha o Estado da empresa:</label>
-<input id="statesCompanyLaborMarketComparation">
-<br>
-<label for="companyGenderXLaborMarketComparation">Escolha a empresa:</label>
-<input id="companyGenderXLaborMarketComparation" style="width:100%;">
-<br>
-<label for="areaGenderXLaborMarketComparation">Escolha a area:</label>
-<input id="areaGenderXLaborMarketComparation" style="width:50%;">
-<br>
-<label for="classGenderXLaborMarketComparation">Escolha a classe social:</label>
-<input id="classGenderXLaborMarketComparation">
-<br>
-<label for="qtygenderLaborMarketComparation">Escolha o numero de elementos máximo:</label>
-<input id="qtygenderLaborMarketComparation" name="qtygenderLaborMarketComparation" type="number" value="10" min="1" max="100">
+                    <br>
+                    <div class="input-group">
+                    <div class="input-group-prepend">
+                    <span class="input-group-text" >Escolha a Ordenação</span>
+                    </div>
+                    <select name="maxMingenderLaborMarketComparation" id="maxMingenderLaborMarketComparation">
+                             <option value="Max" selected>Maior para o menor em quantidade</option>
+                             <option value="Min">Menor para o maior em quantidade</option>
+                    </select>
+                    </div>
+          </div>
+        </div>
+    </div>
 </form>
 <div class="alert" id="error-message-2" style="display:none;">
 <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
