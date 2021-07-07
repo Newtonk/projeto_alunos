@@ -20,6 +20,13 @@ margin: auto;
 </style>
 
 <style>
+    #wrapperDataGender {
+    display: block;
+    }
+
+</style>
+
+<style>
 .alert {
   padding: 20px;
   background-color: #f44336;
@@ -42,30 +49,71 @@ margin: auto;
 }
 </style>
 
-
 <div id="div_gender_vs_labor_market" class="col-md-12">
 	<form id="myform" action="" onchange="handlerGenderLaborMarket">
 	{% csrf_token %}
-	<label for="statesUniGenderXLaborMarket">Escolha a UF da universidade:</label>
-	<input id="statesUniGenderXLaborMarket">
-	<br>
-	<label for="universityGenderXLaborMarket">Escolha a universidade:</label>
-	<input id="universityGenderXLaborMarket">
-	<br>
-	<label for="courseGenderXLaborMarket">Escolha o curso:</label>
-	<input id="courseGenderXLaborMarket">
-	<br>
-	<label for="statesGenderXLaborMarket">Escolha a UF da empresa:</label>
-	<input id="statesGenderXLaborMarket">
-	<br>
-	<label for="companyGenderXLaborMarket">Escolha a empresa:</label>
-	<input id="companyGenderXLaborMarket" style="width:100%;">
-	<br>
-	<label for="areaGenderXLaborMarket">Escolha a area:</label>
-	<input id="areaGenderXLaborMarket" style="width:50%;">
-	<br>
-	<label for="classGenderXLaborMarket">Escolha a classe social:</label>
-	<input id="classGenderXLaborMarket" style="width:50%;">
+	<div class="wrapper" id="wrapperDataGender">
+		<div class="card">
+          <h5 class="card-header">Dados Acadêmicos</h5>
+          <div class="card-body">
+                <div class="input-group">
+          <div class="input-group-prepend">
+            <span class="input-group-text" >Escolha um ou mais Estados das Universidades</span>
+          </div>
+        <input id="statesUniGenderXLaborMarket" name="statesUniGenderXLaborMarket" class="form-control">
+        </div>
+                <br>
+                <div class="input-group">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text" >Escolha uma ou mais Universidades</span>
+                  </div>
+                <input id="universityGenderXLaborMarket" name="universityGenderXLaborMarket" class="form-control">
+                </div>
+                <br>
+                <div class="input-group">
+          <div class="input-group-prepend">
+            <span class="input-group-text" >Escolha um ou mais Cursos</span>
+          </div>
+        <input id="courseGenderXLaborMarket" name="courseGenderXLaborMarket"  class="form-control">
+        </div>
+          </div>
+        </div>
+		<div class="card">
+          <h5 class="card-header">Dados Profissionais</h5>
+          <div class="card-body">
+                    <div class="input-group">
+          <div class="input-group-prepend">
+            <span class="input-group-text" >Escolha um ou mais Estados das Empresas</span>
+          </div>
+        <input id="statesGenderXLaborMarket" name="statesGenderXLaborMarket" class="form-control">
+        </div>
+                    <br>
+                    <div class="input-group">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text" >Escolha uma ou mais Empresas</span>
+                      </div>
+                    <input id="companyGenderXLaborMarket" name="companyGenderXLaborMarket" class="form-control">
+                    </div>
+                    <br>
+                    <div class="input-group">
+          <div class="input-group-prepend">
+            <span class="input-group-text" >Escolha uma ou mais Areas</span>
+          </div>
+        <input id="areaGenderXLaborMarket" name="areaGenderXLaborMarket" class="form-control">
+        </div>
+          </div>
+        </div>
+		<div class="card">
+          <h5 class="card-header">Dados Pessoais</h5>
+          <div class="card-body">
+                        <div class="input-group">
+          <div class="input-group-prepend">
+            <span class="input-group-text" >Escolha uma ou mais Classes Sociais</span>
+          </div>
+        <input id="classGenderXLaborMarket" name="classGenderXLaborMarket" class="form-control">
+        </div></div>
+        </div>
+	</div>
 	</form>
 	<div class="alert" id="error-message" style="display:none;">
 	<span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
@@ -219,7 +267,7 @@ function createGraphGenderLaborMarket(object_all)
 	options: {
 	  title: {
 		display: true,
-		text: 'Genero X Area de ' + object_all["Area"]
+		text: 'Relação dos Generos em (%) com Dados Pessoais, Academicos e Profissionais'
 	  },
 	  plugins: {
 		datalabels: {

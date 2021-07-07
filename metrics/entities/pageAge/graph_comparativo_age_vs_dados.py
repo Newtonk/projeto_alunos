@@ -2,9 +2,8 @@ from metrics.utils import *
 
 class IdadeDadosComparativos():
     @staticmethod
-    def validacao_colunas(data):
-        colunas = pegue_todas_colunas(['Idade', 'Area', 'Empresa', "Instituicao", "Curso", "Classe", "Estado_Empresa", "Estado_Universidade", "Genero"], data)
-        if "Idade" in colunas and ("Area" in colunas or "Empresa" in colunas or "Curso" in colunas or "Instituicao" in colunas or "Genero" in colunas or "Classe" in colunas):
+    def validacao_colunas(entityValue, data):
+        if checa_valor(entityValue, data) and checa_valor("Idade", data):
             return True
         return False
 
@@ -106,18 +105,20 @@ class IdadeDadosComparativos():
         return dictValues, data
 
     @staticmethod
-    def campo_entidade_comparacao(dictValues, request, contextName):
+    def campo_entidade_comparacao(request, contextName):
         selectedEntity = get_value_string("Entity", "entityAgeDataComparation", "Empresa", request, contextName)
-        dictValues["Entity"] = selectedEntity
-
-        return dictValues
+        return selectedEntity
 
     @staticmethod
-    def valida_dados_enviados(data, request, context):
+    def campo_ordenacao(request, contextName):
+        order = get_value_string("Order", 'maxMinAgeLaborMarketComparation', "Max", request, contextName)
+        return order
+
+    @staticmethod
+    def valida_dados_enviados(data, request, contextName, entityValue):
         newData = data
         dictValues = {}
         noInfo = False
-        contextName = context["idadeXdadosCompare"]
 
         dictValues = get_unique_values(dictValues, data, "CompanyStates", "Estado_Empresa", contextName)
         dictValues, newData = IdadeDadosComparativos.campo_uf_empresa(dictValues, data, request, contextName)
@@ -145,15 +146,15 @@ class IdadeDadosComparativos():
 
         dictValues["Total"] = IdadeDadosComparativos.campo_total(request, contextName)
 
-        dictValues = IdadeDadosComparativos.campo_entidade_comparacao(dictValues, request, contextName)
+        dictValues["Order"] = IdadeDadosComparativos.campo_ordenacao(request, contextName)
 
         if newData.items() == 0:
             noInfo = True
 
-        if dictValues["Entity"] in newData:
-            complementData = newData.groupby([dictValues["Entity"]], dropna=True).agg({dictValues["Entity"]: 'first', 'Idade': 'sum'})
-            newData = newData.groupby([dictValues["Entity"], 'Idade'], dropna=True).sum()
-            newData = newData.groupby([dictValues["Entity"]], dropna=True).sum()
+        if entityValue in newData:
+            complementData = newData.groupby([entityValue], dropna=True).agg({entityValue: 'first', 'Idade': 'sum'})
+            newData = newData.groupby([entityValue, 'Idade'], dropna=True).sum()
+            newData = newData.groupby([entityValue], dropna=True).sum()
 
             newData = newData['Count'].nlargest(dictValues["Total"])
         else:

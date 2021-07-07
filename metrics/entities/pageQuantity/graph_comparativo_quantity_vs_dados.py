@@ -2,15 +2,14 @@ from metrics.utils import *
 
 class QuantidadeDadosComparativos():
     @staticmethod
-    def validacao_colunas(data):
-        colunas = pegue_todas_colunas(['Idade', 'Area', 'Empresa', "Instituicao", "Curso", "Classe", "Estado_Empresa", "Estado_Universidade", "Genero"], data)
-        if "Area" in colunas or "Empresa" in colunas or "Curso" in colunas or "Instituicao" in colunas or "Genero" in colunas or "Classe" in colunas:
+    def validacao_colunas(entityValue, data):
+        if checa_valor(entityValue, data):
             return True
         return False
 
     @staticmethod
     def unifica_colunas(data):
-        colunas = pegue_todas_colunas(['Idade', 'Area', "Curso", "Empresa", "Instituicao", "Estado_Empresa", "Estado_Universidade", "Genero", 'Classe'], data)
+        colunas = pegue_todas_colunas(['Idade', 'Area', "Curso", "Empresa", "Salario", "Instituicao", "Estado_Empresa", "Estado_Universidade", "Genero", 'Classe'], data)
         dados_unificados = data.groupby(colunas, dropna=False).size().reset_index(name='Count')
         return dados_unificados
 
@@ -108,16 +107,18 @@ class QuantidadeDadosComparativos():
     @staticmethod
     def campo_entidade_comparacao(dictValues, request, contextName):
         selectedEntity = get_value_string("Entity", "entityQuantityDataComparation", "Empresa", request, contextName)
-        dictValues["Entity"] = selectedEntity
-
-        return dictValues
+        return selectedEntity
 
     @staticmethod
-    def valida_dados_enviados(data, request, context):
+    def campo_ordenacao(request, contextName):
+        order = get_value_string("Order", 'maxMinQuantityLaborMarketComparation', "Max", request, contextName)
+        return order
+
+    @staticmethod
+    def valida_dados_enviados(data, request, contextName, entityValue):
         newData = data
         dictValues = {}
         noInfo = False
-        contextName = context["quantidadeXdadosCompare"]
 
         dictValues = get_unique_values(dictValues, data, "CompanyStates", "Estado_Empresa", contextName)
         dictValues, newData = QuantidadeDadosComparativos.campo_uf_empresa(dictValues, data, request, contextName)
@@ -145,13 +146,13 @@ class QuantidadeDadosComparativos():
 
         dictValues["Total"] = QuantidadeDadosComparativos.campo_total(request, contextName)
 
-        dictValues = QuantidadeDadosComparativos.campo_entidade_comparacao(dictValues, request, contextName)
+        dictValues["Order"] = QuantidadeDadosComparativos.campo_ordenacao(request, contextName)
 
         if newData.items() == 0:
             noInfo = True
 
-        if dictValues["Entity"] in newData:
-            newData = newData.groupby([dictValues["Entity"]]).sum()
+        if entityValue in newData:
+            newData = newData.groupby(entityValue).sum()
             newData = newData['Count'].nlargest(dictValues["Total"])
         else:
             newData = []

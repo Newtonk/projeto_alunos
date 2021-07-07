@@ -2,9 +2,8 @@ from metrics.utils import *
 
 class ClasseDadosComparativos():
     @staticmethod
-    def validacao_colunas(data):
-        colunas = pegue_todas_colunas(['Area', 'Empresa', "Instituicao", "Curso", "Classe", "Estado_Empresa", "Estado_Universidade", "Genero"], data)
-        if "Classe" in colunas and ("Area" in colunas or "Empresa" in colunas or "Curso" in colunas or "Instituicao" in colunas):
+    def validacao_colunas(entityValue, data):
+        if checa_valor(entityValue, data) and checa_valor("Classe", data):
             return True
         return False
 
@@ -98,18 +97,20 @@ class ClasseDadosComparativos():
         return dictValues, data
 
     @staticmethod
-    def campo_entidade_comparacao(dictValues, request, contextName):
+    def campo_entidade_comparacao(request, contextName):
         selectedEntity = get_value_string("Entity", "entityclassLaborMarketComparation", "Empresa", request, contextName)
-        dictValues["Entity"] = selectedEntity
-
-        return dictValues
+        return selectedEntity
 
     @staticmethod
-    def valida_dados_enviados(data, request, context):
+    def campo_ordenacao(request, contextName):
+        order = get_value_string("Order", 'maxMinclassLaborMarketComparation', "Max", request, contextName)
+        return order
+
+    @staticmethod
+    def valida_dados_enviados(data, request, contextName, entityValue):
         newData = data
         dictValues = {}
         noInfo = False
-        contextName = context["classeXmercadodetrabalhoCompare"]
 
         dictValues = get_unique_values(dictValues, data, "Classes", "Classe", contextName)
 
@@ -136,16 +137,16 @@ class ClasseDadosComparativos():
 
         dictValues["Total"] = ClasseDadosComparativos.campo_total(request, contextName)
 
-        dictValues = ClasseDadosComparativos.campo_entidade_comparacao(dictValues, request, contextName)
+        dictValues["Order"] = ClasseDadosComparativos.campo_ordenacao(request, contextName)
 
         if newData.items() == 0:
             noInfo = True
 
-        if dictValues["Entity"] in newData:
-            complementData = newData.groupby([dictValues["Entity"], 'Classe']).sum()
-            dictValues, newData = ClasseDadosComparativos.campo_classe(dictValues, newData, request, contextName, dictValues["Entity"])
-            newData = newData.groupby([dictValues["Entity"], 'Classe']).sum()
-            newData = newData.groupby([dictValues["Entity"]]).sum()
+        if entityValue in newData:
+            complementData = newData.groupby([entityValue, 'Classe']).sum()
+            dictValues, newData = ClasseDadosComparativos.campo_classe(dictValues, newData, request, contextName, entityValue)
+            newData = newData.groupby([entityValue, 'Classe']).sum()
+            newData = newData.groupby([entityValue]).sum()
 
             newData = newData['Count'].nlargest(dictValues["Total"])
         else:

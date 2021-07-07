@@ -144,10 +144,12 @@ def graph_genero_vs_mercado_trabalho(request):
 
 def graph_genero_vs_mercado_trabalho_comparativo(request):
     finalResult = {}
-    if GeneroDadosComparativosEmpresariais.validacao_colunas(data):
+    contextName = context["generoXmercadodetrabalhoCompare"]
+    entityValue = GeneroDadosComparativosEmpresariais.campo_entidade_comparacao(request, contextName)
+    if GeneroDadosComparativosEmpresariais.validacao_colunas(entityValue, data):
         workingData = data
         newData = GeneroDadosComparativosEmpresariais.unifica_colunas(workingData)
-        finalResult, complementData, finalData, noInfo = GeneroDadosComparativosEmpresariais.valida_dados_enviados(newData, request, context)
+        finalResult, complementData, finalData, noInfo = GeneroDadosComparativosEmpresariais.valida_dados_enviados(newData, request, contextName, entityValue)
 
         all_values = []
         list_entities = []
@@ -172,6 +174,7 @@ def graph_genero_vs_mercado_trabalho_comparativo(request):
 
         finalResult["Entities"] = list_entities
         finalResult["Data"] = list_values
+        finalResult["Entity"] = entityValue
 
     return finalResult
 #endregion
@@ -228,11 +231,13 @@ def graph_classe_vs_mercado_trabalho(request):
 
 def graph_classe_vs_mercado_trabalho_comparativo(request):
     finalResult = {}
-    if ClasseDadosComparativos.validacao_colunas(data):
+    contextName = context["classeXmercadodetrabalhoCompare"]
+    entityValue = ClasseDadosComparativos.campo_entidade_comparacao(request, contextName)
+    if ClasseDadosComparativos.validacao_colunas(entityValue, data):
         workingData = data
         newData = ClasseDadosComparativos.unifica_colunas(workingData)
         finalResult, complementData, finalData, noInfo = ClasseDadosComparativos.valida_dados_enviados(newData, request,
-                                                                                                      context)
+                                                                                                      contextName, entityValue)
 
         all_values = []
         list_entities = []
@@ -247,13 +252,17 @@ def graph_classe_vs_mercado_trabalho_comparativo(request):
                     result["ClassValue"] = (int(area_frame[finalResult["Class"][0]]) * 100) / total_people
                     all_values.append(result)
             if len(all_values) > 0:
-                all_values.sort(key=lambda x: x["ClassValue"], reverse=True)
+                if finalResult["Order"] == "Max":
+                    all_values.sort(key=lambda x: x["ClassValue"], reverse=True)
+                else:
+                    all_values.sort(key=lambda x: x["ClassValue"])
 
                 list_entities = list(o["Entity"] for o in all_values)
                 list_values = list(o["ClassValue"] for o in all_values)
 
         finalResult["Entities"] = list_entities
         finalResult["Data"] = list_values
+        finalResult["Entity"] = entityValue
 
     return finalResult
 #endregion
@@ -271,10 +280,12 @@ def graphs_sallary(request):
 
 def graph_salario_vs_dados_compare(request):
     finalResult = {}
-    if SalarioDadosComparativos.validacao_colunas(data):
+    contextName = context["salarioXdadosCompare"]
+    entityValue = SalarioDadosComparativos.campo_entidade_comparacao(request, contextName)
+    if SalarioDadosComparativos.validacao_colunas(entityValue, data):
         workingData = data
         newData = SalarioDadosComparativos.unifica_colunas(workingData)
-        finalResult, complementData, finalData, noInfo = SalarioDadosComparativos.valida_dados_enviados(newData, request, context)
+        finalResult, complementData, finalData, noInfo = SalarioDadosComparativos.valida_dados_enviados(newData, request, contextName, entityValue)
 
         all_values = []
         list_entities = []
@@ -287,13 +298,17 @@ def graph_salario_vs_dados_compare(request):
                 result["SallaryValue"] = int(total_sallary) / value
                 all_values.append(result)
             if len(all_values) > 0:
-                all_values.sort(key=lambda x: x["SallaryValue"], reverse=True)
+                if finalResult["Order"] == "Max":
+                    all_values.sort(key=lambda x: x["SallaryValue"], reverse=True)
+                else:
+                    all_values.sort(key=lambda x: x["SallaryValue"])
 
                 list_entities = list(o["Entity"] for o in all_values)
                 list_values = list(o["SallaryValue"] for o in all_values)
 
         finalResult["Entities"] = list_entities
         finalResult["Data"] = list_values
+        finalResult["Entity"] = entityValue
     return finalResult
 #endregion
 
@@ -310,11 +325,12 @@ def graphs_age(request):
 
 def graph_age_vs_dados_compare(request):
     finalResult = {}
-    if IdadeDadosComparativos.validacao_colunas(data):
+    contextName = context["idadeXdadosCompare"]
+    entityValue = IdadeDadosComparativos.campo_entidade_comparacao(request, contextName)
+    if IdadeDadosComparativos.validacao_colunas(entityValue, data):
         workingData = data
         newData = IdadeDadosComparativos.unifica_colunas(workingData)
-        finalResult, complementData, finalData, noInfo = IdadeDadosComparativos.valida_dados_enviados(newData, request,
-                                                                                                       context)
+        finalResult, complementData, finalData, noInfo = IdadeDadosComparativos.valida_dados_enviados(newData, request, contextName, entityValue)
 
         all_values = []
         list_entities = []
@@ -327,13 +343,17 @@ def graph_age_vs_dados_compare(request):
                 result["AgeValue"] = int(total_age) / value
                 all_values.append(result)
             if len(all_values) > 0:
-                all_values.sort(key=lambda x: x["AgeValue"], reverse=True)
+                if finalResult["Order"] == "Max":
+                    all_values.sort(key=lambda x: x["AgeValue"], reverse=True)
+                else:
+                    all_values.sort(key=lambda x: x["AgeValue"])
 
                 list_entities = list(o["Entity"] for o in all_values)
                 list_values = list(o["AgeValue"] for o in all_values)
 
         finalResult["Entities"] = list_entities
         finalResult["Data"] = list_values
+        finalResult["Entity"] = entityValue
     return finalResult
 
 #endregion
@@ -351,10 +371,12 @@ def graphs_quantity(request):
 
 def graph_quantity_vs_dados_compare(request):
     finalResult = {}
-    if QuantidadeDadosComparativos.validacao_colunas(data):
+    contextName = context["quantidadeXdadosCompare"]
+    entityValue = QuantidadeDadosComparativos.campo_entidade_comparacao(finalResult, request, contextName)
+    if QuantidadeDadosComparativos.validacao_colunas(entityValue, data):
         workingData = data
         newData = QuantidadeDadosComparativos.unifica_colunas(workingData)
-        finalResult, finalData, noInfo = QuantidadeDadosComparativos.valida_dados_enviados(newData, request, context)
+        finalResult, finalData, noInfo = QuantidadeDadosComparativos.valida_dados_enviados(newData, request, contextName, entityValue)
 
         all_values = []
         list_entities = []
@@ -366,13 +388,17 @@ def graph_quantity_vs_dados_compare(request):
                 result["Quantity"] = int(value)
                 all_values.append(result)
             if len(all_values) > 0:
-                all_values.sort(key=lambda x: x["Quantity"], reverse=True)
+                if finalResult["Order"] == "Max":
+                    all_values.sort(key=lambda x: x["Quantity"], reverse=True)
+                else:
+                    all_values.sort(key=lambda x: x["Quantity"])
 
                 list_entities = list(o["Entity"] for o in all_values)
                 list_values = list(o["Quantity"] for o in all_values)
 
         finalResult["Entities"] = list_entities
         finalResult["Data"] = list_values
+        finalResult["Entity"] = entityValue
 
     return finalResult
 

@@ -41,44 +41,125 @@ margin: auto;
 }
 </style>
 
+<style>
+    #wrapperDataClassCompare {
+    display: block;
+    }
+
+</style>
+
 <div id="div_social_class_vs_labor_market_comparation" class="col-md-12">
 <form id="myform2" method="POST" action="" enctype = "multipart/form-data" onchange="handlerClassLaborMarketComparation">
 {% csrf_token %}
-<label for="entityclassLaborMarketComparation">Comparacao por:</label>
-<select name="entityclassLaborMarketComparation" id="entityclassLaborMarketComparation">
-     <option value="Empresa" selected>Empresa</option>
-     <option value="Area">Area</option>
-     <option value="Instituicao">Instituicao</option>
-     <option value="Curso">Curso</option>
-     <option value="Genero">Genero</option>
-</select>
-<br>
-<label for="classClassXLaborMarketComparation">Escolha a classe social:</label>
-<input id="classClassXLaborMarketComparation">
-<br>
-<label for="statesUniClassLaborMarketComparation">Escolha o Estado da Instituicao:</label>
-<input id="statesUniClassLaborMarketComparation">
-<br>
-<label for="universityClassXLaborMarketComparation">Escolha a instituição:</label>
-<input id="universityClassXLaborMarketComparation">
-<br>
-<label for="courseClassXLaborMarketComparation">Escolha o curso:</label>
-<input id="courseClassXLaborMarketComparation">
-<br>
-<label for="statesCompanyLaborMarketComparation">Escolha o Estado da empresa:</label>
-<input id="statesCompanyLaborMarketComparation">
-<br>
-<label for="companyClassXLaborMarketComparation">Escolha a empresa:</label>
-<input id="companyClassXLaborMarketComparation" style="width:100%;">
-<br>
-<label for="areaClassXLaborMarketComparation">Escolha a area:</label>
-<input id="areaClassXLaborMarketComparation" style="width:50%;">
-<br>
-<label for="genderClassLaborMarketComparation">Escolha o Genero a ser comparado:</label>
-<input id="genderClassLaborMarketComparation">
-<br>
-<label for="qtyclassLaborMarketComparation">Escolha o numero de elementos máximo:</label>
-<input id="qtyclassLaborMarketComparation" name="qtyclassLaborMarketComparation" type="number" value="10" min="1" max="100">
+    <div class="wrapper">
+        <div class="card">
+          <h5 class="card-header">Comparativos</h5>
+          <div class="card-body">
+                <div class="input-group">
+      <div class="input-group-prepend">
+        <span class="input-group-text" >Comparacao Por</span>
+      </div>
+    <select name="entityclassLaborMarketComparation" id="entityclassLaborMarketComparation">
+                 <option value="Empresa" selected>Empresa</option>
+                 <option value="Area">Area</option>
+                 <option value="Instituicao">Instituicao</option>
+                 <option value="Curso">Curso</option>
+                 <option value="Classe">Classe Social</option>
+            </select>
+    </div>
+                <br>
+                <div class="input-group">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text" >Escolha a Classe Social a ser Comparada</span>
+                      </div>
+                    <input id="classClassXLaborMarketComparation" name="classClassXLaborMarketComparation" class="form-control">
+                    </div>
+          </div>
+        </div>
+        <div class="card">
+          <h5 class="card-header">Ordenação e Tamanho do Gráfico</h5>
+          <div class="card-body">
+                    <div class="input-group">
+    <div class="input-group-prepend">
+    <span class="input-group-text" >Escolha a Quantidade de Valores Exibidos</span>
+    </div>
+    <input id="qtyclassLaborMarketComparation" name="qtyclassLaborMarketComparation" type="number" value="10" min="1" max="100" >
+    </div>
+                    <br>
+                    <div class="input-group">
+                    <div class="input-group-prepend">
+                    <span class="input-group-text" >Escolha a Ordenação</span>
+                    </div>
+                    <select name="maxMinclassLaborMarketComparation" id="maxMinclassLaborMarketComparation">
+                             <option value="Max" selected>Maior para o menor em quantidade</option>
+                             <option value="Min">Menor para o maior em quantidade</option>
+                    </select>
+                    </div>
+          </div>
+        </div>
+    </div>
+    <div class="wrapper" id="wrapperDataClassCompare">
+        <div class="card">
+          <h5 class="card-header">Dados Acadêmicos</h5>
+          <div class="card-body">
+                <div class="input-group">
+          <div class="input-group-prepend">
+            <span class="input-group-text" >Escolha um ou mais Estados das Universidades</span>
+          </div>
+        <input id="statesUniClassLaborMarketComparation" name="statesUniClassLaborMarketComparation" class="form-control">
+        </div>
+                <br>
+                <div class="input-group">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text" >Escolha uma ou mais Universidades</span>
+                  </div>
+                <input id="universityClassXLaborMarketComparation" name="universityClassXLaborMarketComparation" class="form-control">
+                </div>
+                <br>
+                <div class="input-group">
+          <div class="input-group-prepend">
+            <span class="input-group-text" >Escolha um ou mais Cursos</span>
+          </div>
+        <input id="courseClassXLaborMarketComparation" name="courseClassXLaborMarketComparation" class="form-control">
+        </div>
+          </div>
+        </div>
+        <div class="card">
+          <h5 class="card-header">Dados Profissionais</h5>
+          <div class="card-body">
+                    <div class="input-group">
+          <div class="input-group-prepend">
+            <span class="input-group-text" >Escolha o Estado da Empresa</span>
+          </div>
+        <input id="statesCompanyLaborMarketComparation" name="statesCompanyLaborMarketComparation" class="form-control">
+        </div>
+                    <br>
+                    <div class="input-group">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text" >Escolha uma ou mais Empresas</span>
+                      </div>
+                    <input id="companyClassXLaborMarketComparation" name="companyClassXLaborMarketComparation" class="form-control">
+                    </div>
+                    <br>
+                    <div class="input-group">
+          <div class="input-group-prepend">
+            <span class="input-group-text" >Escolha uma ou mais Areas</span>
+          </div>
+        <input id="areaClassXLaborMarketComparation" name="areaClassXLaborMarketComparation" class="form-control">
+        </div>
+          </div>
+        </div>
+        <div class="card">
+          <h5 class="card-header">Dados Pessoais</h5>
+          <div class="card-body">
+                        <div class="input-group">
+          <div class="input-group-prepend">
+            <span class="input-group-text" >Escolha um ou mais Generos</span>
+          </div>
+        <input id="genderClassLaborMarketComparation" name="genderClassLaborMarketComparation" class="form-control">
+        </div></div>
+        </div>
+    </div>
 </form>
 <div class="alert" id="error-message-2" style="display:none;">
 <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
@@ -234,7 +315,7 @@ function updateGraphClassLaborMarketComparation(object_all)
         chartClassLaborMarketComparation.data.datasets[0].label = object_all["Class"]
         chartClassLaborMarketComparation.data.datasets[0].backgroundColor = colorArray[0]
         chartClassLaborMarketComparation.data.datasets[0].data = object_all["Data"]
-        chartClassLaborMarketComparation.options.title.text = ['Comparativo de Classe Social em (%) por '+object_all["Entity"]+''
+        chartClassLaborMarketComparation.options.title.text = ['Comparativo de Classe Social em (%) por '+object_all["Entity"]+' com Dados Pessoais, Academicos e Profissionais'
             , 'Media em (%) da Classe Social : '+sumAllClassesPercent(object_all["Data"])+'']
         chartClassLaborMarketComparation.update();
 	}
@@ -294,7 +375,7 @@ chartClassLaborMarketComparation = new Chart(document.getElementById("classeXmer
         },
       title: {
             display: true,
-            text: ['Comparativo de Classe Social em (%) por '+object_all["Entity"]+''
+            text: ['Comparativo de Classe Social em (%) por '+object_all["Entity"]+' com Dados Pessoais, Academicos e Profissionais'
             , 'Media em (%) da Classe Social : '+sumAllClassesPercent(object_all["Data"])+'']
          },
         }

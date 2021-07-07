@@ -41,45 +41,131 @@ margin: auto;
 }
 </style>
 
+<style>
+    #wrapperDataQuantityCompare {
+    display: block;
+    }
+
+</style>
+
 <div id="div_quantity_vs_data" class="col-md-12">
 <form id="myform" method="POST" action="" enctype = "multipart/form-data" onchange="handlerQuantityDataComparation">
 {% csrf_token %}
-<label for="entityQuantityDataComparation">Comparacao por:</label>
+    <div class="wrapper">
+    <div class="card">
+      <h5 class="card-header">Comparativos</h5>
+      <div class="card-body">
+            <div class="input-group">
+  <div class="input-group-prepend">
+    <span class="input-group-text" >Comparacao Por</span>
+  </div>
 <select name="entityQuantityDataComparation" id="entityQuantityDataComparation">
      <option value="Empresa" selected>Empresa</option>
      <option value="Area">Area</option>
      <option value="Instituicao">Instituicao</option>
      <option value="Curso">Curso</option>
      <option value="Genero">Genero</option>
+     <option value="Estado_Universidade">Estado da Universidade</option>
+     <option value="Estado_Empresa">Estado da Empresa</option>
      <option value="Classe">Classe Social</option>
+     <option value="Salario">Salario</option>
+     <option value="Idade">Idade</option>
 </select>
-<br>
-<label for="statesUniQuantityDataComparation">Escolha o Estado da Instituicao:</label>
-<input id="statesUniQuantityDataComparation">
-<br>
-<label for="universityQuantityDataComparation">Escolha a instituição:</label>
-<input id="universityQuantityDataComparation">
-<br>
-<label for="courseQuantityDataComparation">Escolha o curso:</label>
-<input id="courseQuantityDataComparation">
-<br>
-<label for="statesQuantityDataComparation">Escolha o Estado da empresa:</label>
-<input id="statesQuantityDataComparation">
-<br>
-<label for="companyQuantityDataComparation">Escolha a empresa:</label>
-<input id="companyQuantityDataComparation" style="width:100%;">
-<br>
-<label for="areaQuantityDataComparation">Escolha a area:</label>
-<input id="areaQuantityDataComparation" style="width:50%;">
-<br>
-<label for="genderQuantityDataComparation">Escolha o Genero a ser comparado:</label>
-<input id="genderQuantityDataComparation">
-<br>
-<label for="classQuantityDataComparation">Escolha a classe social:</label>
-<input id="classQuantityDataComparation">
-<br>
-<label for="qtyQuantityDataComparation">Escolha o numero de elementos máximo:</label>
-<input id="qtyQuantityDataComparation" name="qtyQuantityDataComparation" type="number" value="10" min="1" max="100">
+</div>
+      </div>
+    </div>
+    <div class="card">
+      <h5 class="card-header">Ordenação e Tamanho do Gráfico</h5>
+      <div class="card-body">
+                <div class="input-group">
+        <div class="input-group-prepend">
+        <span class="input-group-text" >Escolha a Quantidade de Valores Exibidos</span>
+        </div>
+        <input id="qtyQuantityDataComparation" name="qtyQuantityDataComparation" type="number" value="10" min="1" max="100" >
+        </div>
+                <br>
+                <div class="input-group">
+                <div class="input-group-prepend">
+                <span class="input-group-text" >Escolha a Ordenação</span>
+                </div>
+                <select name="maxMinQuantityLaborMarketComparation" id="maxMinQuantityLaborMarketComparation">
+                         <option value="Max" selected>Maior para o menor em quantidade</option>
+                         <option value="Min">Menor para o maior em quantidade</option>
+                </select>
+                </div>
+      </div>
+    </div>
+</div>
+    <div class="wrapper" id="wrapperDataQuantityCompare">
+        <div class="card">
+          <h5 class="card-header">Dados Acadêmicos</h5>
+          <div class="card-body">
+                <div class="input-group">
+          <div class="input-group-prepend">
+            <span class="input-group-text" >Escolha um ou mais Estados das Universidades</span>
+          </div>
+        <input id="statesUniQuantityDataComparation" name="statesUniQuantityDataComparation" class="form-control">
+        </div>
+                <br>
+                <div class="input-group">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text" >Escolha uma ou mais Universidades</span>
+                  </div>
+                <input id="universityQuantityDataComparation" name="universityQuantityDataComparation" class="form-control">
+                </div>
+                <br>
+                <div class="input-group">
+          <div class="input-group-prepend">
+            <span class="input-group-text" >Escolha um ou mais Cursos</span>
+          </div>
+        <input id="courseQuantityDataComparation" name="courseQuantityDataComparation" class="form-control">
+        </div>
+          </div>
+        </div>
+        <div class="card">
+          <h5 class="card-header">Dados Profissionais</h5>
+          <div class="card-body">
+                    <div class="input-group">
+          <div class="input-group-prepend">
+            <span class="input-group-text" >Escolha um ou mais Estados das Empresas</span>
+          </div>
+        <input id="statesQuantityDataComparation" name="statesQuantityDataComparation" class="form-control">
+        </div>
+                    <br>
+                    <div class="input-group">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text" >Escolha uma ou mais Empresas</span>
+                      </div>
+                    <input id="companyQuantityDataComparation" name="companyQuantityDataComparation" class="form-control">
+                    </div>
+                    <br>
+                    <div class="input-group">
+          <div class="input-group-prepend">
+            <span class="input-group-text" >Escolha uma ou mais Areas</span>
+          </div>
+        <input id="areaQuantityDataComparation" name="areaQuantityDataComparation" class="form-control">
+        </div>
+          </div>
+        </div>
+        <div class="card">
+          <h5 class="card-header">Dados Pessoais</h5>
+          <div class="card-body">
+          <div class="input-group">
+          <div class="input-group-prepend">
+            <span class="input-group-text" >Escolha um ou mais Generos</span>
+          </div>
+        <input id="genderQuantityDataComparation" name="genderQuantityDataComparation" class="form-control">
+        </div>
+          <br>
+          <div class="input-group">
+          <div class="input-group-prepend">
+            <span class="input-group-text" >Escolha uma ou mais Classes Sociais</span>
+          </div>
+        <input id="classQuantityDataComparation" name="classQuantityDataComparation" class="form-control">
+        </div>
+        </div>
+        </div>
+    </div>
 </form>
 <div class="alert" id="error-message" style="display:none;">
 <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
@@ -227,8 +313,8 @@ function updateQuantityDataComparation(object_all)
         chartQuantityDataComparation.data.labels = object_all["Entities"]
         chartQuantityDataComparation.data.datasets[0].backgroundColor = colorArray[0]
         chartQuantityDataComparation.data.datasets[0].data = object_all["Data"]
-        chartQuantityDataComparation.options.scales.yAxes[0].ticks.max = object_all["Data"][0]
-        chartQuantityDataComparation.options.title.text = ['Comparativo de Quantidade por '+object_all["Entity"]+''
+        chartQuantityDataComparation.options.scales.yAxes[0].ticks.max = Math.max.apply(Math, object_all["Data"])
+        chartQuantityDataComparation.options.title.text = ['Comparativo de Quantidade Total de cada valor do campo '+object_all["Entity"]+' com Dados Pessoais, Academicos e Profissionais'
             , 'Media Quantitativa : '+sumAllQuantities(object_all["Data"])+'']
         chartQuantityDataComparation.update();
 	}
@@ -278,14 +364,14 @@ chartQuantityDataComparation = new Chart(document.getElementById("quantidadeXdad
         yAxes: [{
             ticks: {
                 min: 0,
-                max: object_all["Data"][0],
+                max: Math.max.apply(Math, object_all["Data"]),
                 stepSize: object_all["Data"][0]/10
             }
         }]
         },
         title: {
             display: true,
-            text: ['Comparativo de Quantidade por '+object_all["Entity"]+''
+            text: ['Comparativo de Quantidade Total de cada valor do campo '+object_all["Entity"]+' com Dados Pessoais, Academicos e Profissionais'
             , 'Media Quantitativa : '+sumAllQuantities(object_all["Data"])+'']
          },
         }

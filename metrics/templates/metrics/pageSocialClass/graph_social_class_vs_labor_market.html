@@ -42,26 +42,79 @@ margin: auto;
 }
 </style>
 
+<style>
+    #wrapperDataClass {
+    display: block;
+    }
+
+</style>
+
 <div id="div_gender_vs_labor_market" class="col-md-12">
 	<form id="myform" action="" onchange="handlerClassLaborMarket">
 	{% csrf_token %}
-	<label for="statesUniClassXLaborMarket">Escolha a UF da universidade:</label>
-	<input id="statesUniClassXLaborMarket">
+	<div class="wrapper" id="wrapperDataClass">
+		<div class="card">
+          <h5 class="card-header">Dados Acadêmicos</h5>
+          <div class="card-body">
+                <div class="input-group">
+          <div class="input-group-prepend">
+            <span class="input-group-text" >Escolha um ou mais Estados das Universidades</span>
+          </div>
+        <input id="statesUniClassXLaborMarket" name="statesUniClassXLaborMarket" class="form-control">
+        </div>
+                <br>
+                <div class="input-group">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text" >Escolha uma ou mais Universidades</span>
+                  </div>
+                <input id="universityClassXLaborMarket" name="universityClassXLaborMarket" class="form-control">
+                </div>
+                <br>
+                <div class="input-group">
+          <div class="input-group-prepend">
+            <span class="input-group-text" >Escolha um ou mais Cursos</span>
+          </div>
+        <input id="courseClassXLaborMarket" name="courseClassXLaborMarket"  class="form-control">
+        </div>
+          </div>
+        </div>
+		<div class="card">
+          <h5 class="card-header">Dados Profissionais</h5>
+          <div class="card-body">
+                    <div class="input-group">
+          <div class="input-group-prepend">
+            <span class="input-group-text" >Escolha um ou mais Estados das Empresas</span>
+          </div>
+        <input id="statesClassXLaborMarket" name="statesClassXLaborMarket" class="form-control">
+        </div>
+                    <br>
+                    <div class="input-group">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text" >Escolha uma ou mais Empresas</span>
+                      </div>
+                    <input id="companyClassXLaborMarket" name="companyClassXLaborMarket" class="form-control">
+                    </div>
+                    <br>
+                    <div class="input-group">
+          <div class="input-group-prepend">
+            <span class="input-group-text" >Escolha uma ou mais Areas</span>
+          </div>
+        <input id="areaClassXLaborMarket" name="areaClassXLaborMarket" class="form-control">
+        </div>
+          </div>
+        </div>
+		<div class="card">
+          <h5 class="card-header">Dados Pessoais</h5>
+          <div class="card-body">
+                        <div class="input-group">
+          <div class="input-group-prepend">
+            <span class="input-group-text" >Escolha um ou mais Generos</span>
+          </div>
+        <input id="genderXLaborMarket" name="genderXLaborMarket" class="form-control">
+        </div></div>
+        </div>
+	</div>
 	<br>
-	<label for="universityClassXLaborMarket">Escolha a universidade:</label>
-	<input id="universityClassXLaborMarket">
-	<br>
-	<label for="courseClassXLaborMarket">Escolha o curso:</label>
-	<input id="courseClassXLaborMarket">
-	<br>
-	<label for="statesClassXLaborMarket">Escolha a UF da empresa:</label>
-	<input id="statesClassXLaborMarket">
-	<br>
-	<label for="companyClassXLaborMarket">Escolha a empresa:</label>
-	<input id="companyClassXLaborMarket" style="width:100%;">
-	<br>
-	<label for="areaClassXLaborMarket">Escolha a area:</label>
-	<input id="areaClassXLaborMarket" style="width:50%;">
 	</form>
 	<div class="alert" id="error-message" style="display:none;">
 	<span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
@@ -101,6 +154,7 @@ margin: auto;
 		final_request["courseClassXLaborMarket"] = getValuesfromField("#courseClassXLaborMarket")
 		final_request["statesUniClassXLaborMarket"] = getValuesfromField("#statesUniClassXLaborMarket")
 		final_request["universityClassXLaborMarket"] = getValuesfromField("#universityClassXLaborMarket")
+		final_request["genderXLaborMarket"] = getValuesfromField("#genderXLaborMarket")
 
 		final_request["graph_name"] = "classeXmercadodetrabalho"
 		return final_request
@@ -146,6 +200,8 @@ const handlerClassLaborMarket = function(e) {
 				initValuesClassLaborMarket("Universities", "University", "#universityClassXLaborMarket")
 
 				initValuesClassLaborMarket("Courses", "Course", "#courseClassXLaborMarket")
+
+				initValuesClassLaborMarket("Genders", "Gender", "#genderXLaborMarket")
         }
     });
 }
@@ -156,6 +212,7 @@ $('#areaClassXLaborMarket').on('change', handlerClassLaborMarket)
 $('#courseClassXLaborMarket').on('change', handlerClassLaborMarket)
 $('#statesUniClassXLaborMarket').on('change', handlerClassLaborMarket)
 $('#universityClassXLaborMarket').on('change', handlerClassLaborMarket)
+$('#genderXLaborMarket').on('change', handlerClassLaborMarket)
 
 $('#companyClassXLaborMarket').on('select2-removing', tryRemoveValue)
 $('#statesClassXLaborMarket').on('select2-removing', tryRemoveValue)
@@ -163,6 +220,7 @@ $('#areaClassXLaborMarket').on('select2-removing', tryRemoveValue)
 $('#courseClassXLaborMarket').on('select2-removing', tryRemoveValue)
 $('#statesUniClassXLaborMarket').on('select2-removing', tryRemoveValue)
 $('#universityClassXLaborMarket').on('select2-removing', tryRemoveValue)
+$('#genderXLaborMarket').on('select2-removing', tryRemoveValue)
 
 </script>
 
@@ -211,7 +269,7 @@ function createGraphClassLaborMarket(object_all)
 	options: {
 	  title: {
 		display: true,
-		text: 'Genero X Area de ' + object_all["Area"]
+		text: 'Relação das Classes Sociais em (%) com Dados Pessoais, Academicos e Profissionais'
 	  },
 	  plugins: {
 		datalabels: {
@@ -256,6 +314,7 @@ function initClassLaborMarket(object_all) {
 	initValuesClassLaborMarket("UniversityStates", "UniversityState", "#statesUniClassXLaborMarket")
 	initValuesClassLaborMarket("Universities", "University", "#universityClassXLaborMarket")
 	initValuesClassLaborMarket("Courses", "Course", "#courseClassXLaborMarket")
+	initValuesClassLaborMarket("Genders", "Gender", "#genderXLaborMarket")
 
 	createGraphClassLaborMarket(object_all)
 	}

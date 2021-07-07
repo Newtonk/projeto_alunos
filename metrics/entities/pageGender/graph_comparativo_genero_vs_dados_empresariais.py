@@ -2,9 +2,8 @@ from metrics.utils import *
 
 class GeneroDadosComparativosEmpresariais():
     @staticmethod
-    def validacao_colunas(data):
-        colunas = pegue_todas_colunas(['Area', 'Empresa', "Instituicao", "Curso", "Genero", "Estado_Empresa", "Estado_Universidade", "Classe"], data)
-        if "Genero" in colunas and ("Area" in colunas or "Empresa" in colunas or "Curso" in colunas or "Instituicao" in colunas):
+    def validacao_colunas(entityValue, data):
+        if checa_valor(entityValue, data) and checa_valor("Genero", data):
             return True
         return False
 
@@ -106,18 +105,15 @@ class GeneroDadosComparativosEmpresariais():
         return dictValues, data
 
     @staticmethod
-    def campo_entidade_comparacao(dictValues, request, contextName):
+    def campo_entidade_comparacao(request, contextName):
         selectedEntity = get_value_string("Entity", "entitygenderLaborMarketComparation", "Empresa", request, contextName)
-        dictValues["Entity"] = selectedEntity
-
-        return dictValues
+        return selectedEntity
 
     @staticmethod
-    def valida_dados_enviados(data, request, context):
+    def valida_dados_enviados(data, request, contextName, entityValue):
         newData = data
         dictValues = {}
         noInfo = False
-        contextName = context["generoXmercadodetrabalhoCompare"]
 
         dictValues = get_unique_values(dictValues, data, "Genders", "Genero", contextName)
 
@@ -146,16 +142,14 @@ class GeneroDadosComparativosEmpresariais():
 
         dictValues["Order"] = GeneroDadosComparativosEmpresariais.campo_ordenacao(request, contextName)
 
-        dictValues = GeneroDadosComparativosEmpresariais.campo_entidade_comparacao(dictValues, request, contextName)
-
         if newData.items() == 0:
             noInfo = True
 
-        if dictValues["Entity"] in newData:
-            complementData = newData.groupby([dictValues["Entity"], 'Genero']).sum()
-            dictValues, newData = GeneroDadosComparativosEmpresariais.campo_genero(dictValues, newData, request, contextName, dictValues["Entity"])
-            newData = newData.groupby([dictValues["Entity"], 'Genero']).sum()
-            newData = newData.groupby([dictValues["Entity"]]).sum()
+        if entityValue in newData:
+            complementData = newData.groupby([entityValue, 'Genero']).sum()
+            dictValues, newData = GeneroDadosComparativosEmpresariais.campo_genero(dictValues, newData, request, contextName, entityValue)
+            newData = newData.groupby([entityValue, 'Genero']).sum()
+            newData = newData.groupby([entityValue]).sum()
 
             newData = newData['Count'].nlargest(dictValues["Total"])
         else:

@@ -19,6 +19,13 @@ margin: auto;
 </style>
 
 <style>
+    #wrapperDataGenderCompare {
+    display: block;
+    }
+
+</style>
+
+<style>
 .alert {
   padding: 20px;
   background-color: #f44336;
@@ -48,20 +55,20 @@ margin: auto;
         <div class="card">
           <h5 class="card-header">Comparativos</h5>
           <div class="card-body">
-                    <div class="input-group">
-          <div class="input-group-prepend">
-            <span class="input-group-text" >Comparacao Por</span>
-          </div>
-        <select name="entitygenderLaborMarketComparation" id="entitygenderLaborMarketComparation">
-                     <option value="Empresa" selected>Empresa</option>
-                     <option value="Area">Area</option>
-                     <option value="Instituicao">Instituicao</option>
-                     <option value="Curso">Curso</option>
-                     <option value="Classe">Classe Social</option>
-                </select>
-        </div>
-                    <br>
-                    <div class="input-group">
+                <div class="input-group">
+      <div class="input-group-prepend">
+        <span class="input-group-text" >Comparacao Por</span>
+      </div>
+    <select name="entitygenderLaborMarketComparation" id="entitygenderLaborMarketComparation">
+                 <option value="Empresa" selected>Empresa</option>
+                 <option value="Area">Area</option>
+                 <option value="Instituicao">Instituicao</option>
+                 <option value="Curso">Curso</option>
+                 <option value="Classe">Classe Social</option>
+            </select>
+    </div>
+                <br>
+                <div class="input-group">
                       <div class="input-group-prepend">
                         <span class="input-group-text" >Escolha o Genero a ser Comparado</span>
                       </div>
@@ -69,6 +76,29 @@ margin: auto;
                     </div>
           </div>
         </div>
+        <div class="card">
+          <h5 class="card-header">Ordenação e Tamanho do Gráfico</h5>
+          <div class="card-body">
+                    <div class="input-group">
+    <div class="input-group-prepend">
+    <span class="input-group-text" >Escolha a Quantidade de Valores Exibidos</span>
+    </div>
+    <input id="qtygenderLaborMarketComparation" name="qtygenderLaborMarketComparation" type="number" value="10" min="1" max="100" >
+    </div>
+                    <br>
+                    <div class="input-group">
+                    <div class="input-group-prepend">
+                    <span class="input-group-text" >Escolha a Ordenação</span>
+                    </div>
+                    <select name="maxMingenderLaborMarketComparation" id="maxMingenderLaborMarketComparation">
+                             <option value="Max" selected>Maior para o menor em quantidade</option>
+                             <option value="Min">Menor para o maior em quantidade</option>
+                    </select>
+                    </div>
+          </div>
+        </div>
+    </div>
+    <div class="wrapper" id="wrapperDataGenderCompare">
         <div class="card">
           <h5 class="card-header">Dados Acadêmicos</h5>
           <div class="card-body">
@@ -128,27 +158,6 @@ margin: auto;
           </div>
         <input id="classGenderXLaborMarketComparation" class="form-control">
         </div></div>
-        </div>
-        <div class="card">
-          <h5 class="card-header">Ordenação e Tamanho do Gráfico</h5>
-          <div class="card-body">
-                    <div class="input-group">
-    <div class="input-group-prepend">
-    <span class="input-group-text" >Escolha a Quantidade de Valores Exibidos</span>
-    </div>
-    <input id="qtygenderLaborMarketComparation" name="qtygenderLaborMarketComparation" type="number" value="10" min="1" max="100" >
-    </div>
-                    <br>
-                    <div class="input-group">
-                    <div class="input-group-prepend">
-                    <span class="input-group-text" >Escolha a Ordenação</span>
-                    </div>
-                    <select name="maxMingenderLaborMarketComparation" id="maxMingenderLaborMarketComparation">
-                             <option value="Max" selected>Maior para o menor em quantidade</option>
-                             <option value="Min">Menor para o maior em quantidade</option>
-                    </select>
-                    </div>
-          </div>
         </div>
     </div>
 </form>
@@ -303,7 +312,7 @@ function updateGraphGenderLaborMarketComparation(object_all)
         chartGenderLaborMarketComparation.data.datasets[0].label = object_all["Gender"]
         chartGenderLaborMarketComparation.data.datasets[0].backgroundColor = colorArray[0]
         chartGenderLaborMarketComparation.data.datasets[0].data = object_all["Data"]
-        chartGenderLaborMarketComparation.options.title.text = ['Comparativo de Genero em (%) por '+object_all["Entity"]+''
+        chartGenderLaborMarketComparation.options.title.text = ['Comparativo de Genero em (%) por '+object_all["Entity"]+' com Dados Pessoais, Academicos e Profissionais'
             , 'Media em (%) dos Generos : '+sumAllGendersPercent(object_all["Data"])+'']
         chartGenderLaborMarketComparation.update();
 	}
@@ -363,7 +372,7 @@ chartGenderLaborMarketComparation = new Chart(document.getElementById("generoXme
         },
       title: {
             display: true,
-            text: ['Comparativo de Genero em (%) por '+object_all["Entity"]+''
+            text: ['Comparativo de Genero em (%) por '+object_all["Entity"]+' com Dados Pessoais, Academicos e Profissionais'
             , 'Media em (%) do Genero : '+sumAllGendersPercent(object_all["Data"])+'']
          },
         }
