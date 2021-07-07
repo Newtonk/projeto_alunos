@@ -3,8 +3,7 @@ from metrics.utils import *
 class GeneroDadosEmpresariais:
     @staticmethod
     def validacao_colunas(data):
-        colunas = pegue_todas_colunas(['Area', 'Empresa', "Instituicao" , "Curso", "Genero", "Estado_Empresa" , "Estado_Universidade", "Classe"], data)
-        if "Genero" in colunas and ("Area" in colunas or "Empresa" in colunas or "Curso" in colunas or "Instituicao" in colunas):
+        if checa_valor("Genero",data):
             return True
         return False
 

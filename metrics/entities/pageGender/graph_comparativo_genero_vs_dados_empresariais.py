@@ -9,7 +9,7 @@ class GeneroDadosComparativosEmpresariais():
 
     @staticmethod
     def unifica_colunas(data):
-        colunas = pegue_todas_colunas(['Genero', 'Area', "Curso" , "Empresa", "Instituicao", "Estado_Empresa" , "Estado_Universidade", "Classe"], data)
+        colunas = pegue_todas_colunas(['Genero', 'Area', "Curso", "Empresa", "Instituicao", "Estado_Empresa", "Estado_Universidade", "Classe"], data)
         dados_unificados = data.groupby(colunas, dropna=False).size().reset_index(name='Count')
         return dados_unificados
 
