@@ -1,3 +1,4 @@
+import hashlib
 import json
 from io import BytesIO
 
@@ -13,6 +14,10 @@ from metrics.entities.pageSocialClass.graph_comparativo_class_vs_dados_empresari
 from metrics.entities.pageSallary.graph_comparativo_sallary_vs_dados import *
 from metrics.entities.pageAge.graph_comparativo_age_vs_dados import *
 from metrics.entities.pageQuantity.graph_comparativo_quantity_vs_dados import *
+from .models import GraphState
+from django.shortcuts import get_object_or_404
+import pickle
+import simplejson as json
 
 
 def home(request):
@@ -40,6 +45,7 @@ def home(request):
             messages.info(request, "Arquivo de envio está corrompido!")
             return render(request, 'metrics/home.html', contextHome)
 
+        GraphState.objects.all().delete()
         # pre_validations()
         return graphs_genero(request)
 
@@ -69,28 +75,71 @@ def read_file_success(fileName, fileExtension):
     return True
 
 def logoutUser(request):
-	logout(request)
-	return redirect('home')
+    GraphState.objects.all().delete()
+    logout(request)
+    return redirect('home')
 
 def update_graph(request):
     graph_name = request.POST["graph_name"]
+    contextActual = None
+
+    check_state, hashKeyValue = get_state(request.POST.dict())
+    if (check_state != None):
+        context[graph_name] = check_state
+        return JsonResponse(context, safe=False)
 
     if graph_name == "generoXmercadodetrabalho":
         context["generoXmercadodetrabalho"] = graph_genero_vs_mercado_trabalho(request)
+        contextActual = context["generoXmercadodetrabalho"]
     elif graph_name == "generoXmercadodetrabalhoCompare":
         context["generoXmercadodetrabalhoCompare"] = graph_genero_vs_mercado_trabalho_comparativo(request)
+        contextActual = context["generoXmercadodetrabalhoCompare"]
     elif graph_name == "classeXmercadodetrabalho":
         context["classeXmercadodetrabalho"] = graph_classe_vs_mercado_trabalho(request)
+        contextActual = context["classeXmercadodetrabalho"]
     elif graph_name == "classeXmercadodetrabalhoCompare":
         context["classeXmercadodetrabalhoCompare"] = graph_classe_vs_mercado_trabalho_comparativo(request)
+        contextActual = context["classeXmercadodetrabalhoCompare"]
     elif graph_name == "salarioXdadosCompare":
         context["salarioXdadosCompare"] = graph_salario_vs_dados_compare(request)
+        contextActual = context["salarioXdadosCompare"]
     elif graph_name == "idadeXdadosCompare":
         context["idadeXdadosCompare"] = graph_age_vs_dados_compare(request)
+        contextActual = context["idadeXdadosCompare"]
     elif graph_name == "quantidadeXdadosCompare":
         context["quantidadeXdadosCompare"] = graph_quantity_vs_dados_compare(request)
+        contextActual = context["quantidadeXdadosCompare"]
 
+    save_state(hashKeyValue, contextActual)
     return JsonResponse(context, safe=False)
+
+
+def get_context_hash(contextObj):
+    bytesContext = pickle.dumps(contextObj)
+    result = hashlib.md5(bytesContext).hexdigest()
+    return result
+
+def try_get_state_in_db(hashKeyValue):
+    try:
+        state = GraphState.objects.get(hashId=hashKeyValue)
+    except GraphState.DoesNotExist:
+        return None
+    return state
+
+def get_state(contextKey):
+    if 'csrfmiddlewaretoken' in contextKey:
+        del contextKey['csrfmiddlewaretoken']
+    hashKeyValue = get_context_hash(contextKey)
+    state = try_get_state_in_db(hashKeyValue)
+    if state != None:
+        deserializeValue = json.loads(state.data)
+        return deserializeValue , hashKeyValue
+    else:
+        return None , hashKeyValue
+
+def save_state(hashKey, contextValue):
+    serializedValue = json.dumps(contextValue)
+    GraphState.objects.create(hashId=hashKey, data=serializedValue)
 
 #region Gráficos de Genero
 
