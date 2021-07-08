@@ -57,6 +57,15 @@ def get_unique_values(dictValues, data, tag, labelFile, contextName):
         dictValues[tag]["SameState"] = "False"
     return dictValues
 
+def compare_db_states_with_actual(dbState, contextState):
+    for key, value in dbState.items():
+        if isinstance(dbState[key], dict) and 'Item' in dbState[key]:
+            if dbState[key]["Item"] == contextState[key]["Item"]:
+                dbState[key]["SameState"] = "True"
+            else:
+                dbState[key]["SameState"] = "False"
+    return dbState
+
 def separate_single_value_secondary(value, data, tag, entity):
     newData = data
     if "Todos" != value:

@@ -85,6 +85,7 @@ def update_graph(request):
 
     check_state, hashKeyValue = get_state(request.POST.dict())
     if (check_state != None):
+        check_state = compare_db_states_with_actual(check_state, context[graph_name])
         context[graph_name] = check_state
         return JsonResponse(context, safe=False)
 
@@ -114,8 +115,20 @@ def update_graph(request):
     return JsonResponse(context, safe=False)
 
 
-def get_context_hash(contextObj):
-    bytesContext = pickle.dumps(contextObj)
+def ordenate_lists(request):
+    for key, value in request.items():
+        try:
+            getValue = json.loads(value)
+            if isinstance(getValue, list):
+                getValue.sort()
+                request[key] = json.dumps(getValue)
+        except:
+            continue
+    return request
+
+def get_context_hash(request):
+    request = ordenate_lists(request)
+    bytesContext = pickle.dumps(request)
     result = hashlib.md5(bytesContext).hexdigest()
     return result
 
