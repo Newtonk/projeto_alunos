@@ -76,39 +76,42 @@ def logoutUser(request):
     return redirect('home')
 
 def update_graph(request):
-    graph_name = request.POST["graph_name"]
-    contextActual = None
+    try:
+        graph_name = request.POST["graph_name"]
+        contextActual = None
+        check_state, hashKeyValue = get_state(request.POST.dict())
+        if (check_state != None):
+            check_state = compare_db_states_with_actual(check_state, context[graph_name])
+            context[graph_name] = check_state
+            return JsonResponse(context, safe=False)
 
-    check_state, hashKeyValue = get_state(request.POST.dict())
-    if (check_state != None):
-        check_state = compare_db_states_with_actual(check_state, context[graph_name])
-        context[graph_name] = check_state
+        if graph_name == "generoXmercadodetrabalho":
+            context["generoXmercadodetrabalho"] = graph_genero_vs_mercado_trabalho(request)
+            contextActual = context["generoXmercadodetrabalho"]
+        elif graph_name == "generoXmercadodetrabalhoCompare":
+            context["generoXmercadodetrabalhoCompare"] = graph_genero_vs_mercado_trabalho_comparativo(request, False)
+            contextActual = context["generoXmercadodetrabalhoCompare"]
+        elif graph_name == "classeXmercadodetrabalho":
+            context["classeXmercadodetrabalho"] = graph_classe_vs_mercado_trabalho(request)
+            contextActual = context["classeXmercadodetrabalho"]
+        elif graph_name == "classeXmercadodetrabalhoCompare":
+            context["classeXmercadodetrabalhoCompare"] = graph_classe_vs_mercado_trabalho_comparativo(request, False)
+            contextActual = context["classeXmercadodetrabalhoCompare"]
+        elif graph_name == "salarioXdadosCompare":
+            context["salarioXdadosCompare"] = graph_salario_vs_dados_compare(request, False)
+            contextActual = context["salarioXdadosCompare"]
+        elif graph_name == "idadeXdadosCompare":
+            context["idadeXdadosCompare"] = graph_age_vs_dados_compare(request, False)
+            contextActual = context["idadeXdadosCompare"]
+        elif graph_name == "quantidadeXdadosCompare":
+            context["quantidadeXdadosCompare"] = graph_quantity_vs_dados_compare(request, False)
+            contextActual = context["quantidadeXdadosCompare"]
+
+        save_state(hashKeyValue, contextActual)
         return JsonResponse(context, safe=False)
-
-    if graph_name == "generoXmercadodetrabalho":
-        context["generoXmercadodetrabalho"] = graph_genero_vs_mercado_trabalho(request)
-        contextActual = context["generoXmercadodetrabalho"]
-    elif graph_name == "generoXmercadodetrabalhoCompare":
-        context["generoXmercadodetrabalhoCompare"] = graph_genero_vs_mercado_trabalho_comparativo(request, False)
-        contextActual = context["generoXmercadodetrabalhoCompare"]
-    elif graph_name == "classeXmercadodetrabalho":
-        context["classeXmercadodetrabalho"] = graph_classe_vs_mercado_trabalho(request)
-        contextActual = context["classeXmercadodetrabalho"]
-    elif graph_name == "classeXmercadodetrabalhoCompare":
-        context["classeXmercadodetrabalhoCompare"] = graph_classe_vs_mercado_trabalho_comparativo(request, False)
-        contextActual = context["classeXmercadodetrabalhoCompare"]
-    elif graph_name == "salarioXdadosCompare":
-        context["salarioXdadosCompare"] = graph_salario_vs_dados_compare(request, False)
-        contextActual = context["salarioXdadosCompare"]
-    elif graph_name == "idadeXdadosCompare":
-        context["idadeXdadosCompare"] = graph_age_vs_dados_compare(request, False)
-        contextActual = context["idadeXdadosCompare"]
-    elif graph_name == "quantidadeXdadosCompare":
-        context["quantidadeXdadosCompare"] = graph_quantity_vs_dados_compare(request, False)
-        contextActual = context["quantidadeXdadosCompare"]
-
-    save_state(hashKeyValue, contextActual)
-    return JsonResponse(context, safe=False)
+    except Exception as e:
+        print(e)
+        return JsonResponse(e, safe=False)
 
 
 def ordenate_lists(request):
