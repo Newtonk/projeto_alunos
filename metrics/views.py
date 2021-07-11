@@ -65,11 +65,12 @@ def read_file_success(fileName, fileExtension):
         myFile = None
         if fileExtension == "csv":
             myFile = pd.read_csv(fileName, chunksize=10000000)
+            for df in myFile:
+                data = pd.DataFrame(data=df, index=None)
+                break;
         elif fileExtension == "xlsx":
             myFile = pd.read_excel(fileName)
-        for df in myFile:
-            data = pd.DataFrame(data=df, index=None)
-            break;
+            data = pd.DataFrame(data=myFile, index=None)
     except:
         return False
     return True
