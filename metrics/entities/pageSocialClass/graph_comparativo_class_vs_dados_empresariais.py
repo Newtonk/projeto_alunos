@@ -43,7 +43,7 @@ class ClasseDadosComparativos():
 
     @staticmethod
     def campo_area(dictValues, data, request, contextName):
-        selectedArea = "Todos"
+        selectedArea = ["Todos"]
         if checa_valor("Area", data):
             selectedArea = get_multiple_value_string("Area", "areaClassXLaborMarketComparation", "Todos", request, contextName)
             data, selectedArea = separate_values_into_list(selectedArea, data, "Area")
@@ -53,7 +53,7 @@ class ClasseDadosComparativos():
 
     @staticmethod
     def campo_uf_universidade(dictValues, data, request, contextName):
-        selectedState = "Todos"
+        selectedState = ["Todos"]
         if checa_valor("Estado_Universidade", data):
             selectedState = get_multiple_value_string("UniversityState", "statesUniClassLaborMarketComparation", "Todos", request, contextName)
             data, selectedState = separate_values_into_list(selectedState, data, "Estado_Universidade")
@@ -63,7 +63,7 @@ class ClasseDadosComparativos():
 
     @staticmethod
     def campo_universidade(dictValues, data, request, contextName):
-        selectedUniversity = "Todos"
+        selectedUniversity = ["Todos"]
         if checa_valor("Universidade", data):
             selectedUniversity = get_multiple_value_string("University", "universityClassXLaborMarketComparation", "Todos", request, contextName)
             data, selectedUniversity = separate_values_into_list(selectedUniversity, data, "Universidade")
@@ -73,7 +73,7 @@ class ClasseDadosComparativos():
 
     @staticmethod
     def campo_curso(dictValues, data, request, contextName):
-        selectedCurso = "Todos"
+        selectedCurso = ["Todos"]
         if checa_valor("Curso", data):
             selectedCurso = get_multiple_value_string("Course", "courseClassXLaborMarketComparation", "Todos", request, contextName)
             data, selectedCurso = separate_values_into_list(selectedCurso, data, "Curso")
@@ -91,7 +91,7 @@ class ClasseDadosComparativos():
 
     @staticmethod
     def campo_genero(dictValues, data, request, contextName):
-        selectedGender = "Todos"
+        selectedGender = ["Todos"]
         if checa_valor("Genero", data):
             selectedGender = get_multiple_value_string("Gender", "genderClassLaborMarketComparation", "Todos", request, contextName)
             data, selectedGender = separate_values_into_list(selectedGender, data, "Genero")

@@ -25,7 +25,7 @@ class ClasseDados:
 
     @staticmethod
     def campo_empresa(dictValues, data, request, contextName):
-        selectedCompany = "Todos"
+        selectedCompany = ["Todos"]
         if checa_valor("Empresa", data):
             selectedCompany = get_multiple_value_string("Company", "companyClassXLaborMarket", "Todos", request, contextName)
             data, selectedCompany = separate_values_into_list(selectedCompany, data, "Empresa")
@@ -35,7 +35,7 @@ class ClasseDados:
 
     @staticmethod
     def campo_area(dictValues, data, request, contextName):
-        selectedArea = "Todos"
+        selectedArea = ["Todos"]
         if checa_valor("Area", data):
             selectedArea = get_multiple_value_string("Area", "areaClassXLaborMarket", "Todos", request, contextName)
             data, selectedArea = separate_values_into_list(selectedArea, data, "Area")
@@ -56,7 +56,7 @@ class ClasseDados:
 
     @staticmethod
     def campo_uf_universidade(dictValues, data, request, contextName):
-        selectedState = "Todos"
+        selectedState = ["Todos"]
         if checa_valor("Estado_Universidade", data):
             selectedState = get_multiple_value_string("UniversityState", "statesUniClassXLaborMarket", "Todos", request, contextName)
             data, selectedState = separate_values_into_list(selectedState, data, "Estado_Universidade")
@@ -66,7 +66,7 @@ class ClasseDados:
 
     @staticmethod
     def campo_universidade(dictValues, data, request, contextName):
-        selectedUniversity = "Todos"
+        selectedUniversity = ["Todos"]
         if checa_valor("Universidade", data):
             selectedUniversity = get_multiple_value_string("University", "universityClassXLaborMarket", "Todos", request, contextName)
             data, selectedUniversity = separate_values_into_list(selectedUniversity, data, "Universidade")
@@ -76,7 +76,7 @@ class ClasseDados:
 
     @staticmethod
     def campo_curso(dictValues, data, request, contextName):
-        selectedCurso = "Todos"
+        selectedCurso = ["Todos"]
         if checa_valor("Curso", data):
             selectedCurso = get_multiple_value_string("Course", "courseClassXLaborMarket", "Todos", request, contextName)
             data, selectedCurso = separate_values_into_list(selectedCurso, data, "Curso")
