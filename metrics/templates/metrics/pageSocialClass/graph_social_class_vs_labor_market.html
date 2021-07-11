@@ -185,23 +185,31 @@ const handlerClassLaborMarket = function(e) {
         dataType: 'json',
         type: 'POST',
         success: function (data, status) {
-				oldStateValue = classLaborMarket["State"]
         		classLaborMarket = data.classeXmercadodetrabalho
-				updateGraphClassLaborMarket(classLaborMarket)
+        		if (Object.keys(classLaborMarket).length == 0 || Object.keys(classLaborMarket["Data"]).length == 0)
+                {
+                    document.getElementById('no-data-class-vs-labor-market').style.display = 'block';
+                    document.getElementById('classeXmercadodetrabalho').style.display = 'none'
+                }
+                else
+                {
+                    oldStateValue = classLaborMarket["State"]
+                    updateGraphClassLaborMarket(classLaborMarket)
 
-				initValuesClassLaborMarket("Areas", "Area", "#areaClassXLaborMarket")
+                    initValuesClassLaborMarket("Areas", "Area", "#areaClassXLaborMarket")
 
-				initValuesClassLaborMarket("CompanyStates", "CompanyState", "#statesClassXLaborMarket")
+                    initValuesClassLaborMarket("CompanyStates", "CompanyState", "#statesClassXLaborMarket")
 
-				initValuesClassLaborMarket("Companies", "Company", "#companyClassXLaborMarket")
+                    initValuesClassLaborMarket("Companies", "Company", "#companyClassXLaborMarket")
 
-				initValuesClassLaborMarket("UniversityStates", "UniversityState", "#universityClassXLaborMarket")
+                    initValuesClassLaborMarket("UniversityStates", "UniversityState", "#universityClassXLaborMarket")
 
-				initValuesClassLaborMarket("Universities", "University", "#universityClassXLaborMarket")
+                    initValuesClassLaborMarket("Universities", "University", "#universityClassXLaborMarket")
 
-				initValuesClassLaborMarket("Courses", "Course", "#courseClassXLaborMarket")
+                    initValuesClassLaborMarket("Courses", "Course", "#courseClassXLaborMarket")
 
-				initValuesClassLaborMarket("Genders", "Gender", "#genderXLaborMarket")
+                    initValuesClassLaborMarket("Genders", "Gender", "#genderXLaborMarket")
+				}
         }
     });
 }
@@ -227,16 +235,9 @@ $('#genderXLaborMarket').on('select2-removing', tryRemoveValue)
 <!-- Método que realiza a atualização do gráfico -->
 <script>
 function updateGraphClassLaborMarket(object_all){
-	if (Object.keys(object_all).length == 0 || Object.keys(object_all["Data"]).length == 0)
-	{
-		document.getElementById('no-data-class-vs-labor-market').style.display = 'block';
-        document.getElementById('classeXmercadodetrabalho').style.display = 'none'
-	}
-	else
-	{
-	document.getElementById('no-data-class-vs-labor-market').style.display = 'none';
-	document.getElementById('classeXmercadodetrabalho').style.display = 'block'
 
+    document.getElementById('no-data-class-vs-labor-market').style.display = 'block';
+    document.getElementById('classeXmercadodetrabalho').style.display = 'none'
 	var colorArray = ["green", "blue", "black", "red" , "purple"]
 	chartClassLaborMarket.data.labels = object_all["Labels"]
 	chartClassLaborMarket.data.datasets[0].label = object_all["Area"]
@@ -244,7 +245,6 @@ function updateGraphClassLaborMarket(object_all){
 	chartClassLaborMarket.data.datasets[0].data = object_all["Data"]
 	chartClassLaborMarket.options.title.text = 'Genero X Area de ' + object_all["Area"]
 	chartClassLaborMarket.update();
-	}
 }
 
 

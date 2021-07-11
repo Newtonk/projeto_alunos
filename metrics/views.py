@@ -93,22 +93,22 @@ def update_graph(request):
         context["generoXmercadodetrabalho"] = graph_genero_vs_mercado_trabalho(request)
         contextActual = context["generoXmercadodetrabalho"]
     elif graph_name == "generoXmercadodetrabalhoCompare":
-        context["generoXmercadodetrabalhoCompare"] = graph_genero_vs_mercado_trabalho_comparativo(request)
+        context["generoXmercadodetrabalhoCompare"] = graph_genero_vs_mercado_trabalho_comparativo(request, False)
         contextActual = context["generoXmercadodetrabalhoCompare"]
     elif graph_name == "classeXmercadodetrabalho":
         context["classeXmercadodetrabalho"] = graph_classe_vs_mercado_trabalho(request)
         contextActual = context["classeXmercadodetrabalho"]
     elif graph_name == "classeXmercadodetrabalhoCompare":
-        context["classeXmercadodetrabalhoCompare"] = graph_classe_vs_mercado_trabalho_comparativo(request)
+        context["classeXmercadodetrabalhoCompare"] = graph_classe_vs_mercado_trabalho_comparativo(request, False)
         contextActual = context["classeXmercadodetrabalhoCompare"]
     elif graph_name == "salarioXdadosCompare":
-        context["salarioXdadosCompare"] = graph_salario_vs_dados_compare(request)
+        context["salarioXdadosCompare"] = graph_salario_vs_dados_compare(request, False)
         contextActual = context["salarioXdadosCompare"]
     elif graph_name == "idadeXdadosCompare":
-        context["idadeXdadosCompare"] = graph_age_vs_dados_compare(request)
+        context["idadeXdadosCompare"] = graph_age_vs_dados_compare(request, False)
         contextActual = context["idadeXdadosCompare"]
     elif graph_name == "quantidadeXdadosCompare":
-        context["quantidadeXdadosCompare"] = graph_quantity_vs_dados_compare(request)
+        context["quantidadeXdadosCompare"] = graph_quantity_vs_dados_compare(request, False)
         contextActual = context["quantidadeXdadosCompare"]
 
     save_state(hashKeyValue, contextActual)
@@ -151,8 +151,9 @@ def get_state(contextKey):
         return None , hashKeyValue
 
 def save_state(hashKey, contextValue):
-    serializedValue = json.dumps(contextValue)
-    GraphState.objects.create(hashId=hashKey, data=serializedValue)
+    if contextValue != None and len(contextValue) > 0:
+        serializedValue = json.dumps(contextValue)
+        GraphState.objects.create(hashId=hashKey, data=serializedValue)
 
 #region Gráficos de Genero
 
@@ -162,7 +163,7 @@ def graphs_genero(request):
 
     generoXmercadodetrabalho = graph_genero_vs_mercado_trabalho(request)
 
-    generoXmercadodetrabalhoCompare = graph_genero_vs_mercado_trabalho_comparativo(request)
+    generoXmercadodetrabalhoCompare = graph_genero_vs_mercado_trabalho_comparativo(request, True)
 
     context["generoXmercadodetrabalho"] = generoXmercadodetrabalho
     context["generoXmercadodetrabalhoCompare"] = generoXmercadodetrabalhoCompare
@@ -204,11 +205,12 @@ def graph_genero_vs_mercado_trabalho(request):
 
     return finalResult
 
-def graph_genero_vs_mercado_trabalho_comparativo(request):
+def graph_genero_vs_mercado_trabalho_comparativo(request, isInitial):
     finalResult = {}
     contextName = context["generoXmercadodetrabalhoCompare"]
     entityValue = GeneroDadosComparativosEmpresariais.campo_entidade_comparacao(request, contextName)
-    if GeneroDadosComparativosEmpresariais.validacao_colunas(entityValue, data):
+    isValid, entityValue = GeneroDadosComparativosEmpresariais.validacao_colunas(entityValue, data, isInitial)
+    if isValid:
         workingData = data
         newData = GeneroDadosComparativosEmpresariais.unifica_colunas(workingData)
         finalResult, complementData, finalData, noInfo = GeneroDadosComparativosEmpresariais.valida_dados_enviados(newData, request, contextName, entityValue)
@@ -249,7 +251,7 @@ def graphs_social_class(request):
 
     classeXmercadodetrabalho = graph_classe_vs_mercado_trabalho(request)
 
-    classeXmercadodetrabalhoCompare = graph_classe_vs_mercado_trabalho_comparativo(request)
+    classeXmercadodetrabalhoCompare = graph_classe_vs_mercado_trabalho_comparativo(request, True)
 
     context["classeXmercadodetrabalho"] = classeXmercadodetrabalho
     context["classeXmercadodetrabalhoCompare"] = classeXmercadodetrabalhoCompare
@@ -291,11 +293,12 @@ def graph_classe_vs_mercado_trabalho(request):
         finalResult["Data"] = listTotal
     return finalResult
 
-def graph_classe_vs_mercado_trabalho_comparativo(request):
+def graph_classe_vs_mercado_trabalho_comparativo(request, isInitial):
     finalResult = {}
     contextName = context["classeXmercadodetrabalhoCompare"]
     entityValue = ClasseDadosComparativos.campo_entidade_comparacao(request, contextName)
-    if ClasseDadosComparativos.validacao_colunas(entityValue, data):
+    isValid, entityValue = ClasseDadosComparativos.validacao_colunas(entityValue, data, isInitial)
+    if isValid:
         workingData = data
         newData = ClasseDadosComparativos.unifica_colunas(workingData)
         finalResult, complementData, finalData, noInfo = ClasseDadosComparativos.valida_dados_enviados(newData, request,
@@ -334,17 +337,18 @@ def graph_classe_vs_mercado_trabalho_comparativo(request):
 def graphs_sallary(request):
     context["salarioXdadosCompare"] = None
 
-    salarioXdadosCompare = graph_salario_vs_dados_compare(request)
+    salarioXdadosCompare = graph_salario_vs_dados_compare(request, True)
 
     context["salarioXdadosCompare"] = salarioXdadosCompare
 
     return render(request, 'metrics/pageSallary/graphs_sallary.html', context)
 
-def graph_salario_vs_dados_compare(request):
+def graph_salario_vs_dados_compare(request, isInitial):
     finalResult = {}
     contextName = context["salarioXdadosCompare"]
     entityValue = SalarioDadosComparativos.campo_entidade_comparacao(request, contextName)
-    if SalarioDadosComparativos.validacao_colunas(entityValue, data):
+    isValid, entityValue = SalarioDadosComparativos.validacao_colunas(entityValue, data, isInitial)
+    if isValid:
         workingData = data
         newData = SalarioDadosComparativos.unifica_colunas(workingData)
         finalResult, complementData, finalData, noInfo = SalarioDadosComparativos.valida_dados_enviados(newData, request, contextName, entityValue)
@@ -379,17 +383,18 @@ def graph_salario_vs_dados_compare(request):
 def graphs_age(request):
     context["idadeXdadosCompare"] = None
 
-    idadeXdadosCompare = graph_age_vs_dados_compare(request)
+    idadeXdadosCompare = graph_age_vs_dados_compare(request, True)
 
     context["idadeXdadosCompare"] = idadeXdadosCompare
 
     return render(request, 'metrics/pageAge/graphs_age.html', context)
 
-def graph_age_vs_dados_compare(request):
+def graph_age_vs_dados_compare(request, isInitial):
     finalResult = {}
     contextName = context["idadeXdadosCompare"]
     entityValue = IdadeDadosComparativos.campo_entidade_comparacao(request, contextName)
-    if IdadeDadosComparativos.validacao_colunas(entityValue, data):
+    isValid, entityValue = IdadeDadosComparativos.validacao_colunas(entityValue, data, isInitial)
+    if isValid:
         workingData = data
         newData = IdadeDadosComparativos.unifica_colunas(workingData)
         finalResult, complementData, finalData, noInfo = IdadeDadosComparativos.valida_dados_enviados(newData, request, contextName, entityValue)
@@ -425,17 +430,18 @@ def graph_age_vs_dados_compare(request):
 def graphs_quantity(request):
     context["quantidadeXdadosCompare"] = None
 
-    quantidadeXdadosCompare = graph_quantity_vs_dados_compare(request)
+    quantidadeXdadosCompare = graph_quantity_vs_dados_compare(request, True)
 
     context["quantidadeXdadosCompare"] = quantidadeXdadosCompare
 
     return render(request, 'metrics/pageQuantity/graphs_quantity.html', context)
 
-def graph_quantity_vs_dados_compare(request):
+def graph_quantity_vs_dados_compare(request, isInitial):
     finalResult = {}
     contextName = context["quantidadeXdadosCompare"]
     entityValue = QuantidadeDadosComparativos.campo_entidade_comparacao(finalResult, request, contextName)
-    if QuantidadeDadosComparativos.validacao_colunas(entityValue, data):
+    isValid, entityValue = QuantidadeDadosComparativos.validacao_colunas(entityValue, data, isInitial)
+    if isValid:
         workingData = data
         newData = QuantidadeDadosComparativos.unifica_colunas(workingData)
         finalResult, finalData, noInfo = QuantidadeDadosComparativos.valida_dados_enviados(newData, request, contextName, entityValue)

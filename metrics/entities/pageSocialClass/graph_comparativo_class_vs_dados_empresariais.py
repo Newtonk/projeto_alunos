@@ -2,14 +2,17 @@ from metrics.utils import *
 
 class ClasseDadosComparativos():
     @staticmethod
-    def validacao_colunas(entityValue, data):
-        if checa_valor(entityValue, data) and checa_valor("Classe", data):
-            return True
-        return False
+    def validacao_colunas(entity, data, isInitial):
+        colunas = pegue_todas_colunas(['Genero', 'Area', "Curso", "Empresa", "Universidade", "Estado_Empresa", "Estado_Universidade"], data)
+        if len(colunas) > 0 and checa_valor("Classe", data):
+            if entity not in colunas and isInitial:
+                entity = colunas[0]
+            return True, entity
+        return False, entity
 
     @staticmethod
     def unifica_colunas(data):
-        colunas = pegue_todas_colunas(['Classe', 'Area', "Curso", "Empresa", "Instituicao", "Estado_Empresa" , "Estado_Universidade", "Genero"], data)
+        colunas = pegue_todas_colunas(['Classe', 'Area', "Curso", "Empresa", "Universidade", "Estado_Empresa" , "Estado_Universidade", "Genero"], data)
         dados_unificados = data.groupby(colunas, dropna=False).size().reset_index(name='Count')
         return dados_unificados
 
@@ -61,9 +64,9 @@ class ClasseDadosComparativos():
     @staticmethod
     def campo_universidade(dictValues, data, request, contextName):
         selectedUniversity = "Todos"
-        if checa_valor("Instituicao", data):
+        if checa_valor("Universidade", data):
             selectedUniversity = get_multiple_value_string("University", "universityClassXLaborMarketComparation", "Todos", request, contextName)
-            data, selectedUniversity = separate_values_into_list(selectedUniversity, data, "Instituicao")
+            data, selectedUniversity = separate_values_into_list(selectedUniversity, data, "Universidade")
 
         dictValues["University"] = selectedUniversity
         return dictValues, data
@@ -123,7 +126,7 @@ class ClasseDadosComparativos():
         dictValues = get_unique_values(dictValues, newData, "Companies", "Empresa", contextName)
         dictValues, newData = ClasseDadosComparativos.campo_empresa(dictValues, newData, request, contextName)
 
-        dictValues = get_unique_values(dictValues, newData, "Universities", "Instituicao", contextName)
+        dictValues = get_unique_values(dictValues, newData, "Universities", "Universidade", contextName)
         dictValues, newData = ClasseDadosComparativos.campo_universidade(dictValues, newData, request, contextName)
 
         dictValues = get_unique_values(dictValues, newData, "Areas", "Area", contextName)

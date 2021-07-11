@@ -62,7 +62,7 @@ margin: auto;
 <select name="entityQuantityDataComparation" id="entityQuantityDataComparation">
      <option value="Empresa" selected>Empresa</option>
      <option value="Area">Area</option>
-     <option value="Instituicao">Instituicao</option>
+     <option value="Universidade">Universidade</option>
      <option value="Curso">Curso</option>
      <option value="Genero">Genero</option>
      <option value="Estado_Universidade">Estado da Universidade</option>
@@ -249,26 +249,34 @@ const handlerQuantityDataComparation = function(e) {
         type: 'POST',
         success: function (data, status) {
         		quantityDataComparation = data.quantidadeXdadosCompare
-				updateQuantityDataComparation(quantityDataComparation)
+        		if (Object.keys(quantityDataComparation).length == 0 || Object.keys(quantityDataComparation["Data"]).length == 0)
+                {
+                    document.getElementById('no-data-quantity-vs-data-comparation').style.display = 'block';
+                    document.getElementById('quantidadeXdadosCompare').style.display = 'none'
+                }
+                else
+                {
+                    updateQuantityDataComparation(quantityDataComparation)
 
-                initValuesQuantityDataCompare("Classes", "Class", "#classQuantityDataComparation", true)
+                    initValuesQuantityDataCompare("Classes", "Class", "#classQuantityDataComparation", true)
 
-				initValuesQuantityDataCompare("Genders", "Gender", "#genderQuantityDataComparation", true)
+                    initValuesQuantityDataCompare("Genders", "Gender", "#genderQuantityDataComparation", true)
 
-				initValuesQuantityDataCompare("UniversityStates", "UniversityState", "#statesUniQuantityDataComparation", true)
+                    initValuesQuantityDataCompare("UniversityStates", "UniversityState", "#statesUniQuantityDataComparation", true)
 
-				initValuesQuantityDataCompare("Universities", "University", "#universityQuantityDataComparation", true)
+                    initValuesQuantityDataCompare("Universities", "University", "#universityQuantityDataComparation", true)
 
-				initValuesQuantityDataCompare("Courses", "Course", "#courseQuantityDataComparation", true)
+                    initValuesQuantityDataCompare("Courses", "Course", "#courseQuantityDataComparation", true)
 
-				initValuesQuantityDataCompare("CompanyStates", "CompanyState", "#statesQuantityDataComparation", true)
+                    initValuesQuantityDataCompare("CompanyStates", "CompanyState", "#statesQuantityDataComparation", true)
 
-				initValuesQuantityDataCompare("Companies", "Company", "#companyQuantityDataComparation", true)
+                    initValuesQuantityDataCompare("Companies", "Company", "#companyQuantityDataComparation", true)
 
-				initValuesQuantityDataCompare("Areas", "Area", "#areaQuantityDataComparation", true)
+                    initValuesQuantityDataCompare("Areas", "Area", "#areaQuantityDataComparation", true)
 
-                document.getElementById("qtyQuantityDataComparation").value = quantityDataComparation["Total"];
-				document.getElementById("entityQuantityDataComparation").value = quantityDataComparation["Entity"];
+                    document.getElementById("qtyQuantityDataComparation").value = quantityDataComparation["Total"];
+                    document.getElementById("entityQuantityDataComparation").value = quantityDataComparation["Entity"];
+				}
         }
     });
 }
@@ -300,24 +308,16 @@ $('#classQuantityDataComparation').on('select2-removing', tryRemoveValue)
 <script>
 function updateQuantityDataComparation(object_all)
 {
-	if (Object.keys(object_all).length == 0 || Object.keys(object_all["Data"]).length == 0)
-	{
-	    document.getElementById('no-data-quantity-vs-data-comparation').style.display = 'block';
-        document.getElementById('quantidadeXdadosCompare').style.display = 'none'
-    }
-    else
-    {
-        document.getElementById('no-data-quantity-vs-data-comparation').style.display = 'none';
-        document.getElementById('quantidadeXdadosCompare').style.display = 'block'
-        var colorArray = [ 'blue'];
-        chartQuantityDataComparation.data.labels = object_all["Entities"]
-        chartQuantityDataComparation.data.datasets[0].backgroundColor = colorArray[0]
-        chartQuantityDataComparation.data.datasets[0].data = object_all["Data"]
-        chartQuantityDataComparation.options.scales.yAxes[0].ticks.max = Math.max.apply(Math, object_all["Data"])
-        chartQuantityDataComparation.options.title.text = ['Comparativo de Quantidade Total de cada valor do campo '+object_all["Entity"]+' com Dados Pessoais, Academicos e Profissionais'
-            , 'Media Quantitativa : '+sumAllQuantities(object_all["Data"])+'']
-        chartQuantityDataComparation.update();
-	}
+    document.getElementById('no-data-quantity-vs-data-comparation').style.display = 'none';
+    document.getElementById('quantidadeXdadosCompare').style.display = 'block'
+    var colorArray = [ 'blue'];
+    chartQuantityDataComparation.data.labels = object_all["Entities"]
+    chartQuantityDataComparation.data.datasets[0].backgroundColor = colorArray[0]
+    chartQuantityDataComparation.data.datasets[0].data = object_all["Data"]
+    chartQuantityDataComparation.options.scales.yAxes[0].ticks.max = Math.max.apply(Math, object_all["Data"])
+    chartQuantityDataComparation.options.title.text = ['Comparativo de Quantidade Total de cada valor do campo '+object_all["Entity"]+' com Dados Pessoais, Academicos e Profissionais'
+        , 'Media Quantitativa : '+sumAllQuantities(object_all["Data"])+'']
+    chartQuantityDataComparation.update();
 }
 </script>
 
@@ -403,6 +403,7 @@ function initQuantityDataComparation(object_all) {
     initValuesQuantityDataCompare("CompanyStates", "CompanyState", "#statesQuantityDataComparation", true)
     initValuesQuantityDataCompare("Companies", "Company", "#companyQuantityDataComparation", true)
     initValuesQuantityDataCompare("Areas", "Area", "#areaQuantityDataComparation", true)
+    document.getElementById("entityQuantityDataComparation").value = quantityDataComparation["Entity"];
 
     createGraphQuantityDataComparation(object_all)
     }

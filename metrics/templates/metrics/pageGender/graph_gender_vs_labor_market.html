@@ -184,23 +184,31 @@ const handlerGenderLaborMarket = function(e) {
         dataType: 'json',
         type: 'POST',
         success: function (data, status) {
-				oldStateValue = genderLaborMarket["State"]
         		genderLaborMarket = data.generoXmercadodetrabalho
-				updateGraphGenderLaborMarket(genderLaborMarket)
+        		if (Object.keys(genderLaborMarket).length == 0 || Object.keys(genderLaborMarket["Data"]).length == 0)
+                {
+                    document.getElementById('no-data-gender-vs-labor-market').style.display = 'block';
+                    document.getElementById('generoXmercadodetrabalho').style.display = 'none'
+                }
+                else
+                {
+                    oldStateValue = genderLaborMarket["State"]
+                    updateGraphGenderLaborMarket(genderLaborMarket)
 
-				initValuesGenderLaborMarket("Areas", "Area", "#areaGenderXLaborMarket")
+                    initValuesGenderLaborMarket("Areas", "Area", "#areaGenderXLaborMarket")
 
-				initValuesGenderLaborMarket("CompanyStates", "CompanyState", "#statesGenderXLaborMarket")
+                    initValuesGenderLaborMarket("CompanyStates", "CompanyState", "#statesGenderXLaborMarket")
 
-				initValuesGenderLaborMarket("Companies", "Company", "#companyGenderXLaborMarket")
+                    initValuesGenderLaborMarket("Companies", "Company", "#companyGenderXLaborMarket")
 
-				initValuesGenderLaborMarket("UniversityStates", "UniversityState", "#universityGenderXLaborMarket")
+                    initValuesGenderLaborMarket("UniversityStates", "UniversityState", "#universityGenderXLaborMarket")
 
-				initValuesGenderLaborMarket("Universities", "University", "#universityGenderXLaborMarket")
+                    initValuesGenderLaborMarket("Universities", "University", "#universityGenderXLaborMarket")
 
-				initValuesGenderLaborMarket("Courses", "Course", "#courseGenderXLaborMarket")
+                    initValuesGenderLaborMarket("Courses", "Course", "#courseGenderXLaborMarket")
 
-				initValuesGenderLaborMarket("Classes", "Class", "#classGenderXLaborMarket")
+                    initValuesGenderLaborMarket("Classes", "Class", "#classGenderXLaborMarket")
+				}
         }
     });
 }
@@ -225,14 +233,8 @@ $('#classGenderXLaborMarket').on('select2-removing', tryRemoveValue)
 
 <!-- Método que realiza a atualização do gráfico -->
 <script>
-function updateGraphGenderLaborMarket(object_all){
-	if (Object.keys(object_all).length == 0 || Object.keys(object_all["Data"]).length == 0)
-	{
-		document.getElementById('no-data-gender-vs-labor-market').style.display = 'block';
-        document.getElementById('generoXmercadodetrabalho').style.display = 'none'
-	}
-	else
-	{
+function updateGraphGenderLaborMarket(object_all)
+{
 	document.getElementById('no-data-gender-vs-labor-market').style.display = 'none';
 	document.getElementById('generoXmercadodetrabalho').style.display = 'block'
 	var colorArray = ["green", "blue", "black"]
@@ -242,7 +244,6 @@ function updateGraphGenderLaborMarket(object_all){
 	chartGenderLaborMarket.data.datasets[0].data = object_all["Data"]
 	chartGenderLaborMarket.options.title.text = 'Genero X Area de ' + object_all["Area"]
 	chartGenderLaborMarket.update();
-	}
 }
 
 

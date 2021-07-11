@@ -51,7 +51,7 @@ def get_unique_values(dictValues, data, tag, labelFile, contextName):
         dictValues[tag]["Item"] = list(data[labelFile].dropna().unique())
     else:
         dictValues[tag]["Item"] = []
-    if contextName is not None and dictValues[tag]["Item"] == contextName[tag]["Item"]:
+    if (contextName is not None and len(contextName) > 0) and dictValues[tag]["Item"] == contextName[tag]["Item"]:
         dictValues[tag]["SameState"] = "True"
     else:
         dictValues[tag]["SameState"] = "False"

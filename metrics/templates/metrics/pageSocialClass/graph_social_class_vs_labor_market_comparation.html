@@ -62,9 +62,11 @@ margin: auto;
     <select name="entityclassLaborMarketComparation" id="entityclassLaborMarketComparation">
                  <option value="Empresa" selected>Empresa</option>
                  <option value="Area">Area</option>
-                 <option value="Instituicao">Instituicao</option>
+                 <option value="Universidade">Universidade</option>
                  <option value="Curso">Curso</option>
                  <option value="Classe">Classe Social</option>
+                 <option value="Estado_Universidade">Estado da Universidade</option>
+                 <option value="Estado_Empresa">Estado da Empresa</option>
             </select>
     </div>
                 <br>
@@ -250,26 +252,34 @@ const handlerClassLaborMarketComparation = function(e) {
         type: 'POST',
         success: function (data, status) {
         		classLaborMarketComparation = data.classeXmercadodetrabalhoCompare
-				updateGraphClassLaborMarketComparation(classLaborMarketComparation)
+                if (Object.keys(classLaborMarketComparation).length == 0 || Object.keys(classLaborMarketComparation["Data"]).length == 0)
+                {
+                    document.getElementById('no-data-class-labor-market-comparation').style.display = 'block';
+                    document.getElementById('classeXmercadodetrabalhoCompare').style.display = 'none'
+                }
+                else
+                {
+                    updateGraphClassLaborMarketComparation(classLaborMarketComparation)
 
-                initValuesClassLaborMarketCompare("Classes", "Class", "#classClassXLaborMarketComparation", false, false)
+                    initValuesClassLaborMarketCompare("Classes", "Class", "#classClassXLaborMarketComparation", false, false)
 
-				initValuesClassLaborMarketCompare("Genders", "Gender", "#genderClassLaborMarketComparation", true, true)
+                    initValuesClassLaborMarketCompare("Genders", "Gender", "#genderClassLaborMarketComparation", true, true)
 
-				initValuesClassLaborMarketCompare("UniversityStates", "UniversityState", "#statesUniClassLaborMarketComparation", true, true)
+                    initValuesClassLaborMarketCompare("UniversityStates", "UniversityState", "#statesUniClassLaborMarketComparation", true, true)
 
-				initValuesClassLaborMarketCompare("Universities", "University", "#universityClassXLaborMarketComparation", true, true)
+                    initValuesClassLaborMarketCompare("Universities", "University", "#universityClassXLaborMarketComparation", true, true)
 
-				initValuesClassLaborMarketCompare("Courses", "Course", "#courseClassXLaborMarketComparation", true, true)
+                    initValuesClassLaborMarketCompare("Courses", "Course", "#courseClassXLaborMarketComparation", true, true)
 
-				initValuesClassLaborMarketCompare("CompanyStates", "CompanyState", "#statesCompanyLaborMarketComparation", true, true)
+                    initValuesClassLaborMarketCompare("CompanyStates", "CompanyState", "#statesCompanyLaborMarketComparation", true, true)
 
-				initValuesClassLaborMarketCompare("Companies", "Company", "#companyClassXLaborMarketComparation", true, true)
+                    initValuesClassLaborMarketCompare("Companies", "Company", "#companyClassXLaborMarketComparation", true, true)
 
-				initValuesClassLaborMarketCompare("Areas", "Area", "#areaClassXLaborMarketComparation", true, true)
+                    initValuesClassLaborMarketCompare("Areas", "Area", "#areaClassXLaborMarketComparation", true, true)
 
-                document.getElementById("qtyclassLaborMarketComparation").value = classLaborMarketComparation["Total"];
-				document.getElementById("entityclassLaborMarketComparation").value = classLaborMarketComparation["Entity"];
+                    document.getElementById("qtyclassLaborMarketComparation").value = classLaborMarketComparation["Total"];
+                    document.getElementById("entityclassLaborMarketComparation").value = classLaborMarketComparation["Entity"];
+				}
         }
     });
 }
@@ -301,13 +311,6 @@ $('#classClassXLaborMarketComparation').on('select2-removing', tryRemoveValueCom
 <script>
 function updateGraphClassLaborMarketComparation(object_all)
 {
-	if (Object.keys(object_all).length == 0 || Object.keys(object_all["Data"]).length == 0)
-	{
-	    document.getElementById('no-data-class-labor-market-comparation').style.display = 'block';
-        document.getElementById('classeXmercadodetrabalhoCompare').style.display = 'none'
-    }
-    else
-    {
         document.getElementById('no-data-class-labor-market-comparation').style.display = 'none';
         document.getElementById('classeXmercadodetrabalhoCompare').style.display = 'block'
         var colorArray = [ 'blue'];
@@ -318,7 +321,6 @@ function updateGraphClassLaborMarketComparation(object_all)
         chartClassLaborMarketComparation.options.title.text = ['Comparativo de Classe Social em (%) por '+object_all["Entity"]+' com Dados Pessoais, Academicos e Profissionais'
             , 'Media em (%) da Classe Social : '+sumAllClassesPercent(object_all["Data"])+'']
         chartClassLaborMarketComparation.update();
-	}
 }
 </script>
 
@@ -406,6 +408,7 @@ function initClassLaborMarketComparation(object_all) {
     initValuesClassLaborMarketCompare("CompanyStates", "CompanyState", "#statesCompanyLaborMarketComparation", true, true)
     initValuesClassLaborMarketCompare("Companies", "Company", "#companyClassXLaborMarketComparation", true, true)
     initValuesClassLaborMarketCompare("Areas", "Area", "#areaClassXLaborMarketComparation", true, true)
+    document.getElementById("entityclassLaborMarketComparation").value = classLaborMarketComparation["Entity"];
 
     createGraphClassLaborMarketComparation(object_all)
     }

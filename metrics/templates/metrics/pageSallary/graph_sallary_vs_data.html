@@ -62,10 +62,12 @@ margin: auto;
     <select name="entitySallaryDataComparation" id="entitySallaryDataComparation">
          <option value="Empresa" selected>Empresa</option>
          <option value="Area">Area</option>
-         <option value="Instituicao">Instituicao</option>
+         <option value="Universidade">Universidade</option>
          <option value="Curso">Curso</option>
          <option value="Genero">Genero</option>
          <option value="Classe">Classe Social</option>
+         <option value="Estado_Universidade">Estado da Universidade</option>
+         <option value="Estado_Empresa">Estado da Empresa</option>
     </select>
     </div>
           </div>
@@ -246,26 +248,34 @@ const handlerSallaryDataComparation = function(e) {
         type: 'POST',
         success: function (data, status) {
         		sallaryDataComparation = data.salarioXdadosCompare
-				updateSallaryDataComparation(sallaryDataComparation)
+        		if (Object.keys(sallaryDataComparation).length == 0 || Object.keys(sallaryDataComparation["Data"]).length == 0)
+                {
+                    document.getElementById('no-data-sallary-vs-data-comparation').style.display = 'block';
+                    document.getElementById('salarioXdadosCompare').style.display = 'none'
+                }
+                else
+                {
+                    updateSallaryDataComparation(sallaryDataComparation)
 
-                initValuesSallaryDataCompare("Classes", "Class", "#classSallaryDataComparation", true)
+                    initValuesSallaryDataCompare("Classes", "Class", "#classSallaryDataComparation", true)
 
-				initValuesSallaryDataCompare("Genders", "Gender", "#genderSallaryDataComparation", true)
+                    initValuesSallaryDataCompare("Genders", "Gender", "#genderSallaryDataComparation", true)
 
-				initValuesSallaryDataCompare("UniversityStates", "UniversityState", "#statesUniSallaryDataComparation", true)
+                    initValuesSallaryDataCompare("UniversityStates", "UniversityState", "#statesUniSallaryDataComparation", true)
 
-				initValuesSallaryDataCompare("Universities", "University", "#universitySallaryDataComparation", true)
+                    initValuesSallaryDataCompare("Universities", "University", "#universitySallaryDataComparation", true)
 
-				initValuesSallaryDataCompare("Courses", "Course", "#courseSallaryDataComparation", true)
+                    initValuesSallaryDataCompare("Courses", "Course", "#courseSallaryDataComparation", true)
 
-				initValuesSallaryDataCompare("CompanyStates", "CompanyState", "#statesSallaryDataComparation", true)
+                    initValuesSallaryDataCompare("CompanyStates", "CompanyState", "#statesSallaryDataComparation", true)
 
-				initValuesSallaryDataCompare("Companies", "Company", "#companySallaryDataComparation", true)
+                    initValuesSallaryDataCompare("Companies", "Company", "#companySallaryDataComparation", true)
 
-				initValuesSallaryDataCompare("Areas", "Area", "#areaSallaryDataComparation", true)
+                    initValuesSallaryDataCompare("Areas", "Area", "#areaSallaryDataComparation", true)
 
-                document.getElementById("qtySallaryDataComparation").value = sallaryDataComparation["Total"];
-				document.getElementById("entitySallaryDataComparation").value = sallaryDataComparation["Entity"];
+                    document.getElementById("qtySallaryDataComparation").value = sallaryDataComparation["Total"];
+                    document.getElementById("entitySallaryDataComparation").value = sallaryDataComparation["Entity"];
+				}
         }
     });
 }
@@ -296,25 +306,16 @@ $('#classSallaryDataComparation').on('select2-removing', tryRemoveValue)
 <script>
 function updateSallaryDataComparation(object_all)
 {
-	if (Object.keys(object_all).length == 0 || Object.keys(object_all["Data"]).length == 0)
-	{
-	    document.getElementById('no-data-sallary-vs-data-comparation').style.display = 'block';
-        document.getElementById('salarioXdadosCompare').style.display = 'none'
-    }
-    else
-    {
-        document.getElementById('no-data-sallary-vs-data-comparation').style.display = 'none';
-        document.getElementById('salarioXdadosCompare').style.display = 'block'
-        var colorArray = [ 'blue'];
-        chartSallaryDataComparation.data.labels = object_all["Entities"]
-        chartSallaryDataComparation.data.datasets[0].backgroundColor = colorArray[0]
-        chartSallaryDataComparation.data.datasets[0].data = object_all["Data"]
-        chartSallaryDataComparation.options.scales.yAxes[0].ticks.max = Math.max.apply(Math, object_all["Data"])
-        chartSallaryDataComparation.options.title.text = ['Comparativo de Media Salarial por '+object_all["Entity"]+' com Dados Pessoais, Academicos e Profissionais'
-            , 'Media Salarial Geral : '+sumAllSallarys(object_all["Data"])+'']
-
-        chartSallaryDataComparation.update();
-	}
+    document.getElementById('no-data-sallary-vs-data-comparation').style.display = 'none';
+    document.getElementById('salarioXdadosCompare').style.display = 'block'
+    var colorArray = [ 'blue'];
+    chartSallaryDataComparation.data.labels = object_all["Entities"]
+    chartSallaryDataComparation.data.datasets[0].backgroundColor = colorArray[0]
+    chartSallaryDataComparation.data.datasets[0].data = object_all["Data"]
+    chartSallaryDataComparation.options.scales.yAxes[0].ticks.max = Math.max.apply(Math, object_all["Data"])
+    chartSallaryDataComparation.options.title.text = ['Comparativo de Media Salarial por '+object_all["Entity"]+' com Dados Pessoais, Academicos e Profissionais'
+        , 'Media Salarial Geral : '+sumAllSallarys(object_all["Data"])+'']
+    chartSallaryDataComparation.update();
 }
 </script>
 
@@ -404,6 +405,7 @@ function initSallaryDataComparation(object_all) {
     initValuesSallaryDataCompare("CompanyStates", "CompanyState", "#statesSallaryDataComparation", true)
     initValuesSallaryDataCompare("Companies", "Company", "#companySallaryDataComparation", true)
     initValuesSallaryDataCompare("Areas", "Area", "#areaSallaryDataComparation", true)
+    document.getElementById("entitySallaryDataComparation").value = sallaryDataComparation["Entity"];
 
     createGraphSallaryDataComparation(object_all)
     }

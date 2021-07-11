@@ -9,7 +9,7 @@ class ClasseDados:
 
     @staticmethod
     def unifica_colunas(data):
-        colunas = pegue_todas_colunas(['Classe', 'Area', "Curso", "Empresa", "Instituicao", "Estado_Empresa", "Estado_Universidade", "Genero"], data)
+        colunas = pegue_todas_colunas(['Classe', 'Area', "Curso", "Empresa", "Universidade", "Estado_Empresa", "Estado_Universidade", "Genero"], data)
         dados_unificados = data.groupby(colunas, dropna=False).size().reset_index(name='Count')
         return dados_unificados
 
@@ -49,7 +49,7 @@ class ClasseDados:
         if checa_valor("Genero", data):
             selectedGender = get_multiple_value_string("Gender", "genderXLaborMarket", "Todos", request,
                                                       contextName)
-            data, selectedClass = separate_values_into_list(selectedGender, data, "Genero")
+            data, selectedGender = separate_values_into_list(selectedGender, data, "Genero")
 
         dictValues["Gender"] = selectedGender
         return dictValues, data
@@ -67,9 +67,9 @@ class ClasseDados:
     @staticmethod
     def campo_universidade(dictValues, data, request, contextName):
         selectedUniversity = "Todos"
-        if checa_valor("Instituicao", data):
+        if checa_valor("Universidade", data):
             selectedUniversity = get_multiple_value_string("University", "universityClassXLaborMarket", "Todos", request, contextName)
-            data, selectedUniversity = separate_values_into_list(selectedUniversity, data, "Instituicao")
+            data, selectedUniversity = separate_values_into_list(selectedUniversity, data, "Universidade")
 
         dictValues["University"] = selectedUniversity
         return dictValues, data
@@ -100,7 +100,7 @@ class ClasseDados:
         dictValues = get_unique_values(dictValues, newData, "Companies", "Empresa", contextName)
         dictValues, newData = ClasseDados.campo_empresa(dictValues, newData, request, contextName)
 
-        dictValues = get_unique_values(dictValues, newData, "Universities", "Instituicao", contextName)
+        dictValues = get_unique_values(dictValues, newData, "Universities", "Universidade", contextName)
         dictValues, newData = ClasseDados.campo_universidade(dictValues, newData, request, contextName)
 
         dictValues = get_unique_values(dictValues, newData, "Areas", "Area", contextName)

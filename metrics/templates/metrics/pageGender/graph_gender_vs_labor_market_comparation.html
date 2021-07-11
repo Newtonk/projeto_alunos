@@ -62,9 +62,11 @@ margin: auto;
     <select name="entitygenderLaborMarketComparation" id="entitygenderLaborMarketComparation">
                  <option value="Empresa" selected>Empresa</option>
                  <option value="Area">Area</option>
-                 <option value="Instituicao">Instituicao</option>
+                 <option value="Universidade">Universidade</option>
                  <option value="Curso">Curso</option>
                  <option value="Classe">Classe Social</option>
+                 <option value="Estado_Universidade">Estado da Universidade</option>
+                 <option value="Estado_Empresa">Estado da Empresa</option>
             </select>
     </div>
                 <br>
@@ -247,26 +249,34 @@ const handlerGenderLaborMarketComparation = function(e) {
         type: 'POST',
         success: function (data, status) {
         		genderLaborMarketComparation = data.generoXmercadodetrabalhoCompare
-				updateGraphGenderLaborMarketComparation(genderLaborMarketComparation)
+        		if (Object.keys(genderLaborMarketComparation).length == 0 || Object.keys(genderLaborMarketComparation["Data"]).length == 0)
+                {
+                    document.getElementById('no-data-gender-labor-market-comparation').style.display = 'block';
+                    document.getElementById('generoXmercadodetrabalhoCompare').style.display = 'none'
+                }
+                else
+                {
+                    updateGraphGenderLaborMarketComparation(genderLaborMarketComparation)
 
-				initValuesGenderLaborMarketCompare("Genders", "Gender", "#genderLaborMarketComparation", false, false)
+                    initValuesGenderLaborMarketCompare("Genders", "Gender", "#genderLaborMarketComparation", false, false)
 
-				initValuesGenderLaborMarketCompare("UniversityStates", "UniversityState", "#statesUniLaborMarketComparation", true, true)
+                    initValuesGenderLaborMarketCompare("UniversityStates", "UniversityState", "#statesUniLaborMarketComparation", true, true)
 
-				initValuesGenderLaborMarketCompare("Universities", "University", "#universityGenderXLaborMarketComparation", true, true)
+                    initValuesGenderLaborMarketCompare("Universities", "University", "#universityGenderXLaborMarketComparation", true, true)
 
-				initValuesGenderLaborMarketCompare("Courses", "Course", "#courseGenderXLaborMarketComparation", true, true)
+                    initValuesGenderLaborMarketCompare("Courses", "Course", "#courseGenderXLaborMarketComparation", true, true)
 
-				initValuesGenderLaborMarketCompare("CompanyStates", "CompanyState", "#statesCompanyLaborMarketComparation", true, true)
+                    initValuesGenderLaborMarketCompare("CompanyStates", "CompanyState", "#statesCompanyLaborMarketComparation", true, true)
 
-				initValuesGenderLaborMarketCompare("Companies", "Company", "#companyGenderXLaborMarketComparation", true, true)
+                    initValuesGenderLaborMarketCompare("Companies", "Company", "#companyGenderXLaborMarketComparation", true, true)
 
-				initValuesGenderLaborMarketCompare("Areas", "Area", "#areaGenderXLaborMarketComparation", true, true)
+                    initValuesGenderLaborMarketCompare("Areas", "Area", "#areaGenderXLaborMarketComparation", true, true)
 
-                initValuesGenderLaborMarketCompare("Classes", "Class", "#classGenderXLaborMarketComparation", true, true)
+                    initValuesGenderLaborMarketCompare("Classes", "Class", "#classGenderXLaborMarketComparation", true, true)
 
-                document.getElementById("qtygenderLaborMarketComparation").value = genderLaborMarketComparation["Total"];
-				document.getElementById("entitygenderLaborMarketComparation").value = genderLaborMarketComparation["Entity"];
+                    document.getElementById("qtygenderLaborMarketComparation").value = genderLaborMarketComparation["Total"];
+                    document.getElementById("entitygenderLaborMarketComparation").value = genderLaborMarketComparation["Entity"];
+				}
         }
     });
 }
@@ -298,24 +308,16 @@ $('#classGenderXLaborMarketComparation').on('select2-removing', tryRemoveValueCo
 <script>
 function updateGraphGenderLaborMarketComparation(object_all)
 {
-	if (Object.keys(object_all).length == 0 || Object.keys(object_all["Data"]).length == 0)
-	{
-	    document.getElementById('no-data-gender-labor-market-comparation').style.display = 'block';
-        document.getElementById('generoXmercadodetrabalhoCompare').style.display = 'none'
-    }
-    else
-    {
-        document.getElementById('no-data-gender-labor-market-comparation').style.display = 'none';
-        document.getElementById('generoXmercadodetrabalhoCompare').style.display = 'block'
-        var colorArray = [ 'blue'];
-        chartGenderLaborMarketComparation.data.labels = object_all["Entities"]
-        chartGenderLaborMarketComparation.data.datasets[0].label = object_all["Gender"]
-        chartGenderLaborMarketComparation.data.datasets[0].backgroundColor = colorArray[0]
-        chartGenderLaborMarketComparation.data.datasets[0].data = object_all["Data"]
-        chartGenderLaborMarketComparation.options.title.text = ['Comparativo de Genero em (%) por '+object_all["Entity"]+' com Dados Pessoais, Academicos e Profissionais'
-            , 'Media em (%) dos Generos : '+sumAllGendersPercent(object_all["Data"])+'']
-        chartGenderLaborMarketComparation.update();
-	}
+    document.getElementById('no-data-gender-labor-market-comparation').style.display = 'none';
+    document.getElementById('generoXmercadodetrabalhoCompare').style.display = 'block'
+    var colorArray = [ 'blue'];
+    chartGenderLaborMarketComparation.data.labels = object_all["Entities"]
+    chartGenderLaborMarketComparation.data.datasets[0].label = object_all["Gender"]
+    chartGenderLaborMarketComparation.data.datasets[0].backgroundColor = colorArray[0]
+    chartGenderLaborMarketComparation.data.datasets[0].data = object_all["Data"]
+    chartGenderLaborMarketComparation.options.title.text = ['Comparativo de Genero em (%) por '+object_all["Entity"]+' com Dados Pessoais, Academicos e Profissionais'
+        , 'Media em (%) dos Generos : '+sumAllGendersPercent(object_all["Data"])+'']
+    chartGenderLaborMarketComparation.update();
 }
 </script>
 
@@ -403,6 +405,7 @@ function initGenderLaborMarketComparation(object_all) {
     initValuesGenderLaborMarketCompare("Companies", "Company", "#companyGenderXLaborMarketComparation", true, true)
     initValuesGenderLaborMarketCompare("Areas", "Area", "#areaGenderXLaborMarketComparation", true, true)
     initValuesGenderLaborMarketCompare("Classes", "Class", "#classGenderXLaborMarketComparation", true, true)
+    document.getElementById("entitygenderLaborMarketComparation").value = genderLaborMarketComparation["Entity"];
 
     createGraphGenderLaborMarketComparation(object_all)
     }

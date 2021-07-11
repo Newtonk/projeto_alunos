@@ -60,10 +60,12 @@ margin: auto;
 <select name="entityAgeDataComparation" id="entityAgeDataComparation">
      <option value="Empresa" selected>Empresa</option>
      <option value="Area">Area</option>
-     <option value="Instituicao">Instituicao</option>
+     <option value="Universidade">Universidade</option>
      <option value="Curso">Curso</option>
      <option value="Genero">Genero</option>
      <option value="Classe">Classe Social</option>
+     <option value="Estado_Universidade">Estado da Universidade</option>
+     <option value="Estado_Empresa">Estado da Empresa</option>
 </select>
 </div>
       </div>
@@ -242,26 +244,34 @@ const handlerAgeDataComparation = function(e) {
         type: 'POST',
         success: function (data, status) {
         		ageDataComparation = data.idadeXdadosCompare
-				updateAgeDataComparation(ageDataComparation)
+        		if (Object.keys(ageDataComparation).length == 0 || Object.keys(ageDataComparation["Data"]).length == 0)
+                {
+                    document.getElementById('no-data-age-vs-data-comparation').style.display = 'block';
+                    document.getElementById('idadeXdadosCompare').style.display = 'none'
+                }
+                else
+                {
+                    updateAgeDataComparation(ageDataComparation)
 
-                initValuesAgeDataCompare("Classes", "Class", "#classAgeDataComparation", true)
+                    initValuesAgeDataCompare("Classes", "Class", "#classAgeDataComparation", true)
 
-				initValuesAgeDataCompare("Genders", "Gender", "#genderAgeDataComparation", true)
+                    initValuesAgeDataCompare("Genders", "Gender", "#genderAgeDataComparation", true)
 
-				initValuesAgeDataCompare("UniversityStates", "UniversityState", "#statesUniAgeDataComparation", true)
+                    initValuesAgeDataCompare("UniversityStates", "UniversityState", "#statesUniAgeDataComparation", true)
 
-				initValuesAgeDataCompare("Universities", "University", "#universityAgeDataComparation", true)
+                    initValuesAgeDataCompare("Universities", "University", "#universityAgeDataComparation", true)
 
-				initValuesAgeDataCompare("Courses", "Course", "#courseAgeDataComparation", true)
+                    initValuesAgeDataCompare("Courses", "Course", "#courseAgeDataComparation", true)
 
-				initValuesAgeDataCompare("CompanyStates", "CompanyState", "#statesAgeDataComparation", true)
+                    initValuesAgeDataCompare("CompanyStates", "CompanyState", "#statesAgeDataComparation", true)
 
-				initValuesAgeDataCompare("Companies", "Company", "#companyAgeDataComparation", true)
+                    initValuesAgeDataCompare("Companies", "Company", "#companyAgeDataComparation", true)
 
-				initValuesAgeDataCompare("Areas", "Area", "#areaAgeDataComparation", true)
+                    initValuesAgeDataCompare("Areas", "Area", "#areaAgeDataComparation", true)
 
-                document.getElementById("qtyAgeDataComparation").value = ageDataComparation["Total"];
-				document.getElementById("entityAgeDataComparation").value = ageDataComparation["Entity"];
+                    document.getElementById("qtyAgeDataComparation").value = ageDataComparation["Total"];
+                    document.getElementById("entityAgeDataComparation").value = ageDataComparation["Entity"];
+				}
         }
     });
 }
@@ -293,23 +303,15 @@ $('#classAgeDataComparation').on('select2-removing', tryRemoveValue)
 <script>
 function updateAgeDataComparation(object_all)
 {
-	if (Object.keys(object_all).length == 0 || Object.keys(object_all["Data"]).length == 0)
-	{
-	    document.getElementById('no-data-age-vs-data-comparation').style.display = 'block';
-        document.getElementById('idadeXdadosCompare').style.display = 'none'
-    }
-    else
-    {
-        document.getElementById('no-data-age-vs-data-comparation').style.display = 'none';
-        document.getElementById('idadeXdadosCompare').style.display = 'block'
-        var colorArray = [ 'blue'];
-        chartAgeDataComparation.data.labels = object_all["Entities"]
-        chartAgeDataComparation.data.datasets[0].backgroundColor = colorArray[0]
-        chartAgeDataComparation.data.datasets[0].data = object_all["Data"]
-        chartAgeDataComparation.options.title.text = ['Comparativo de Media de Idade por '+object_all["Entity"]+' com Dados Pessoais, Academicos e Profissionais'
-            , 'Media de Idade Geral : '+sumAllAges(object_all["Data"])+'']
-        chartAgeDataComparation.update();
-	}
+    document.getElementById('no-data-age-vs-data-comparation').style.display = 'none';
+    document.getElementById('idadeXdadosCompare').style.display = 'block'
+    var colorArray = [ 'blue'];
+    chartAgeDataComparation.data.labels = object_all["Entities"]
+    chartAgeDataComparation.data.datasets[0].backgroundColor = colorArray[0]
+    chartAgeDataComparation.data.datasets[0].data = object_all["Data"]
+    chartAgeDataComparation.options.title.text = ['Comparativo de Media de Idade por '+object_all["Entity"]+' com Dados Pessoais, Academicos e Profissionais'
+        , 'Media de Idade Geral : '+sumAllAges(object_all["Data"])+'']
+    chartAgeDataComparation.update();
 }
 </script>
 
@@ -396,6 +398,7 @@ function initAgeDataComparation(object_all) {
     initValuesAgeDataCompare("CompanyStates", "CompanyState", "#statesAgeDataComparation", true)
     initValuesAgeDataCompare("Companies", "Company", "#companyAgeDataComparation", true)
     initValuesAgeDataCompare("Areas", "Area", "#areaAgeDataComparation", true)
+    document.getElementById("entityAgeDataComparation").value = ageDataComparation["Entity"];
 
     createGraphAgeDataComparation(object_all)
     }
