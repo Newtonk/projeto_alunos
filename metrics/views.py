@@ -7,6 +7,7 @@ from django.shortcuts import render, redirect
 import pandas as pd
 from django.contrib import messages
 from django.http import JsonResponse
+from django.core.cache import cache
 from metrics.entities.pageGender.graph_genero_vs_dados_empresariais import *
 from metrics.entities.pageGender.graph_comparativo_genero_vs_dados_empresariais import *
 from metrics.entities.pageSocialClass.graph_class_vs_dados_empresariais import *
@@ -46,31 +47,22 @@ def home(request):
             return render(request, 'metrics/home.html', contextHome)
 
         GraphState.objects.all().delete()
-        # pre_validations()
         return graphs_genero(request)
 
 
     return render(request, 'metrics/home.html', contextHome)
 
-def pre_validations():
-    if check_minium_values(["Curso"], data):
-        data.loc[data['Curso'].str.contains("SISTEMA", na=False), "Curso"] = "SISTEMAS"
-        data.loc[data['Curso'].str.contains("ENGENHARIA", na=False), "Curso"] = "ENGENHARIA"
-        data.loc[data['Curso'].str.contains("COMPUTACAO", na=False), "Curso"] = "COMPUTACAO"
-        data.loc[(data['Curso'] != "SISTEMAS") & (data['Curso'] != "ENGENHARIA") & (data['Curso'] != "COMPUTACAO"), "Curso"] = "OUTROS CURSOS DE TI"
-
 def read_file_success(fileName, fileExtension):
-    global data
     try:
         myFile = None
         if fileExtension == "csv":
-            myFile = pd.read_csv(fileName, chunksize=10000000)
-            for df in myFile:
-                data = pd.DataFrame(data=df, index=None)
-                break;
+            myFile = pd.read_csv(fileName)
         elif fileExtension == "xlsx":
             myFile = pd.read_excel(fileName)
-            data = pd.DataFrame(data=myFile, index=None)
+
+        data = pd.DataFrame(data=myFile, index=None)
+        # Put it in the cache
+        cache.set('cleaned_data', data, timeout=600)
     except:
         return False
     return True
@@ -173,6 +165,7 @@ def graphs_genero(request):
 
 def graph_genero_vs_mercado_trabalho(request):
     finalResult = {}
+    data = cache.get('cleaned_data')
     if GeneroDadosEmpresariais.validacao_colunas(data):
         workingData = data
         newData = GeneroDadosEmpresariais.unifica_colunas(workingData)
@@ -210,6 +203,7 @@ def graph_genero_vs_mercado_trabalho_comparativo(request, isInitial):
     finalResult = {}
     contextName = context["generoXmercadodetrabalhoCompare"]
     entityValue = GeneroDadosComparativosEmpresariais.campo_entidade_comparacao(request, contextName)
+    data = cache.get('cleaned_data')
     isValid, entityValue = GeneroDadosComparativosEmpresariais.validacao_colunas(entityValue, data, isInitial)
     if isValid:
         workingData = data
@@ -261,6 +255,7 @@ def graphs_social_class(request):
 
 def graph_classe_vs_mercado_trabalho(request):
     finalResult = {}
+    data = cache.get('cleaned_data')
     if ClasseDados.validacao_colunas(data):
         workingData = data
         newData = ClasseDados.unifica_colunas(workingData)
@@ -298,6 +293,7 @@ def graph_classe_vs_mercado_trabalho_comparativo(request, isInitial):
     finalResult = {}
     contextName = context["classeXmercadodetrabalhoCompare"]
     entityValue = ClasseDadosComparativos.campo_entidade_comparacao(request, contextName)
+    data = cache.get('cleaned_data')
     isValid, entityValue = ClasseDadosComparativos.validacao_colunas(entityValue, data, isInitial)
     if isValid:
         workingData = data
@@ -348,6 +344,7 @@ def graph_salario_vs_dados_compare(request, isInitial):
     finalResult = {}
     contextName = context["salarioXdadosCompare"]
     entityValue = SalarioDadosComparativos.campo_entidade_comparacao(request, contextName)
+    data = cache.get('cleaned_data')
     isValid, entityValue = SalarioDadosComparativos.validacao_colunas(entityValue, data, isInitial)
     if isValid:
         workingData = data
@@ -394,6 +391,7 @@ def graph_age_vs_dados_compare(request, isInitial):
     finalResult = {}
     contextName = context["idadeXdadosCompare"]
     entityValue = IdadeDadosComparativos.campo_entidade_comparacao(request, contextName)
+    data = cache.get('cleaned_data')
     isValid, entityValue = IdadeDadosComparativos.validacao_colunas(entityValue, data, isInitial)
     if isValid:
         workingData = data
@@ -441,6 +439,7 @@ def graph_quantity_vs_dados_compare(request, isInitial):
     finalResult = {}
     contextName = context["quantidadeXdadosCompare"]
     entityValue = QuantidadeDadosComparativos.campo_entidade_comparacao(finalResult, request, contextName)
+    data = cache.get('cleaned_data')
     isValid, entityValue = QuantidadeDadosComparativos.validacao_colunas(entityValue, data, isInitial)
     if isValid:
         workingData = data
