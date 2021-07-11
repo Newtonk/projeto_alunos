@@ -57,15 +57,16 @@ def read_file_success(fileName, fileExtension):
         myFile = None
         if fileExtension == "csv":
             myFile = pd.read_csv(fileName)
-            console.log("Leu o arquivo!")
+            print("Leu arquivo!")
         elif fileExtension == "xlsx":
             myFile = pd.read_excel(fileName)
 
         data = pd.DataFrame(data=myFile, index=None)
-        console.log("Fez o dataframe!")
+        print("Fez dataframe")
         # Put it in the cache
         cache.set('cleaned_data', data, timeout=600)
-    except:
+    except Exception as e:
+        print(e)
         return False
     return True
 
