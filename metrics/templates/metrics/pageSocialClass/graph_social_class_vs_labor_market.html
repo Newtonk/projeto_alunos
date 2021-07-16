@@ -236,14 +236,13 @@ $('#genderXLaborMarket').on('select2-removing', tryRemoveValue)
 <script>
 function updateGraphClassLaborMarket(object_all){
 
-    document.getElementById('no-data-class-vs-labor-market').style.display = 'block';
-    document.getElementById('classeXmercadodetrabalho').style.display = 'none'
+    document.getElementById('no-data-class-vs-labor-market').style.display = 'none';
+    document.getElementById('classeXmercadodetrabalho').style.display = 'block'
 	var colorArray = ["green", "blue", "black", "red" , "purple"]
 	chartClassLaborMarket.data.labels = object_all["Labels"]
 	chartClassLaborMarket.data.datasets[0].label = object_all["Area"]
 	chartClassLaborMarket.data.datasets[0].backgroundColor = colorArray
 	chartClassLaborMarket.data.datasets[0].data = object_all["Data"]
-	chartClassLaborMarket.options.title.text = 'Genero X Area de ' + object_all["Area"]
 	chartClassLaborMarket.update();
 }
 
