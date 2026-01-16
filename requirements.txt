@@ -39,7 +39,7 @@ sqlparse==0.4.1
 toolz==0.11.1
 typing-extensions==3.7.4.3
 urllib3==1.26.2
-Werkzeug==2.0.1
+Werkzeug==3.1.5
 whitenoise==5.2.0
 xlrd==2.0.1
 zipp==3.4.1
